@@ -56,7 +56,6 @@ public with sharing class CandidateTriggerHandler {
                         resultFinal1 = resultDiv1;
                     } else {
                         resultFinal1 = 0;
-
                     }
 
                     //cálculo último número do CPF
@@ -73,19 +72,21 @@ public with sharing class CandidateTriggerHandler {
                         resultFinal2 = resultDiv2;
                     } else {
                         resultFinal2 = 0;
-
                     }
                     
-
+                    //retorna msg
                     if(midPenul != resultFinal1 || midLast != resultFinal2){
                         cand.addError('Este CPF não é válido!');
- 
                     }
                 }
 
-            //se os números forem repetidos
+                //se os números forem repetidos
+                Pattern numOnly = Pattern.compile('\\b(\\d)\\1*\\b');
+                Matcher validFieldCPF = numOnly.matcher(cand.CPF__c);
 
-                
+                if(validFieldCPF.matches()){
+                    cand.addError('O CPF não pode ser composto por um único número!');
+                }
             }    
         }
     }

@@ -122,6 +122,22 @@ public with sharing class CandidateTriggerHandlerTest {
         }
     }
 
+    //testat novo candidato com CPF com único número
+    @isTest
+    static void testNewCandOnlyCPF(){
 
+        Candidate__c candNew = new Candidate__c();
+        candNew.First_Name__c = 'Teste';
+        candNew.CPF__c = '11111111111';
 
+        try {
+            Test.startTest();
+            insert candNew;
+            Test.stopTest();
+
+        } catch (Exception error) {
+            System.equals('O CPF não pode ser composto por um único número!', error.getMessage());
+        }
+        
+    }
 }
