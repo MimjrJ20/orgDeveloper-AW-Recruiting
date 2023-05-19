@@ -91,26 +91,55 @@ public with sharing class CandidateTriggerHandler {
         }
     }
 
-
     //Método preenche CEP
     //representa uma coleção de candidatos identificados por seus IDs
-    public void setAddressViaCEP(Map<Id, Candidate__c> candidateList){
+    public void setAddressViaCEP(Map<Id, Candidate__c> candidateListOld, Map<Id, Candidate__c> candidateListNew){
 
+
+        
         //itera sobre as chaves (IDs dos candidatos)
-        for (Id candId : candidateList.keySet()) {
+        for (Id candId : candidateListNew.keySet()) {
 
-            //D atual dentro do loop e o armazena na variável cand. 
-            //Isso permite acessar os campos do candidato
-            Candidate__c cand = candidateList.get(candId);
+            if(candidateListOld.get(candId).Zip_Postal_Code__c != candidateListNew.get(candId).Zip_Postal_Code__c
+                || (candidateListOld.get(candId).Country_List__c != 'BR - Brazil' && candidateListNew.get(candId).Country_List__c == 'BR - Brazil')){
+                //system.debug('passou por aqui');
+                //D atual dentro do loop e o armazena na variável cand. 
+                //Isso permite acessar os campos do candidato
+                Candidate__c cand = candidateListNew.get(candId);
 
-            if (cand.Zip_Postal_Code__c != null) {
+                    if (cand.Zip_Postal_Code__c != null) {
 
-                //Essa linha verifica se o método está sendo chamado de um contexto que não seja futuro 
-                // nem de um contexto de lote
-                if (!System.isFuture() && !System.isBatch()) {
-                    IntegrationViaCEPCallout.getCEP(cand.Zip_Postal_Code__c, candId);
-                }
+                        //Essa linha verifica se o método está sendo chamado de um contexto que não seja futuro 
+                        // nem de um contexto de lote
+                        if (!System.isFuture() && !System.isBatch()) {
+                            IntegrationViaCEPCallout.getCEP(cand.Zip_Postal_Code__c, candId);
+                        }
+                    }
             }
         }
     }
+
+    //validação número cep
+    public void validateCEP(List <Candidate__c> candidateList){
+
+        for(Candidate__c cand : candidateList){
+
+            if(cand.Zip_Postal_Code__c != null){
+
+                if(cand.Country_List__c == 'BR - Brazil' && cand.Zip_Postal_Code__c.length() != 8){
+                    cand.addError('O CEP para o país Brasil deve conter 8 dígitos!');
+                }
+
+                if(!cand.Zip_Postal_Code__c.isNumeric()){
+                    cand.addError('No CEP não pode ser inserido letra ou ponto!');
+
+                }
+            }
+
+
+
+        }
+
+    }
+
 }

@@ -4,12 +4,13 @@ trigger CandidateTrigger on Candidate__c (after insert, after update, before ins
 
     if(Trigger.isInsert || Trigger.isUpdate){
         handlerCand.validateCPF(Trigger.new);
+        handlerCand.validateCEP(Trigger.new);
 
     }
 
     if(Trigger.isAfter){
         if(Trigger.isInsert || Trigger.isUpdate){
-            handlerCand.setAddressViaCEP(Trigger.newMap);
+            handlerCand.setAddressViaCEP(Trigger.oldMap, Trigger.newMap);
         }
     }
 

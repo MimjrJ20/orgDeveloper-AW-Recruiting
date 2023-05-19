@@ -15,7 +15,7 @@ global with sharing class IntegrationViaCEPCallout {
                 cand.Street_Address_2__c = returnValue.bairro;
                 cand.State_Province__c = returnValue.uf;
                 cand.City__c = returnValue.localidade;
-                cand.Country__c = 'Brazil';
+                //cand.Country__c = 'Brazil';
                 candToUpdate.add(cand);
             }
             update candToUpdate;
@@ -51,5 +51,6 @@ global with sharing class IntegrationViaCEPCallout {
         public String bairro;
         public String localidade;
         public String uf;
+        public String error;
     }
 }
