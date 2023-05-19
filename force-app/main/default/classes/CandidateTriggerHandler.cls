@@ -93,18 +93,20 @@ public with sharing class CandidateTriggerHandler {
 
 
     //Método preenche CEP
-    
-    public static void setAddressViaCEP(Map<Id, Candidate__c> candidateList){
+    public void setAddressViaCEP(Map<Id, Candidate__c> candidateList){
 
-        List<Candidate__c> candToUpdate = new List<Candidate__c>();
+        //percorre os id que estão no Map
+        for (Id candId : candidateList.keySet()) {
 
-        for(Candidate__c cand : candidateList.values()){
-            if(cand.Zip_Postal_Code__c != null){
-                IntegrationViaCEPCallout.getCEP(cand.Zip_Postal_Code__c, cand.id);
-                candToUpdate.add(cand);
+            //transformando o cand em um objeto para acessar os campos do Candidato
+            Candidate__c cand = candidateList.get(candId);
+
+            if (cand.Zip_Postal_Code__c != null) {
+
+                if (!System.isFuture() && !System.isBatch()) {
+                    IntegrationViaCEPCallout.getCEP(cand.Zip_Postal_Code__c, candId);
+                }
             }
         }
     }
-    
-    
 }

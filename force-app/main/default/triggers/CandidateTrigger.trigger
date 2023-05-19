@@ -9,7 +9,7 @@ trigger CandidateTrigger on Candidate__c (after insert, after update, before ins
 
     if(Trigger.isAfter){
         if(Trigger.isInsert || Trigger.isUpdate){
-            CandidateTriggerHandler.setAddressViaCEP(Trigger.newMap);
+            handler.setAddressViaCEP(Trigger.newMap);
         }
     }
 

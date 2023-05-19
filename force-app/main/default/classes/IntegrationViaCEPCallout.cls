@@ -1,32 +1,24 @@
 global with sharing class IntegrationViaCEPCallout {
-   
-    //Construtor vaizo
-    public IntegrationViaCEPCallout() {
-
-    }
-
-    //cria lista e adiciona o valor retornado - apagado pois passamos um cep
-    /*public static List<ViaCEP> getCEP(List<String> cepList){
-    List<ViaCEP> returnValue = new List<ViaCEP>();
-    returnValue.add(sendRequest(cepList.get(0)));
-
-    return returnValue;
-    }*/
-
 
     @future(callout = true)
     public static void getCEP(String endCEP, Id id){
 
         ViaCEP returnValue = sendRequest(endCEP);
-
-        Candidate__c cand = new Candidate__c();
-        cand.Id = id;
-        cand.Street_Address_1__c = returnValue.logradouro;
-        cand.Street_Address_2__c = returnValue.bairro;
-        cand.State_Province__c = returnValue.uf;
-        cand.City__c = returnValue.localidade;
-        cand.Country__c = 'Brazil';
-        update cand;        
+        
+        if (returnValue != null) {
+            
+            List<Candidate__c> candToUpdate = new List<Candidate__c>();
+    
+            for (Candidate__c cand : [SELECT Id, Zip_Postal_Code__c FROM Candidate__c WHERE Id = :id]) {
+                cand.Street_Address_1__c = returnValue.logradouro;
+                cand.Street_Address_2__c = returnValue.bairro;
+                cand.State_Province__c = returnValue.uf;
+                cand.City__c = returnValue.localidade;
+                cand.Country__c = 'Brazil';
+                candToUpdate.add(cand);
+            }
+            update candToUpdate;
+        }
     } 
 
     //Método http
