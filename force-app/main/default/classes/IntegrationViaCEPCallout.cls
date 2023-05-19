@@ -1,5 +1,6 @@
 global with sharing class IntegrationViaCEPCallout {
 
+    //Método que retorna o endereço do cep e armazena
     @future(callout = true)
     public static void getCEP(String endCEP, Id id){
 
