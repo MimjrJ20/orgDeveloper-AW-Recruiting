@@ -93,16 +93,20 @@ public with sharing class CandidateTriggerHandler {
 
 
     //Método preenche CEP
+    //representa uma coleção de candidatos identificados por seus IDs
     public void setAddressViaCEP(Map<Id, Candidate__c> candidateList){
 
-        //percorre os id que estão no Map
+        //itera sobre as chaves (IDs dos candidatos)
         for (Id candId : candidateList.keySet()) {
 
-            //transformando o cand em um objeto para acessar os campos do Candidato
+            //D atual dentro do loop e o armazena na variável cand. 
+            //Isso permite acessar os campos do candidato
             Candidate__c cand = candidateList.get(candId);
 
             if (cand.Zip_Postal_Code__c != null) {
 
+                //Essa linha verifica se o método está sendo chamado de um contexto que não seja futuro 
+                // nem de um contexto de lote
                 if (!System.isFuture() && !System.isBatch()) {
                     IntegrationViaCEPCallout.getCEP(cand.Zip_Postal_Code__c, candId);
                 }
