@@ -90,4 +90,21 @@ public with sharing class CandidateTriggerHandler {
             }    
         }
     }
+
+
+    //Método preenche CEP
+    
+    public static void setAddressViaCEP(Map<Id, Candidate__c> candidateList){
+
+        List<Candidate__c> candToUpdate = new List<Candidate__c>();
+
+        for(Candidate__c cand : candidateList.values()){
+            if(cand.Zip_Postal_Code__c != null){
+                IntegrationViaCEPCallout.getCEP(cand.Zip_Postal_Code__c, cand.id);
+                candToUpdate.add(cand);
+            }
+        }
+    }
+    
+    
 }
