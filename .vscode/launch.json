@@ -4,6 +4,21 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+<<<<<<< HEAD
+=======
+    
+    
+    {
+      "name": "Launch Apex Debugger",
+      "type": "apex",
+      "request": "launch",
+      "userIdFilter": [],
+      "requestTypeFilter": [],
+      "entryPointFilter": "",
+      "sfdxProject": "${workspaceRoot}"
+    },
+    
+>>>>>>> 94b17bb2ab511d3ade5ea12d91534c0e87c226e3
     {
       "name": "Launch Apex Replay Debugger",
       "type": "apex-replay",
