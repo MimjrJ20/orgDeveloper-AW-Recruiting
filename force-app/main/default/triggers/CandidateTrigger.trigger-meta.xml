@@ -1,13 +1,5 @@
-<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 <ApexTrigger xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>56.0</apiVersion>
     <status>Active</status>
 </ApexTrigger>
-=======
-<?xml version='1.0' encoding='UTF-8'?>
-<ApexTrigger xmlns="http://soap.sforce.com/2006/04/metadata">
-  <apiVersion>56.0</apiVersion>
-  <status>Active</status>
-</ApexTrigger>
->>>>>>> 94b17bb2ab511d3ade5ea12d91534c0e87c226e3

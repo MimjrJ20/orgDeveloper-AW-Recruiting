@@ -135,11 +135,17 @@ public with sharing class CandidateTriggerHandler {
 
                 }
             }
-
-
-
         }
-
     }
 
+    
+
+/*     //salvar o registro
+    public PageReference saveRecord(List <Candidate__c> candidateList) {
+        
+        // Redirecionar para a página atual (recarregar a página)
+        PageReference pageRef = new PageReference(ApexPages.currentPage().getUrl());
+        pageRef.setRedirect(true);
+        return pageRef;
+    } */
 }
