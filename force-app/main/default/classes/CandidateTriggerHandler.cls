@@ -112,9 +112,9 @@ public with sharing class CandidateTriggerHandler {
                     //Essa linha verifica se o método está sendo chamado de um contexto que não seja futuro 
                     //nem de um contexto de lote
                     if (!System.isFuture() && !System.isBatch()) {
-                            IntegrationViaCEPCallout.getCEP(cand.Zip_Postal_Code__c, candId);
+                        IntegrationViaCEPCallout.getCEP(cand.Zip_Postal_Code__c, candId);
                     }
-                }
+                }   
             }
         }
     }
