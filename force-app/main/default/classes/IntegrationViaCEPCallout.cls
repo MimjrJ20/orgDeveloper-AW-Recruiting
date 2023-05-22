@@ -14,7 +14,7 @@ global with sharing class IntegrationViaCEPCallout {
     
             for (Candidate__c cand : [SELECT Id, Zip_Postal_Code__c FROM Candidate__c WHERE Id = :id]) {
                 cand.Street_Address_1__c = returnValue.logradouro;
-                cand.Street_Address_2__c = returnValue.complemento;
+                //cand.Street_Address_2__c = returnValue.complemento;
                 cand.Street_Address_3__c = returnValue.bairro;
                 cand.State_Province__c = returnValue.uf;
                 cand.City__c = returnValue.localidade;
