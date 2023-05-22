@@ -21,24 +21,23 @@ global with sharing class IntegrationViaCEPCallout {
                 candToUpdate.add(cand);
             }
             update candToUpdate;
-        } 
 
-        //se não retornar nenhum endereço
-        if(returnValue.error == 'true'){
+            //se não retornar nenhum endereço
+            if(returnValue.error == 'true'){
 
-            List<Candidate__c> candToUpdateEmpty = new List<Candidate__c>();
-    
-            for (Candidate__c candEmpty : [SELECT Id, Zip_Postal_Code__c FROM Candidate__c WHERE Id = :id]) {
-                candEmpty.Street_Address_1__c = '';
-                candEmpty.Street_Address_2__c = '';
-                candEmpty.Street_Address_3__c = '';
-                candEmpty.State_Province__c = '';
-                candEmpty.City__c = '';
-                candToUpdateEmpty.add(candEmpty);
+                List<Candidate__c> candToUpdateEmpty = new List<Candidate__c>();
+        
+                for (Candidate__c candEmpty : [SELECT Id, Zip_Postal_Code__c FROM Candidate__c WHERE Id = :id]) {
+                    candEmpty.Street_Address_1__c = '';
+                    candEmpty.Street_Address_2__c = '';
+                    candEmpty.Street_Address_3__c = '';
+                    candEmpty.State_Province__c = '';
+                    candEmpty.City__c = '';
+                    candToUpdateEmpty.add(candEmpty);
+                }
+                update candToUpdateEmpty;
             }
-            update candToUpdateEmpty;
-
-        }
+        } 
     } 
 
     //Método http

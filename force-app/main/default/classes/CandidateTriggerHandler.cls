@@ -95,26 +95,24 @@ public with sharing class CandidateTriggerHandler {
     //representa uma coleção de candidatos identificados por seus IDs
     public void setAddressViaCEP(Map<Id, Candidate__c> candidateListOld, Map<Id, Candidate__c> candidateListNew){
 
-
-        
         //itera sobre as chaves (IDs dos candidatos)
         for (Id candId : candidateListNew.keySet()) {
 
-            if(candidateListOld.get(candId).Zip_Postal_Code__c != candidateListNew.get(candId).Zip_Postal_Code__c
-                || (candidateListOld.get(candId).Country_List__c != 'BR - Brazil' && candidateListNew.get(candId).Country_List__c == 'BR - Brazil')){
-                //system.debug('passou por aqui');
-                //D atual dentro do loop e o armazena na variável cand. 
-                //Isso permite acessar os campos do candidato
-                Candidate__c cand = candidateListNew.get(candId);
+            //D atual dentro do loop e o armazena na variável cand. 
+            //Isso permite acessar os campos do candidato
+            Candidate__c cand = candidateListNew.get(candId);
 
-                    if (cand.Zip_Postal_Code__c != null) {
+            if (cand.Zip_Postal_Code__c != null) {
 
-                        //Essa linha verifica se o método está sendo chamado de um contexto que não seja futuro 
-                        // nem de um contexto de lote
-                        if (!System.isFuture() && !System.isBatch()) {
+                if(candidateListOld.get(candId).Zip_Postal_Code__c != candidateListNew.get(candId).Zip_Postal_Code__c
+                    || (candidateListOld.get(candId).Country_List__c != 'BR - Brazil' && candidateListNew.get(candId).Country_List__c == 'BR - Brazil')){
+
+                    //Essa linha verifica se o método está sendo chamado de um contexto que não seja futuro 
+                    // nem de um contexto de lote
+                    if (!System.isFuture() && !System.isBatch()) {
                             IntegrationViaCEPCallout.getCEP(cand.Zip_Postal_Code__c, candId);
-                        }
                     }
+                }
             }
         }
     }
