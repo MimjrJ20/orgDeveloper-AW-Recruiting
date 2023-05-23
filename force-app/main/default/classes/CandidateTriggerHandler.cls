@@ -5,6 +5,8 @@ public with sharing class CandidateTriggerHandler {
     
     }
 
+    //--------------------------------------------------------
+
     //Método para validar o CPF
     public void validateCPF(List <Candidate__c> candidateList){
 
@@ -18,12 +20,12 @@ public with sharing class CandidateTriggerHandler {
             
                 //Se o CPF tiver caracteres diferente de numérico
                 if(!cand.CPF__c.isNumeric()){
-                    cand.addError('O CPF só pode haver números. Sem letras, pontos e traços!');
+                    cand.CPF__c.addError('O CPF só pode haver números. Sem letras, pontos e traços!');
                 } 
                 
                 //Se o CPF tiver menor que 11 números
                 if (cand.CPF__c.length() < numCPF && cand.CPF__c.isNumeric()) {
-                    cand.addError('O CPF precisa ter 11 números!');
+                    cand.CPF__c.addError('O CPF precisa ter 11 números!');
                 } 
 
                 //Validar se o CPF existe
@@ -76,7 +78,7 @@ public with sharing class CandidateTriggerHandler {
                     
                     //retorna msg
                     if(midPenul != resultFinal1 || midLast != resultFinal2){
-                        cand.addError('Este CPF não é válido!');
+                        cand.CPF__c.addError('Este CPF não é válido!');
                     }
                 }
 
@@ -85,15 +87,18 @@ public with sharing class CandidateTriggerHandler {
                 Matcher validFieldCPF = numOnly.matcher(cand.CPF__c);
 
                 if(validFieldCPF.matches()){
-                    cand.addError('O CPF não pode ser composto por um único número!');
+                    cand.CPF__c.addError('O CPF não pode ser composto por um único número!');
                 }
             }    
         }
     }
 
+    //--------------------------------------------------------
+
     //Método preenche CEP
     //representa uma coleção de candidatos identificados por seus IDs
     public void setAddressViaCEP(Map<Id, Candidate__c> candidateListOld, Map<Id, Candidate__c> candidateListNew){
+    //public void setAddressViaCEP(Map<Id, Candidate__c> candidateListNew){
 
         //itera sobre as chaves (IDs dos candidatos)
         for (Id candId : candidateListNew.keySet()) {
@@ -104,20 +109,22 @@ public with sharing class CandidateTriggerHandler {
 
             if (cand.Zip_Postal_Code__c != null) {
 
-                //verifica se o cep foi alterado
-                //e verifica se o país foi modificado para Brazil
-                if(candidateListOld.get(candId).Zip_Postal_Code__c != candidateListNew.get(candId).Zip_Postal_Code__c
-                    || (candidateListOld.get(candId).Country_List__c != 'BR - Brazil' && candidateListNew.get(candId).Country_List__c == 'BR - Brazil')){
+                if (cand.Country_List__c == 'BR - Brazil') {
 
-                    //Essa linha verifica se o método está sendo chamado de um contexto que não seja futuro 
-                    //nem de um contexto de lote
-                    if (!System.isFuture() && !System.isBatch()) {
-                        IntegrationViaCEPCallout.getCEP(cand.Zip_Postal_Code__c, candId);
+                    if(candidateListOld.get(cand.Id).Zip_Postal_Code__c != candidateListNew.get(cand.Id).Zip_Postal_Code__c){
+
+                        //Essa linha verifica se o método está sendo chamado de um contexto que não seja futuro 
+                        //nem de um contexto de lote
+                        if (!System.isFuture() && !System.isBatch()) {
+                            IntegrationViaCEPCallout.getCEP(cand.Zip_Postal_Code__c, candId);
+                        }
                     }
-                }   
-            }
+                }
+            }   
         }
     }
+
+    //--------------------------------------------------------
 
     //validação número cep
     public void validateCEP(List <Candidate__c> candidateList){
@@ -127,25 +134,44 @@ public with sharing class CandidateTriggerHandler {
             if(cand.Zip_Postal_Code__c != null){
 
                 if(cand.Country_List__c == 'BR - Brazil' && cand.Zip_Postal_Code__c.length() != 8){
-                    cand.addError('O CEP para o país Brasil deve conter 8 dígitos!');
+                    cand.Zip_Postal_Code__c.addError('O CEP para o país Brasil deve conter 8 dígitos!');
                 }
 
                 if(!cand.Zip_Postal_Code__c.isNumeric()){
-                    cand.addError('No CEP não pode ser inserido letra ou ponto!');
+                    cand.Zip_Postal_Code__c.addError('No CEP não pode ser inserido letra ou ponto!');
 
                 }
             }
         }
     }
 
-    
+    //--------------------------------------------------------
 
-/*     //salvar o registro
-    public PageReference saveRecord(List <Candidate__c> candidateList) {
-        
+    /*
+    //validação número endereço
+    public void validateNumAddress(List <Candidate__c> candidateList){
+
+        for(Candidate__c cand : candidateList){
+
+            if(cand .Street_Address_1__c != null && cand.Street_Address_2__c == null){
+                cand.Street_Address_2__c.addError('Por favor, quando preencher o endereço deve ser informado o número!');
+
+            }
+        }
+    }
+    */
+
+    //--------------------------------------------------------
+
+    /*
+    //salvar o registro
+    public void reloadPage() {
         // Redirecionar para a página atual (recarregar a página)
-        PageReference pageRef = new PageReference(ApexPages.currentPage().getUrl());
+        String currentUrl = ApexPages.currentPage().getUrl();
+        ApexPages.PageReference pageRef = new ApexPages.PageReference(currentUrl);
         pageRef.setRedirect(true);
-        return pageRef;
-    } */
+        throw new System.RedirectException(pageRef);
+    }
+    */
+    
 }
