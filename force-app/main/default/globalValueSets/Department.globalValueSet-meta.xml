@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Engineering</fullName>
+        <default>false</default>
+        <label>Engineering</label>
+    </customValue>
+    <customValue>
+        <fullName>IT</fullName>
+        <default>false</default>
+        <label>IT</label>
+    </customValue>
+    <customValue>
+        <fullName>Finance</fullName>
+        <default>false</default>
+        <label>Finance</label>
+    </customValue>
+    <customValue>
+        <fullName>Support</fullName>
+        <default>false</default>
+        <label>Support</label>
+    </customValue>
+    <customValue>
+        <fullName>Sales</fullName>
+        <default>false</default>
+        <label>Sales</label>
+    </customValue>
+    <masterLabel>Department</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>
