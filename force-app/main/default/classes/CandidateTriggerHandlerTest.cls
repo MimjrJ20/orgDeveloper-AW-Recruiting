@@ -294,7 +294,6 @@ public with sharing class CandidateTriggerHandlerTest {
             //fim do teste
             
         } catch (Exception error) {
-            System.debug(error.getMessage());
             System.assertEquals(candOld.Zip_Postal_Code__c, candNew.Zip_Postal_Code__c);   
         }
     }
