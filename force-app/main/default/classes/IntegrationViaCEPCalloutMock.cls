@@ -1,6 +1,7 @@
 global with sharing class IntegrationViaCEPCalloutMock implements HttpCalloutMock{
 
     //mock da chamada
+    //Essa classe de mock é usada para testar como o código se comporta quando ocorre um erro na chamada de integração com o serviço ViaCEP
     private IntegrationViaCEPCallout.ViaCEP viaCEP;
 
     public IntegrationViaCEPCalloutMock(IntegrationViaCEPCallout.ViaCEP viaCEP){

@@ -119,12 +119,14 @@ public with sharing class IntegrationViaCEPCalloutTest {
     @isTest
     static void testSendRequestNullException(){
 
-        // Configuração do mock para simular uma exceção durante a chamada HTTP
-        Test.setMock(HttpCalloutMock.class, new IntegrationViaCEPCalloutExceptionMock());
 
         // Chama o método sendRequest com um CEP inválido
         Test.startTest();
+        
+        // Configuração do mock para simular uma exceção durante a chamada HTTP
+        Test.setMock(HttpCalloutMock.class, new IntegrationViaCEPCalloutExceptionMock());
         IntegrationViaCEPCallout.ViaCEP result = IntegrationViaCEPCallout.sendRequest('');
+        
         Test.stopTest();
 
         // Verifica se o resultado é nulo

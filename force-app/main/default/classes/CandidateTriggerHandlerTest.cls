@@ -43,7 +43,7 @@ public with sharing class CandidateTriggerHandlerTest {
         }
     }
 
-    //testar novo candidato e  CPF se for menor que 11
+    //testar novo candidato e CPF se for menor que 11
     @isTest
     static void testNewCandMinCPF(){
 
@@ -148,29 +148,29 @@ public with sharing class CandidateTriggerHandlerTest {
         
     }
 
-        //testar atualizar candidato com CPF com único número
-        @isTest
-        static void testUpCandOnlyCPF(){
-    
-            Candidate__c candNew = new Candidate__c();
-            candNew.First_Name__c = 'Teste';
-            candNew.CPF__c = '12345678909';
+    //testar atualizar candidato com CPF com único número
+    @isTest
+    static void testUpCandOnlyCPF(){
 
-            insert candNew;
+        Candidate__c candNew = new Candidate__c();
+        candNew.First_Name__c = 'Teste';
+        candNew.CPF__c = '12345678909';
 
-            candNew.CPF__c = '11111111111';     
-    
-            try {
-                Test.startTest();
-                update candNew;
-                Test.stopTest();
-    
-            } catch (Exception error) {
-                Boolean result = error.getMessage().contains('O CPF não pode ser composto por um único número!') ? true : false;
-                System.assertEquals(result, true);
-            }
-            
+        insert candNew;
+
+        candNew.CPF__c = '11111111111';     
+
+        try {
+            Test.startTest();
+            update candNew;
+            Test.stopTest();
+
+        } catch (Exception error) {
+            Boolean result = error.getMessage().contains('O CPF não pode ser composto por um único número!') ? true : false;
+            System.assertEquals(result, true);
         }
+        
+    }
 
     //testar novo candidato com cep menor que 8
     @isTest
@@ -261,7 +261,7 @@ public with sharing class CandidateTriggerHandlerTest {
 
     //testar a chamada da Integração do viaCEP
     @isTest
-    static void testSetAddresViaCEP(){
+    static void testSetAddresViaCepOldNotEqualsNew(){
 
         //instanciar objeto para registro novo e antigo
         Candidate__c candNew = new Candidate__c();
@@ -272,29 +272,101 @@ public with sharing class CandidateTriggerHandlerTest {
         candNew.Zip_Postal_Code__c = '04821010';
 
         //inicio ao teste
-        try {
-            Test.startTest();
+        Test.startTest();
 
-            IntegrationViaCEPCallout.ViaCEP viaCEP = new IntegrationViaCEPCallout.ViaCEP();
+        IntegrationViaCEPCallout.ViaCEP viaCEP = new IntegrationViaCEPCallout.ViaCEP();
 
-            Test.setMock(HttpCalloutMock.class, new IntegrationViaCEPCalloutMock(viaCEP));
+        //configura um mock para substitui a chamada do http real
+        Test.setMock(HttpCalloutMock.class, new IntegrationViaCEPCalloutMock(viaCEP));
 
-            insert candNew;
+        insert candNew;
 
-            candOld.Zip_Postal_Code__c = '04821390';
+        candOld.Zip_Postal_Code__c = '04821390';
 
-            Map<Id, Candidate__c> candidateListNew = new Map<Id, Candidate__c>{candNew.Id => candNew};
-            Map<Id, Candidate__c> candidateListOld = new Map<Id, Candidate__c>{candNew.Id => candOld};
-            
-            CandidateTriggerHandler handler = new CandidateTriggerHandler();
+        Map<Id, Candidate__c> candidateListNew = new Map<Id, Candidate__c>{candNew.Id => candNew};
+        Map<Id, Candidate__c> candidateListOld = new Map<Id, Candidate__c>{candNew.Id => candOld};//associa o ID do objeto candNew ao objeto candOld
+        
+        CandidateTriggerHandler handler = new CandidateTriggerHandler();
 
-            handler.setAddressViaCEP(candidateListOld, candidateListNew);
+        handler.setAddressViaCEP(candidateListOld, candidateListNew);
 
-            Test.stopTest();
-            //fim do teste
-            
-        } catch (Exception error) {
-            System.assertEquals(candOld.Zip_Postal_Code__c, candNew.Zip_Postal_Code__c);   
-        }
+        Test.stopTest();
+        //fim do teste
+        
+        System.assertNotEquals(candOld.Zip_Postal_Code__c, candNew.Zip_Postal_Code__c);   
     }
+
+    @isTest
+    static void testSetAddresViaCepOldEqualsNew(){
+
+        //instanciar objeto para registro novo e antigo
+        Candidate__c candNew = new Candidate__c();
+        Candidate__c candOld = new Candidate__c();
+
+        candNew.First_Name__c = 'Teste';
+        candNew.Country_List__c = 'BR - Brazil';
+        candNew.Zip_Postal_Code__c = '04821010';
+
+        //inicio ao teste
+        Test.startTest();
+
+        IntegrationViaCEPCallout.ViaCEP viaCEP = new IntegrationViaCEPCallout.ViaCEP();
+
+        //configura um mock para substitui a chamada do http real
+        Test.setMock(HttpCalloutMock.class, new IntegrationViaCEPCalloutMock(viaCEP));
+
+        insert candNew;
+
+        candOld.Zip_Postal_Code__c = '04821010';
+
+        Map<Id, Candidate__c> candidateListNew = new Map<Id, Candidate__c>{candNew.Id => candNew};
+        Map<Id, Candidate__c> candidateListOld = new Map<Id, Candidate__c>{candNew.Id => candOld};//associa o ID do objeto candNew ao objeto candOld
+        
+        CandidateTriggerHandler handler = new CandidateTriggerHandler();
+
+        handler.setAddressViaCEP(candidateListOld, candidateListNew);
+
+        Test.stopTest();
+        //fim do teste
+        
+        System.assertEquals(candOld.Zip_Postal_Code__c, candNew.Zip_Postal_Code__c);   
+    }
+
+    @isTest
+    static void testSetAddresViaCepOldNull(){
+
+        //instanciar objeto para registro novo e antigo
+        Candidate__c candNew = new Candidate__c();
+        Candidate__c candOld = new Candidate__c();
+
+        candNew.First_Name__c = 'Teste';
+        candNew.Country_List__c = 'BR - Brazil';
+        candNew.Zip_Postal_Code__c = '04821010';
+
+        //inicio ao teste
+        Test.startTest();
+
+        IntegrationViaCEPCallout.ViaCEP viaCEP = new IntegrationViaCEPCallout.ViaCEP();
+
+        //configura um mock para substitui a chamada do http real
+        Test.setMock(HttpCalloutMock.class, new IntegrationViaCEPCalloutMock(viaCEP));
+
+        insert candNew;
+
+        candOld.Zip_Postal_Code__c = null;
+
+        Map<Id, Candidate__c> candidateListNew = new Map<Id, Candidate__c>{candNew.Id => candNew};
+        Map<Id, Candidate__c> candidateListOld = new Map<Id, Candidate__c>{candNew.Id => candOld};//associa o ID do objeto candNew ao objeto candOld
+        
+        CandidateTriggerHandler handler = new CandidateTriggerHandler();
+
+        handler.setAddressViaCEP(candidateListOld, candidateListNew);
+
+        Test.stopTest();
+        //fim do teste
+        
+        System.assertEquals(candOld.Zip_Postal_Code__c, null);   
+    }
+
+    
 }
