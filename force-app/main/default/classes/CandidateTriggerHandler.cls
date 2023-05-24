@@ -98,28 +98,39 @@ public with sharing class CandidateTriggerHandler {
     //Método preenche CEP
     //representa uma coleção de candidatos identificados por seus IDs
     public void setAddressViaCEP(Map<Id, Candidate__c> candidateListOld, Map<Id, Candidate__c> candidateListNew){
-    //public void setAddressViaCEP(Map<Id, Candidate__c> candidateListNew){
 
         //itera sobre as chaves (IDs dos candidatos)
         for (Id candId : candidateListNew.keySet()) {
 
             //atual dentro do loop e o armazena na variável cand. 
             //Isso permite acessar os campos do candidato
-            Candidate__c cand = candidateListNew.get(candId);
+            Candidate__c candNew = candidateListNew.get(candId);
 
-            if (cand.Zip_Postal_Code__c != null) {
+            if (candNew.Zip_Postal_Code__c != null && candNew.Country_List__c == 'BR - Brazil') {
 
-                if (cand.Country_List__c == 'BR - Brazil') {
+                //nessa parte chama quando o candidateListOld estiver  DIFERENTE null, portanto registro que será atualizado
+                if(candidateListOld != null){
 
-                    if(candidateListOld.get(cand.Id).Zip_Postal_Code__c != candidateListNew.get(cand.Id).Zip_Postal_Code__c){
+                    Candidate__c candOld = candidateListOld.get(candId);
 
-                        //Essa linha verifica se o método está sendo chamado de um contexto que não seja futuro 
-                        //nem de um contexto de lote
-                        if (!System.isFuture() && !System.isBatch()) {
-                            IntegrationViaCEPCallout.getCEP(cand.Zip_Postal_Code__c, candId);
+                     if(candOld != null){
+
+                        if(candOld.Zip_Postal_Code__c != candNew.Zip_Postal_Code__c){
+
+                            //Essa linha verifica se o método está sendo chamado de um contexto que não seja futuro nem de um contexto de lote
+                            if (!System.isFuture() && !System.isBatch()) {
+                                IntegrationViaCEPCallout.getCEP(candNew.Zip_Postal_Code__c, candId);
+                            }
                         }
                     }
                 }
+
+                //nessa parte chama quando o candidateListOld estiver null, portanto registro novo
+                //Essa linha verifica se o método está sendo chamado de um contexto que não seja futuro nem de um contexto de lote
+                else if (!System.isFuture() && !System.isBatch()) {
+                    IntegrationViaCEPCallout.getCEP(candNew.Zip_Postal_Code__c, candId);
+                }
+                
             }   
         }
     }
@@ -139,7 +150,6 @@ public with sharing class CandidateTriggerHandler {
 
                 if(!cand.Zip_Postal_Code__c.isNumeric()){
                     cand.Zip_Postal_Code__c.addError('No CEP não pode ser inserido letra ou ponto!');
-
                 }
             }
         }
@@ -147,31 +157,4 @@ public with sharing class CandidateTriggerHandler {
 
     //--------------------------------------------------------
 
-    /*
-    //validação número endereço
-    public void validateNumAddress(List <Candidate__c> candidateList){
-
-        for(Candidate__c cand : candidateList){
-
-            if(cand .Street_Address_1__c != null && cand.Street_Address_2__c == null){
-                cand.Street_Address_2__c.addError('Por favor, quando preencher o endereço deve ser informado o número!');
-
-            }
-        }
-    }
-    */
-
-    //--------------------------------------------------------
-
-    /*
-    //salvar o registro
-    public void reloadPage() {
-        // Redirecionar para a página atual (recarregar a página)
-        String currentUrl = ApexPages.currentPage().getUrl();
-        ApexPages.PageReference pageRef = new ApexPages.PageReference(currentUrl);
-        pageRef.setRedirect(true);
-        throw new System.RedirectException(pageRef);
-    }
-    */
-    
 }

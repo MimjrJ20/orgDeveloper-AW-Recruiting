@@ -15,7 +15,8 @@ public with sharing class CandidateTriggerHandlerTest {
             Test.stopTest();
 
         } catch (Exception error){
-            System.equals('O CPF só pode haver números. Sem letras, pontos e traços!', error.getMessage());
+            Boolean result = error.getMessage().contains('O CPF só pode haver números. Sem letras, pontos e traços!') ? true : false;
+            System.assertEquals(result, true);
         }
     }
 
@@ -37,7 +38,8 @@ public with sharing class CandidateTriggerHandlerTest {
             Test.stopTest();
 
         } catch (Exception error){
-            System.equals('O CPF só pode haver números. Sem letras, pontos e traços!', error.getMessage());
+            Boolean result = error.getMessage().contains('O CPF só pode haver números. Sem letras, pontos e traços!') ? true : false;
+            System.assertEquals(result, true);
         }
     }
 
@@ -55,7 +57,8 @@ public with sharing class CandidateTriggerHandlerTest {
             Test.stopTest();
 
         } catch (Exception error){
-            System.equals('O CPF precisa ter 11 números!', error.getMessage());
+            Boolean result = error.getMessage().contains('O CPF precisa ter 11 números!') ? true : false;
+            System.assertEquals(result, true);
         }
     }
 
@@ -77,7 +80,8 @@ public with sharing class CandidateTriggerHandlerTest {
             Test.stopTest();
 
         } catch (Exception error){
-            System.equals('O CPF só pode haver números. Sem letras, pontos e traços!', error.getMessage());
+            Boolean result = error.getMessage().contains('O CPF precisa ter 11 números!') ? true : false;
+            System.assertEquals(result, true);
         }
     }
 
@@ -96,7 +100,8 @@ public with sharing class CandidateTriggerHandlerTest {
             Test.stopTest();
 
         } catch (Exception error){
-            System.equals('Este CPF não é válido!', error.getMessage());
+            Boolean result = error.getMessage().contains('Este CPF não é válido!') ? true : false;
+            System.assertEquals(result, true);
         }
     }
 
@@ -118,7 +123,8 @@ public with sharing class CandidateTriggerHandlerTest {
             Test.stopTest();
 
         } catch(Exception error) {
-            System.equals('Este CPF não é válido!', error.getMessage());
+            Boolean result = error.getMessage().contains('Este CPF não é válido!') ? true : false;
+            System.assertEquals(result, true);
         }
     }
 
@@ -136,10 +142,35 @@ public with sharing class CandidateTriggerHandlerTest {
             Test.stopTest();
 
         } catch (Exception error) {
-            System.equals('O CPF não pode ser composto por um único número!', error.getMessage());
+            Boolean result = error.getMessage().contains('O CPF não pode ser composto por um único número!') ? true : false;
+            System.assertEquals(result, true);
         }
         
     }
+
+        //testar atualizar candidato com CPF com único número
+        @isTest
+        static void testUpCandOnlyCPF(){
+    
+            Candidate__c candNew = new Candidate__c();
+            candNew.First_Name__c = 'Teste';
+            candNew.CPF__c = '12345678909';
+
+            insert candNew;
+
+            candNew.CPF__c = '11111111111';     
+    
+            try {
+                Test.startTest();
+                update candNew;
+                Test.stopTest();
+    
+            } catch (Exception error) {
+                Boolean result = error.getMessage().contains('O CPF não pode ser composto por um único número!') ? true : false;
+                System.assertEquals(result, true);
+            }
+            
+        }
 
     //testar novo candidato com cep menor que 8
     @isTest
@@ -156,8 +187,8 @@ public with sharing class CandidateTriggerHandlerTest {
             Test.stopTest();
 
         } catch (Exception error) {
-            System.equals('O CEP para o país Brasil deve conter 8 dígitos!', error.getMessage());
-            
+            Boolean result = error.getMessage().contains('O CEP para o país Brasil deve conter 8 dígitos!') ? true : false;
+            System.assertEquals(result, true);            
         }
     }
 
@@ -180,7 +211,8 @@ public with sharing class CandidateTriggerHandlerTest {
             Test.stopTest();
 
         } catch (Exception error) {
-            System.equals('O CEP para o país Brasil deve conter 8 dígitos!', error.getMessage());
+            Boolean result = error.getMessage().contains('O CEP para o país Brasil deve conter 8 dígitos!') ? true : false;
+            System.assertEquals(result, true);
             
         }
     }
@@ -199,8 +231,8 @@ public with sharing class CandidateTriggerHandlerTest {
             Test.stopTest();
 
         } catch (Exception error) {
-            System.equals('No CEP não pode ser inserido letra ou ponto!', error.getMessage());
-            
+            Boolean result = error.getMessage().contains('No CEP não pode ser inserido letra ou ponto!') ? true : false;
+            System.assertEquals(result, true); 
         }
     }
 
@@ -222,8 +254,48 @@ public with sharing class CandidateTriggerHandlerTest {
             Test.stopTest();
 
         } catch (Exception error) {
-            System.equals('No CEP não pode ser inserido letra ou ponto!',error.getMessage());
+            Boolean result = error.getMessage().contains('No CEP não pode ser inserido letra ou ponto!') ? true : false;
+            System.assertEquals(result, true);            
+        }
+    }
+
+    //testar a chamada da Integração do viaCEP
+    @isTest
+    static void testSetAddresViaCEP(){
+
+        //instanciar objeto para registro novo e antigo
+        Candidate__c candNew = new Candidate__c();
+        Candidate__c candOld = new Candidate__c();
+
+        candNew.First_Name__c = 'Teste';
+        candNew.Country_List__c = 'BR - Brazil';
+        candNew.Zip_Postal_Code__c = '04821010';
+
+        //inicio ao teste
+        try {
+            Test.startTest();
+
+            IntegrationViaCEPCallout.ViaCEP viaCEP = new IntegrationViaCEPCallout.ViaCEP();
+
+            Test.setMock(HttpCalloutMock.class, new IntegrationViaCEPCalloutMock(viaCEP));
+
+            insert candNew;
+
+            candOld.Zip_Postal_Code__c = '04821390';
+
+            Map<Id, Candidate__c> candidateListNew = new Map<Id, Candidate__c>{candNew.Id => candNew};
+            Map<Id, Candidate__c> candidateListOld = new Map<Id, Candidate__c>{candNew.Id => candOld};
             
+            CandidateTriggerHandler handler = new CandidateTriggerHandler();
+
+            handler.setAddressViaCEP(candidateListOld, candidateListNew);
+
+            Test.stopTest();
+            //fim do teste
+            
+        } catch (Exception error) {
+            System.debug(error.getMessage());
+            System.assertEquals(candOld.Zip_Postal_Code__c, candNew.Zip_Postal_Code__c);   
         }
     }
 }

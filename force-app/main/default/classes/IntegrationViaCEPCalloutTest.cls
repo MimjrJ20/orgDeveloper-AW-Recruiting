@@ -21,10 +21,10 @@ public with sharing class IntegrationViaCEPCalloutTest {
                                 FROM Candidate__c 
                                 WHERE Id = :cand.Id];
 
-        System.equals('Rua Teste', upCand.Street_Address_1__c);
-        System.equals('Bairro Teste', upCand.Street_Address_3__c);
-        System.equals('Estado Teste', upCand.State_Province__c);
-        System.equals('Cidade Teste', upCand.City__c);
+        System.assertEquals('Rua Teste', upCand.Street_Address_1__c);
+        System.assertEquals('Bairro Teste', upCand.Street_Address_3__c);
+        System.assertEquals('Estado Teste', upCand.State_Province__c);
+        System.assertEquals('Cidade Teste', upCand.City__c);
         
     }
 
@@ -50,26 +50,6 @@ public with sharing class IntegrationViaCEPCalloutTest {
 
 
         //verifica se o resultado é o mesmo
-        System.equals(viaCEP, result);
+        System.assertEquals(viaCEP, result);
     }
-
-    //mock da chamada
-    private class IntegrationViaCEPCalloutMock implements HttpCalloutMock{
-
-        private IntegrationViaCEPCallout.ViaCEP viaCEP;
-
-        public IntegrationViaCEPCalloutMock(IntegrationViaCEPCallout.ViaCEP viaCEP){
-            this.viaCEP = viaCEP;
-        }
-
-        public HttpResponse respond(HttpRequest req){
-            HttpResponse res = new HttpResponse();
-            res.setStatusCode(200);
-            res.setBody(JSON.serialize(this.viaCEP));
-
-            return res;
-        }
-    }
-
-
 }
