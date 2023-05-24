@@ -122,7 +122,7 @@ public with sharing class CandidateTriggerHandlerTest {
         }
     }
 
-    //testat novo candidato com CPF com único número
+    //testar novo candidato com CPF com único número
     @isTest
     static void testNewCandOnlyCPF(){
 
@@ -139,5 +139,24 @@ public with sharing class CandidateTriggerHandlerTest {
             System.equals('O CPF não pode ser composto por um único número!', error.getMessage());
         }
         
+    }
+
+    //testar novo candidato com cep menor que 8
+    @isTest
+    static void testNumCEP(){
+
+        Candidate__c candNew = new Candidate__c();
+        candNew.First_Name__c = 'Teste';
+        candNew.Zip_Postal_Code__c = '1234567';
+
+        try {
+            Test.startTest();
+            insert candNew;
+            Test.stopTest();
+
+        } catch (Exception error) {
+            System.equals('O CEP para o país Brasil deve conter 8 dígitos!', error.getMessage());
+            
+        }
     }
 }
