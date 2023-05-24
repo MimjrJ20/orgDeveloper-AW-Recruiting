@@ -143,10 +143,11 @@ public with sharing class CandidateTriggerHandlerTest {
 
     //testar novo candidato com cep menor que 8
     @isTest
-    static void testNumCEP(){
+    static void testNewNumCEP(){
 
         Candidate__c candNew = new Candidate__c();
         candNew.First_Name__c = 'Teste';
+        candNew.Country_List__c = 'BR - Brazil';
         candNew.Zip_Postal_Code__c = '1234567';
 
         try {
@@ -156,6 +157,72 @@ public with sharing class CandidateTriggerHandlerTest {
 
         } catch (Exception error) {
             System.equals('O CEP para o país Brasil deve conter 8 dígitos!', error.getMessage());
+            
+        }
+    }
+
+    //testar atualizar o candidato com cep menor que 8
+    @isTest
+    static void testUpNumCEP(){
+
+        Candidate__c candNew = new Candidate__c();
+        candNew.First_Name__c = 'Teste';
+        candNew.Zip_Postal_Code__c = '04821010';
+
+        insert candNew;
+
+        candNew.Country_List__c = 'BR - Brazil';
+        candNew.Zip_Postal_Code__c = '1234567';
+
+        try {
+            Test.startTest();
+            update candNew;
+            Test.stopTest();
+
+        } catch (Exception error) {
+            System.equals('O CEP para o país Brasil deve conter 8 dígitos!', error.getMessage());
+            
+        }
+    }
+
+    //testar novo candidato com o cep com letras
+    @isTest
+    static void testNewLetterCEP(){
+
+        Candidate__c candNew = new Candidate__c();
+        candNew.First_Name__c = 'Teste';
+        candNew.Zip_Postal_Code__c = 'aaaaaaa1';
+
+        try {
+            Test.startTest();
+            insert candNew;
+            Test.stopTest();
+
+        } catch (Exception error) {
+            System.equals('No CEP não pode ser inserido letra ou ponto!', error.getMessage());
+            
+        }
+    }
+
+    //testar atualizar novo candidato com cep com letras
+    @isTest
+    static void testUpLetterCEP(){
+
+        Candidate__c candNew = new Candidate__c();
+        candNew.First_Name__c = 'Teste';
+        candNew.Zip_Postal_Code__c = '04821010';
+
+        insert candNew;
+
+        candNew.Zip_Postal_Code__c = 'aaaaaaa1';
+
+        try {
+            Test.startTest();
+            update candNew;
+            Test.stopTest();
+
+        } catch (Exception error) {
+            System.equals('No CEP não pode ser inserido letra ou ponto!',error.getMessage());
             
         }
     }
