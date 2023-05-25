@@ -13,7 +13,7 @@ trigger OpportunityTrigger on Opportunity (before insert, before update, after i
             oppIds.add(opp.Id);
         }
         if (!oppIds.isEmpty()) {
-            OpportunityTriggerHandler.updateOppsAsync(oppIds);
+            OpportunityTriggerHandler.updateOppsAsync(new List<Id>(oppIds));
         }
     }
     

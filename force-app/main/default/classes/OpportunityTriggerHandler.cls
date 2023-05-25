@@ -69,22 +69,20 @@ public with sharing class OpportunityTriggerHandler {
             //adicionando os ids das oportunidade na lista de Ids
             oppIds.add(opp.Id);
         }
-        
-        //chamar o método futuro para atualizar as oportunidades se a lista não estiver vazia
-        if (!oppIds.isEmpty()) {
-            updateOppsAsync(oppIds);
-        }
     }
 
     //método futuro chamado acima
     @future
     public static void updateOppsAsync(List<Id> oppIds) {
         
-        //criando uma lista que será atualizado com o id igual ao id passado no método
-        List<Opportunity> oppUpdateListAsync = [SELECT Id, ContractId FROM Opportunity WHERE Id IN :oppIds];
-        
-        //atualiza as opostunidades da lista
-        update oppUpdateListAsync;
+        if (!System.isFuture()) {
+
+            //criando uma lista que será atualizado com o id igual ao id passado no método
+            List<Opportunity> oppUpdateListAsync = [SELECT Id, ContractId FROM Opportunity WHERE Id IN :oppIds];
+            
+            //atualiza as opostunidades da lista
+            update oppUpdateListAsync;
+        }
     }
     
 
