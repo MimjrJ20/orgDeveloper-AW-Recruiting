@@ -17,7 +17,7 @@ public with sharing class OpportunityTriggerHandler {
             contractNew.Status = 'New';
             contractNew.AccountId = opp.AccountId;
             contractNew.StartDate = opp.StartDate__c;
-            contractNew.ContractTerm = opp.Term__c;
+            //contractNew.ContractTerm = opp.Term__c;
             contractNew.PositionMonth__c = opp.PositionMonth__c;
 
             contractList.add(contractNew);
@@ -33,12 +33,13 @@ public with sharing class OpportunityTriggerHandler {
 
         for(Opportunity opp : oppList){
 
-            if(opp.Status == 'Closed/Won' && opp.RecordType.Name == 'Contract') {
+            RecordType recordTypeContract = [SELECT Id FROM RecordType WHERE Name = 'Contract' LIMIT 1];
+
+            if(opp.StageName == 'Closed Won' && opp.RecordTypeId == recordTypeContract.Id) {
+
                 if(opp.Term__c == null || opp.StartDate__c == null){
-                    opp.addError('Não é possível fechar a oportunidade com os campos: Prazo de Contrato e Início do Contrato em branco!');
+                    opp.addError('Não é possível fechar a oportunidade com os campos: Prazo de Contrato e/ou Início do Contrato em branco!');
                 }
-
-
             }
         }
 
