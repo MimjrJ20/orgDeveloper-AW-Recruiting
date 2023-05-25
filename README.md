@@ -2,16 +2,23 @@
 
 ## AW é uma empresa que gerência oportunidades, contratos e vagas, no qual possui atividades relacionadas aos diversos objetos.
 
-Objetos Padrões e Objetos Customizados, sendo eles:
+#### Objetos Padrões e Objetos Customizados, sendo eles:
 
 Objetos Padrões: Account, Contract, Opportunity
+
 Objetos Customizados: Position__c, Interview__c, Job_Application__c, Candidate__c
 
 ### O qual possui diversas regras de negócios, como:
 
 - O CPF do candidato é validado;
-- O CEP do cadastro para o candidato, caso sua localida seja no Brasil, haverá uma consulta no ViaCEP;
-- Toda vez que uma vaga é aplicada ao candidato é atriuitod um Chatter;
+- O CEP do cadastro para o candidato, caso sua localidade seja no Brasil, haverá uma consulta no ViaCEP;
+- Toda vez que uma vaga é aplicada ao candidato é atribuido um Chatter;
 - Toda oportunidade fechada como ganha é convertido em um contrato;
 - As poisições devem respeitar o que está definido em contrato.
+
+##### Observação Importante!!!
+
+Este projeto é fruto de auto-estudo.
+
+Este projeto foi desconsiderado qual ferramenta do Salesforce, utilizando unicamente Class e Trigger.
 
