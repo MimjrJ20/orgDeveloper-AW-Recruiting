@@ -16,9 +16,10 @@ Objetos Customizados: Position__c, Interview__c, Job_Application__c, Candidate__
 - Toda oportunidade fechada como ganha é convertido em um contrato;
 - As poisições devem respeitar o que está definido em contrato.
 
+# --------------------------------------------------------
+
 ##### Observação Importante!!!
 
-Este projeto é fruto de auto-estudo.
-
-Este projeto foi desconsiderado qual ferramenta do Salesforce, utilizando unicamente Class e Trigger.
+###### Este projeto é fruto de auto-estudo.
+###### Este projeto foi desconsiderado qualquer ferramenta do Salesforce, utilizando unicamente Class e Trigger.
 
