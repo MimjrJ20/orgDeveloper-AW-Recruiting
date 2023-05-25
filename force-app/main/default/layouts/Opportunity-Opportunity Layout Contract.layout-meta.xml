@@ -84,9 +84,9 @@
     </layoutSections>
     <layoutSections>
         <customLabel>true</customLabel>
-        <detailHeading>false</detailHeading>
-        <editHeading>false</editHeading>
-        <label>Additional information</label>
+        <detailHeading>true</detailHeading>
+        <editHeading>true</editHeading>
+        <label>Description</label>
         <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -124,20 +124,44 @@
         <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
-    <relatedContent>
-        <relatedContentItems>
-            <layoutItem>
-                <behavior>Readonly</behavior>
-                <field>AccountId</field>
-            </layoutItem>
-        </relatedContentItems>
-        <relatedContentItems>
-            <layoutItem>
-                <behavior>Readonly</behavior>
-                <field>OwnerId</field>
-            </layoutItem>
-        </relatedContentItems>
-    </relatedContent>
+    <platformActionList>
+        <actionListContext>Record</actionListContext>
+        <platformActionListItems>
+            <actionName>Edit</actionName>
+            <actionType>StandardButton</actionType>
+            <sortOrder>0</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>Clone</actionName>
+            <actionType>StandardButton</actionType>
+            <sortOrder>1</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>ChangeOwnerOne</actionName>
+            <actionType>StandardButton</actionType>
+            <sortOrder>2</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>Share</actionName>
+            <actionType>StandardButton</actionType>
+            <sortOrder>3</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>PrintableView</actionName>
+            <actionType>StandardButton</actionType>
+            <sortOrder>4</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>ChangeRecordType</actionName>
+            <actionType>StandardButton</actionType>
+            <sortOrder>5</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>Delete</actionName>
+            <actionType>StandardButton</actionType>
+            <sortOrder>6</sortOrder>
+        </platformActionListItems>
+    </platformActionList>
     <relatedObjects>AccountId</relatedObjects>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>

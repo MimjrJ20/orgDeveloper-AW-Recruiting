@@ -8,16 +8,12 @@
         <label>Contract Information</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>OwnerId</field>
+                <behavior>Required</behavior>
+                <field>AccountId</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>ContractNumber</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Required</behavior>
-                <field>AccountId</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -26,25 +22,25 @@
                 <field>Status</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Required</behavior>
-                <field>ContractTerm</field>
-            </layoutItems>
-            <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Pricebook2Id</field>
+                <field>OwnerId</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>
     <layoutSections>
         <customLabel>true</customLabel>
-        <detailHeading>false</detailHeading>
-        <editHeading>false</editHeading>
-        <label>New Section</label>
+        <detailHeading>true</detailHeading>
+        <editHeading>true</editHeading>
+        <label>Dates Information</label>
         <layoutColumns>
             <layoutItems>
                 <behavior>Required</behavior>
                 <field>StartDate</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Required</behavior>
+                <field>ContractTerm</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -54,33 +50,6 @@
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsLeftToRight</style>
-    </layoutSections>
-    <layoutSections>
-        <customLabel>false</customLabel>
-        <detailHeading>true</detailHeading>
-        <editHeading>true</editHeading>
-        <label>System Information</label>
-        <layoutColumns>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>ActivatedById</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>CreatedById</field>
-            </layoutItems>
-        </layoutColumns>
-        <layoutColumns>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>ActivatedDate</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>LastModifiedById</field>
-            </layoutItems>
-        </layoutColumns>
-        <style>TwoColumnsTopToBottom</style>
     </layoutSections>
     <layoutSections>
         <customLabel>false</customLabel>
@@ -100,6 +69,46 @@
         <style>OneColumn</style>
     </layoutSections>
     <layoutSections>
+        <customLabel>false</customLabel>
+        <detailHeading>true</detailHeading>
+        <editHeading>true</editHeading>
+        <label>System Information</label>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>CreatedById</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>ActivatedById</field>
+            </layoutItems>
+        </layoutColumns>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>LastModifiedById</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>ActivatedDate</field>
+            </layoutItems>
+        </layoutColumns>
+        <style>TwoColumnsTopToBottom</style>
+    </layoutSections>
+    <layoutSections>
+        <customLabel>true</customLabel>
+        <detailHeading>false</detailHeading>
+        <editHeading>false</editHeading>
+        <label>New Section</label>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Pricebook2Id</field>
+            </layoutItems>
+        </layoutColumns>
+        <style>OneColumn</style>
+    </layoutSections>
+    <layoutSections>
         <customLabel>true</customLabel>
         <detailHeading>false</detailHeading>
         <editHeading>true</editHeading>
@@ -109,35 +118,8 @@
         <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
-    <relatedContent>
-        <relatedContentItems>
-            <layoutItem>
-                <behavior>Readonly</behavior>
-                <field>AccountId</field>
-            </layoutItem>
-        </relatedContentItems>
-    </relatedContent>
     <relatedLists>
         <relatedList>RelatedEntityHistoryList</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>TASK.SUBJECT</fields>
-        <fields>TASK.WHO_NAME</fields>
-        <fields>ACTIVITY.TASK</fields>
-        <fields>TASK.DUE_DATE</fields>
-        <fields>TASK.STATUS</fields>
-        <fields>TASK.PRIORITY</fields>
-        <fields>CORE.USERS.FULL_NAME</fields>
-        <relatedList>RelatedActivityList</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>TASK.SUBJECT</fields>
-        <fields>TASK.WHO_NAME</fields>
-        <fields>ACTIVITY.TASK</fields>
-        <fields>TASK.DUE_DATE</fields>
-        <fields>CORE.USERS.FULL_NAME</fields>
-        <fields>TASK.LAST_UPDATE</fields>
-        <relatedList>RelatedHistoryList</relatedList>
     </relatedLists>
     <relatedLists>
         <relatedList>RelatedNoteList</relatedList>
