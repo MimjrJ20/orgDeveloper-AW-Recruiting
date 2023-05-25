@@ -14,15 +14,20 @@ public with sharing class OpportunityTriggerHandler {
 
             Contract contractNew = new Contract();
 
-            contractNew.Status = 'New';
-            contractNew.AccountId = opp.AccountId;
-            contractNew.StartDate = opp.StartDate__c;
-            //contractNew.ContractTerm = opp.Term__c;
-            contractNew.PositionMonth__c = opp.PositionMonth__c;
+            RecordType recordTypeContract = [SELECT Id FROM RecordType WHERE Name = 'Contract' LIMIT 1];
 
+            if(opp.StageName == 'Closed Won' && opp.RecordTypeId == recordTypeContract.Id) {
+
+                contractNew.Status = 'New';
+                contractNew.AccountId = opp.AccountId;
+                contractNew.StartDate = opp.StartDate__c;
+                //contractNew.ContractTerm = opp.Term__c;
+                contractNew.PositionMonth__c = opp.PositionMonth__c;
+            }
             contractList.add(contractNew);
         }
-
+        System.debug(contractList);
+        System.debug(contractList.size());
         insert contractList;
 
 

@@ -4,6 +4,7 @@ trigger OpportunityTrigger on Opportunity (before insert, before update, after i
 
     if(Trigger.isUpdate){
         handlerOpp.oppWinWithout(Trigger.new);
+        handlerOpp.oppWinCreateContract(Trigger.new);
     }
 
     if(Trigger.isInsert || Trigger.isUpdate){
