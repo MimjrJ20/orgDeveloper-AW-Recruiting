@@ -21,13 +21,11 @@ public with sharing class OpportunityTriggerHandler {
                 contractNew.Status = 'New';
                 contractNew.AccountId = opp.AccountId;
                 contractNew.StartDate = opp.StartDate__c;
-                //contractNew.ContractTerm = opp.Term__c;
                 contractNew.PositionMonth__c = opp.PositionMonth__c;
+                contractNew.ContractTerm = Integer.valueOf(opp.Term__c);
             }
             contractList.add(contractNew);
         }
-        System.debug(contractList);
-        System.debug(contractList.size());
         insert contractList;
 
 
