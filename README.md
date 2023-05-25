@@ -1,18 +1,17 @@
-# Salesforce DX Project: Next Steps
+# Project AW Recruiting
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
+## AW é uma empresa que gerência oportunidades, contratos e vagas, no qual possui atividades relacionadas aos diversos objetos.
 
-## How Do You Plan to Deploy Your Changes?
+Objetos Padrões e Objetos Customizados, sendo eles:
 
-Do you want to deploy a set of changes, or create a self-contained application? Choose a [development model](https://developer.salesforce.com/tools/vscode/en/user-guide/development-models).
+Objetos Padrões: Account, Contract, Opportunity
+Objetos Customizados: Position__c, Interview__c, Job_Application__c, Candidate__c
 
-## Configure Your Salesforce DX Project
+### O qual possui diversas regras de negócios, como:
 
-The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
+- O CPF do candidato é validado;
+- O CEP do cadastro para o candidato, caso sua localida seja no Brasil, haverá uma consulta no ViaCEP;
+- Toda vez que uma vaga é aplicada ao candidato é atriuitod um Chatter;
+- Toda oportunidade fechada como ganha é convertido em um contrato;
+- As poisições devem respeitar o que está definido em contrato.
 
-## Read All About It
-
-- [Salesforce Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
-- [Salesforce CLI Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm)
