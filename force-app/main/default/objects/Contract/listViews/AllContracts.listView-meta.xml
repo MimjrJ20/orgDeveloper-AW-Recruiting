@@ -8,6 +8,7 @@
     <columns>CONTRACT.CREATED_DATE</columns>
     <columns>CORE.USERS.ALIAS</columns>
     <columns>CONTRACT.STATUS</columns>
+    <columns>PositionMonth__c</columns>
     <filterScope>Everything</filterScope>
     <label>All Contracts</label>
 </ListView>

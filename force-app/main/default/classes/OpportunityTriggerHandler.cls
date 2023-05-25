@@ -13,7 +13,6 @@ public with sharing class OpportunityTriggerHandler {
         //lista para inserir os novos contratos, atualizar as oporunidades e os ids das oportunidades
         List<Contract> contractNewList = new List<Contract>();
         List<Opportunity> oppUpdateList = new List<Opportunity>();
-        List<Id> oppIds = new List<Id>();
 
         //uma lista com chave e objeto do contrato
         Map<Id, Contract> contractMap = new Map<Id, Contract>(); 
@@ -63,12 +62,6 @@ public with sharing class OpportunityTriggerHandler {
                 //adiciona a oportunidade atualiza a uma lista
                 oppUpdateList.add(opp);
             }
-        }
-                
-        //obter os Ids das oportunidades atualizadas para o método futuro 
-        for (Opportunity opp : oppUpdateList) {
-            //adicionando os ids das oportunidade na lista de Ids
-            oppIds.add(opp.Id);
         }
     }
 
