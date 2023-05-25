@@ -44,7 +44,9 @@ public with sharing class OpportunityTriggerHandler {
         }
 
         //cria os contratos da lista
-        insert contractNewList;
+        if (!contractNewList.isEmpty()) {
+            insert contractNewList;
+        }
 
         //percorrer a lista de oportuidade para atualizar o campo com o contrato criado
         for (Opportunity opp : oppList) {
@@ -65,7 +67,6 @@ public with sharing class OpportunityTriggerHandler {
                 
         //obter os Ids das oportunidades atualizadas para o método futuro 
         for (Opportunity opp : oppUpdateList) {
-
             //adicionando os ids das oportunidade na lista de Ids
             oppIds.add(opp.Id);
         }
@@ -80,8 +81,10 @@ public with sharing class OpportunityTriggerHandler {
             //criando uma lista que será atualizado com o id igual ao id passado no método
             List<Opportunity> oppUpdateListAsync = [SELECT Id, ContractId FROM Opportunity WHERE Id IN :oppIds];
             
-            //atualiza as opostunidades da lista
-            update oppUpdateListAsync;
+            //atualiza as oportunidades da lista
+            if (!oppUpdateListAsync.isEmpty()) {
+                update oppUpdateListAsync;
+            }
         }
     }
     
