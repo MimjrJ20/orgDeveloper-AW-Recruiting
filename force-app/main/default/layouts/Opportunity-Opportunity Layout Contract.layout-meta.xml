@@ -62,7 +62,7 @@
                 <field>StartDate__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>ContractId</field>
             </layoutItems>
         </layoutColumns>
