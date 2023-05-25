@@ -5,31 +5,88 @@ public with sharing class OpportunityTriggerHandler {
 
     }
 
+    //--------------------------------------------------------------------------
+
     //método para criar contrato
-    public void oppWinCreateContract(List<Opportunity> oppList){
+    public void oppWinCreateContract(List<Opportunity> oppList, Map<Id, Opportunity> oppMap) {
 
-        List<Contract> contractList = new List<Contract>();
+        //lista para inserir os novos contratos, atualizar as oporunidades e os ids das oportunidades
+        List<Contract> contractNewList = new List<Contract>();
+        List<Opportunity> oppUpdateList = new List<Opportunity>();
+        List<Id> oppIds = new List<Id>();
 
-        for(Opportunity opp : oppList){
+        //uma lista com chave e objeto do contrato
+        Map<Id, Contract> contractMap = new Map<Id, Contract>(); 
 
-            Contract contractNew = new Contract();
+        //busca do id do RecordType igual a Contrato
+        RecordType recordTypeContract = [SELECT Id FROM RecordType WHERE Name = 'Contract' LIMIT 1];
 
-            RecordType recordTypeContract = [SELECT Id FROM RecordType WHERE Name = 'Contract' LIMIT 1];
+        //percorrer a lista de oportunidade para criar o novo contrato
+        for(Opportunity opp : oppList) {
 
-            if(opp.StageName == 'Closed Won' && opp.RecordTypeId == recordTypeContract.Id) {
+            //condição se Closede Won E do tipo Contrato
+            if (opp.StageName == 'Closed Won' && opp.RecordTypeId == recordTypeContract.Id) {
 
+                //instanciando o objeto Contrato e definindo os valores dos campos
+                Contract contractNew = new Contract();
                 contractNew.Status = 'New';
                 contractNew.AccountId = opp.AccountId;
                 contractNew.StartDate = opp.StartDate__c;
                 contractNew.PositionMonth__c = opp.PositionMonth__c;
                 contractNew.ContractTerm = Integer.valueOf(opp.Term__c);
+
+                //adiciona o registro para lista de novos contratos
+                contractNewList.add(contractNew);
+
+                //adiciona como chave do map do contrato o Id da oportunidade e contrato
+                contractMap.put(opp.Id, contractNew);            
             }
-            contractList.add(contractNew);
         }
-        insert contractList;
 
+        //cria os contratos da lista
+        insert contractNewList;
 
+        //percorrer a lista de oportuidade para atualizar o campo com o contrato criado
+        for (Opportunity opp : oppList) {
+
+            //condição se o map do Contrato contem o Id da oportunidade da lista percorrida
+            if (contractMap.containsKey(opp.Id)) {
+
+                //passando como ojeto o contrato relacionado a chave da oportunidade buscada
+                Contract contractOpp = contractMap.get(opp.Id);
+
+                //atualizando o contrato da oportunidade
+                opp.ContractId = contractOpp.Id; 
+
+                //adiciona a oportunidade atualiza a uma lista
+                oppUpdateList.add(opp);
+            }
+        }
+                
+        //obter os Ids das oportunidades atualizadas para o método futuro 
+        for (Opportunity opp : oppUpdateList) {
+
+            //adicionando os ids das oportunidade na lista de Ids
+            oppIds.add(opp.Id);
+        }
+        
+        //chamar o método futuro para atualizar as oportunidades se a lista não estiver vazia
+        if (!oppIds.isEmpty()) {
+            updateOppsAsync(oppIds);
+        }
     }
+
+    //método futuro chamado acima
+    @future
+    public static void updateOppsAsync(List<Id> oppIds) {
+        
+        //criando uma lista que será atualizado com o id igual ao id passado no método
+        List<Opportunity> oppUpdateListAsync = [SELECT Id, ContractId FROM Opportunity WHERE Id IN :oppIds];
+        
+        //atualiza as opostunidades da lista
+        update oppUpdateListAsync;
+    }
+    
 
     //--------------------------------------------------------------------------
 
@@ -63,4 +120,35 @@ public with sharing class OpportunityTriggerHandler {
     }
 
     //--------------------------------------------------------------------------
+
+    //método para barrar alteração quando a oportunidade estiver fechada
+    public void oppClosedNotEdit(Map<Id, Opportunity> oppListOld, Map<Id, Opportunity> oppListNew){
+
+        for(Id oppId : oppListNew.keySet()){
+
+            Opportunity oppNew = oppListNew.get(oppId);
+
+            if(oppListOld != null){
+
+                Opportunity oppOld = oppListOld.get(oppId);
+
+                if(oppOld != null){
+                    
+                    if((oppOld.StageName == 'Closed Won' || oppOld.StageName == 'Closed Lost')
+                    || (oppOld.StageName == 'Closed Won' && oppNew.StageName != 'Closed Won')
+                    || (oppOld.StageName == 'Closed Lost' && oppNew.StageName != 'Closed Lost')){
+
+                        if(!oppListOld.equals(oppListNew)){
+                            
+                            oppNew.addError('Não pode alterar a oportunidade depois de fechada!');
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+
+    //--------------------------------------------------------------------------
+
 }
