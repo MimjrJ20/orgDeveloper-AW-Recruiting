@@ -6,4 +6,8 @@ trigger OpportunityTrigger on Opportunity (before insert, before update, after i
         handlerOpp.oppWinWithout(Trigger.new);
     }
 
+    if(Trigger.isInsert || Trigger.isUpdate){
+        handlerOpp.oppDatePast(Trigger.new);
+    }
+
 }

@@ -28,6 +28,8 @@ public with sharing class OpportunityTriggerHandler {
 
     }
 
+    //--------------------------------------------------------------------------
+
     //método para impedir que fecha a oportunidade
     public void oppWinWithout(List<Opportunity> oppList){
 
@@ -42,6 +44,20 @@ public with sharing class OpportunityTriggerHandler {
                 }
             }
         }
-
     }
+
+    //--------------------------------------------------------------------------
+
+    //método para impedir que a data seja data passada
+    public void oppDatePast(List<Opportunity> oppList){
+
+        for(Opportunity opp : oppList){
+
+            if(opp.StartDate__c < System.today()){
+                opp.StartDate__c.addError('Não é possível salvar a oportunidade se a data de Início do Contrato estiver no passado!');
+            }
+        }
+    }
+
+    //--------------------------------------------------------------------------
 }
