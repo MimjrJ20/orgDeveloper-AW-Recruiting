@@ -5,6 +5,8 @@ public with sharing class JobApplicationTriggerHandler {
 
     }
 
+    //-----------------------------------------------------------------
+
     // Postar no chatter se for aplicada a vaga quando novo registro
     public void postChatterJob(Map<Id, Job_Application__c> jobsOldMap, Map<Id, Job_Application__c> jobsNewMap) {
 
@@ -61,4 +63,23 @@ public with sharing class JobApplicationTriggerHandler {
             insert postsList;
         }
     }
+
+
+    //-----------------------------------------------------------------
+
+    public void jobNotDelete(List<Job_Application__c> jobsList){
+
+        for(Job_Application__c job : jobsList){
+            
+            if (!jobsList.isEmpty()) {
+                    job.addError('Por questão de compliance, após a vaga ser aplicada' +
+                                        + ' nestas condições o registro não pode ser deletado!');            
+            }
+        }
+    }
+
+
+    //-----------------------------------------------------------------
+
+
 }
