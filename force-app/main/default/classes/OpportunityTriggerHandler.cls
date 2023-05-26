@@ -10,7 +10,7 @@ public with sharing class OpportunityTriggerHandler {
     //método para criar contrato
     public void oppWinCreateContract(List<Opportunity> oppList, Map<Id, Opportunity> oppMap) {
 
-        //lista para inserir os novos contratos, atualizar as oporunidades e os ids das oportunidades
+        //lista para inserir os novos contratos, atualizar as oporunidades 
         List<Contract> contractNewList = new List<Contract>();
         List<Opportunity> oppUpdateList = new List<Opportunity>();
 
@@ -140,6 +140,64 @@ public with sharing class OpportunityTriggerHandler {
                 }
             }
         }
+    }
+
+        //--------------------------------------------------------------------------
+
+    //método para criar contrato
+    public void oppWinCreatePosition(List<Opportunity> oppList) {
+
+        //lista para inserir os novos contratos, atualizar as oporunidades
+        List<Position__c> posNewList = new List<Position__c>();
+        List<Position__c> posUpList = new List<Position__c>();
+
+        //busca do id do RecordType igual a Position
+        RecordType recordTypePosition = [SELECT Id 
+                                            FROM RecordType 
+                                            WHERE Name = 'Position' 
+                                            LIMIT 1];
+
+        QueueSobject queueRecruiters = [SELECT Id, Queue.Id, Queue.Name, Queue.Type, SobjectType
+                                    FROM QueueSobject
+                                    WHERE Queue.Name = 'Recruiters' AND SobjectType = 'Position__c'
+                                    LIMIT 1];
+
+
+        //percorrer a lista de oportunidade para criar a posição
+        for(Opportunity opp : oppList) {
+
+            //condição se Closede Won E do tipo Position
+            if (opp.StageName == 'Closed Won' && opp.RecordTypeId == recordTypePosition.Id) {
+
+                //instanciando o objeto Position__c e definindo os valores dos campos
+                Position__c posNew = new Position__c();
+                posNew.Name = opp.Name;
+                posNew.Status__c = 'New';
+                posNew.Account__c = opp.AccountId;
+                posNew.Job_Description__c = 'Vaga criada a partir de oportunidade que foi fechada. Por favor, preencher o restante das informações.';
+
+
+                //adiciona o registro para lista de novos poisições
+                posNewList.add(posNew);    
+            }
+        }
+
+        //cria os contratos da lista
+        if (!posNewList.isEmpty()) {
+            insert posNewList;
+        }
+
+        //percorrer o registros o que foi criado para atualizar o owner
+        for(Position__c posUp : posNewList){
+
+            posUp.OwnerId = queueRecruiters.Queue.Id;
+            posUpList.add(posUp);
+        }
+
+        if (!posUpList.isEmpty()) {
+            update posUpList;
+        }
+
     }
     
 

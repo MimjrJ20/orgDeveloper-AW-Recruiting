@@ -4,6 +4,8 @@ trigger OpportunityTrigger on Opportunity (before insert, before update, after i
 
     if (Trigger.isBefore && Trigger.isUpdate) {
         handlerOpp.oppWinCreateContract(Trigger.new, Trigger.oldMap);
+        handlerOpp.oppWinCreatePosition(Trigger.new);
+
     }
 
     if (Trigger.isAfter && Trigger.isUpdate) {
