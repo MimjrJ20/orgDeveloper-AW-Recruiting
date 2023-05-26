@@ -12,12 +12,12 @@ Objetos Customizados: Position__c, Interview__c, Job_Application__c, Candidate__
 
 - O CPF do candidato é validado;
 - O CEP do cadastro para o candidato, caso sua localidade seja no Brasil, haverá uma consulta no ViaCEP;
-- Toda vez que uma vaga é aplicada e atualizado ao candidato é criado um Chatter com um resumo da vaga;
+- Toda vez que uma vaga é aplicada ao candidato ou atualizada é criado um post no Chatter com um resumo da vaga;
 - Toda oportunidade fechada como ganha é convertido em um contrato;
 - As oportunidades fechadas não podem ser alteradas;
-- As oportunidades terão a data ínicio do contrato limitado a data de hoje em diante;
+- As oportunidades terão a data de ínicio do contrato limitado a data de hoje em diante;
 - As oportunidades fechadas tem campos a serem preenchidos obrigatoriamente;
-- As poisições devem respeitar o que está definido em contrato.
+- A quantidade de posições devem respeitar o que foi definido em contrato.
 
 
 
