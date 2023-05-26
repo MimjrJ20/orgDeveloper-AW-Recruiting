@@ -6,60 +6,46 @@ public with sharing class JobApplicationTriggerHandler {
     }
 
     //Postar no chatter se for aplicado a vaga quando novo registro
-    public void postChatterNewJob(List<Job_Application__c> ids){
+    public void postChatterJob(Map<Id, Job_Application__c> jobsOldMap, Map<Id, Job_Application__c> jobsNewMap){
 
         List<FeedItem> postsList = new List<FeedItem>();
 
-        for (Job_Application__c job : [SELECT 
-                                        Id, 
-                                        Name,
-                                        Stage__c,
-                                        Candidate__c, 
-                                        Position__c, 
-                                        Candidate__r.First_Name__c, 
-                                        Position__r.Name,
-                                        Position__r.Status__c
-                                      FROM Job_Application__c WHERE Id = :ids]
-        ) {
-            FeedItem post = new FeedItem();
-            post.ParentId = job.Candidate__c;
-            post.Body = 'Nova Aplicação a vaga' + '\n\n' +
-                        + 'Nome Candidato: ' + job.Candidate__r.First_Name__c + '\n' + 
-                        + 'Aplicação/Nome da vaga: ' + job.Name + '/' + job.Position__r.Name + '\n' +
-                        + 'Status: ' + job.Position__r.Status__c + '\n' +
-                        + 'Fase: ' + job.Stage__c;
+        // Obtenha os IDs das aplicações de vaga
+        Set<Id> jobApplicationIds = new Set<Id>(jobsNewMap.keySet());
+        jobApplicationIds.addAll(jobsOldMap.keySet());
 
-            postsList.add(post);
-        }
-        insert postsList;
-    }
+        // Consulta para obter os campos relacionados Position__r.Name, Position__r.Status__c e Candidate__c
+        List<Job_Application__c> jobApplications = [SELECT Id, Name, Position__r.Name, Position__r.Status__c, Candidate__c, Stage__c,
+                                                            CreatedDate, CreatedBy.Name
+                                                    FROM Job_Application__c 
+                                                    WHERE Id IN :jobApplicationIds];
 
-    //Postar no chatter se for aplicado a vaga quando atualizado
-    public void postChatterUpJob(List<Job_Application__c> ids){
+        for (Job_Application__c jobNew : jobApplications) {
 
-        List<FeedItem> postsList = new List<FeedItem>();
+            Id jobId = jobNew.Id;
 
-        for (Job_Application__c job : [SELECT 
-                                        Id, 
-                                        Name,
-                                        Stage__c,
-                                        Candidate__c, 
-                                        Position__c, 
-                                        Candidate__r.First_Name__c, 
-                                        Position__r.Name,
-                                        Position__r.Status__c
-                                      FROM Job_Application__c WHERE Id = :ids]
-        ) {
+            if (!jobsOldMap.containsKey(jobId)) {
 
-            FeedItem post = new FeedItem();
-            post.ParentId = job.Candidate__c;
-            post.Body = 'Atualização da vaga aplicada' + '\n\n' +
-                        + 'Nome Candidato: ' + job.Candidate__r.First_Name__c + '\n' + 
-                        + 'Aplicação/Nome da vaga: ' + job.Name + '/' + job.Position__r.Name + '\n' +
-                        + 'Status: ' + job.Position__r.Status__c + '\n' +
-                        + 'Fase: ' + job.Stage__c;
+                FeedItem post = new FeedItem();
+                post.ParentId = jobNew.Candidate__c;
+                post.Body = 'Nova Aplicação a vaga' + '\n\n' +
+                            'Aplicação/Nome da vaga: ' + jobNew.Name + '/' + jobNew.Position__r.Name + '\n' +
+                            'Status: ' + jobNew.Position__r.Status__c + '\n' +
+                            'Fase: ' + jobNew.Stage__c + '\n' +
+                            'Vaga criada no dia: ' + jobNew.CreatedDate + ' por ' + jobNew.CreatedBy.Name;
+                postsList.add(post); 
+                         
+            } else if (jobsOldMap.containsKey(jobId) && jobsOldMap.get(jobId) != jobsNewMap.get(jobId)) {
 
-            postsList.add(post);
+                FeedItem post = new FeedItem();
+                post.ParentId = jobNew.Candidate__c;
+                post.Body = 'Atualização da vaga aplicada' + '\n\n' +
+                            'Aplicação/Nome da vaga: ' + jobNew.Name + '/' + jobNew.Position__r.Name + '\n' +
+                            'Status: ' + jobNew.Position__r.Status__c + '\n' +
+                            'Fase: ' + jobNew.Stage__c + '\n' +
+                            'Vaga atualizada no dia: ' + jobNew.CreatedDate + ' por ' + jobNew.CreatedBy.Name;
+                postsList.add(post); 
+            }
         }
         insert postsList;
     }
