@@ -2,10 +2,11 @@
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>All</fullName>
     <columns>NAME</columns>
+    <columns>Legacy_Position_Number__c</columns>
+    <columns>Account__c</columns>
     <columns>Department__c</columns>
     <columns>Hiring_Manager__c</columns>
     <columns>Location__c</columns>
-    <columns>Legacy_Position_Number__c</columns>
     <columns>Pay_Grade__c</columns>
     <columns>Salary_Range__c</columns>
     <columns>Approval_Status__c</columns>

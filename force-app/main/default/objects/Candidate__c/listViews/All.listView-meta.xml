@@ -2,11 +2,11 @@
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>All</fullName>
     <columns>NAME</columns>
-    <columns>CPF__c</columns>
     <columns>First_Name__c</columns>
+    <columns>CPF__c</columns>
+    <columns>Zip_Postal_Code__c</columns>
     <columns>Street_Address_1__c</columns>
     <columns>Street_Address_3__c</columns>
-    <columns>Zip_Postal_Code__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>
