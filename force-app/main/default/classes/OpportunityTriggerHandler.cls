@@ -33,6 +33,8 @@ public with sharing class OpportunityTriggerHandler {
                 contractNew.StartDate = opp.StartDate__c;
                 contractNew.PositionMonth__c = opp.PositionMonth__c;
                 contractNew.ContractTerm = Integer.valueOf(opp.Term__c);
+                contractNew.Description = 'Contrato criado a partir de uma oportunidade.'+ '\n' +
+                                            + 'Oportunidade: ' + opp.Name;
 
                 //adiciona o registro para lista de novos contratos
                 contractNewList.add(contractNew);
