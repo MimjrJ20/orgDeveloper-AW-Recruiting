@@ -153,15 +153,9 @@ public with sharing class OpportunityTriggerHandler {
 
         //busca do id do RecordType igual a Position
         RecordType recordTypePosition = [SELECT Id 
-                                            FROM RecordType 
-                                            WHERE Name = 'Position' 
-                                            LIMIT 1];
-
-        QueueSobject queueRecruiters = [SELECT Id, Queue.Id, Queue.Name, Queue.Type, SobjectType
-                                    FROM QueueSobject
-                                    WHERE Queue.Name = 'Recruiters' AND SobjectType = 'Position__c'
-                                    LIMIT 1];
-
+                                        FROM RecordType 
+                                        WHERE Name = 'Position' 
+                                        LIMIT 1];
 
         //percorrer a lista de oportunidade para criar a posição
         for(Opportunity opp : oppList) {
@@ -187,17 +181,24 @@ public with sharing class OpportunityTriggerHandler {
             insert posNewList;
         }
 
-        //percorrer o registros o que foi criado para atualizar o owner
-        for(Position__c posUp : posNewList){
+        if (!posNewList.isEmpty()) {
+            
+            QueueSobject[] queueRecruiters = [SELECT Id, Queue.Id, Queue.Name, Queue.Type, SobjectType
+                                            FROM QueueSobject
+                                            WHERE Queue.Name = 'Recruiters' AND SobjectType = 'Position__c'
+                                            LIMIT 1];
 
-            posUp.OwnerId = queueRecruiters.Queue.Id;
-            posUpList.add(posUp);
+            //percorrer o registros o que foi criado para atualizar o owner
+            for(Position__c posUp : posNewList){
+
+                posUp.OwnerId = queueRecruiters[0].Queue.Id;
+                posUpList.add(posUp);
+            }
+
+            if (!posUpList.isEmpty()) {
+                update posUpList;
+            } 
         }
-
-        if (!posUpList.isEmpty()) {
-            update posUpList;
-        }
-
     }
     
 
