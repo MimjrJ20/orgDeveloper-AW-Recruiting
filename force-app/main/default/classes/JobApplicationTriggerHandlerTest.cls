@@ -71,4 +71,38 @@ public with sharing class JobApplicationTriggerHandlerTest {
         // Compara o body do post do Chatter
         System.assertEquals(true, result);    
     }
+
+    @isTest
+    static void testDeleteJob(){
+
+        Candidate__c candNew = new Candidate__c();
+        candNew.First_Name__c = 'Teste Candidate Delete';
+        insert candNew;
+
+        Position__c posNew = new Position__c();
+        posNew.Name = 'Teste Position Delete';
+        posNew.Approval_Status__c = 'Pending';
+        posNew.Status__c = 'New';
+        insert posNew;
+
+        Job_Application__c jobNew = new Job_Application__c();
+        jobNew.Candidate__c = candNew.Id;
+        jobNew.Position__c = posNew.Id;
+        jobNew.Status__c = 'Open';
+        jobNew.Stage__c = 'New';
+        insert jobNew;
+
+        try {
+            Test.startTest();
+            delete jobNew;
+            Test.stopTest();
+            
+        } catch (Exception error){
+            Boolean result = error.getMessage().contains('Por questão de compliance, após a vaga ser aplicada' +
+                                                        + ' nestas condições o registro não pode ser deletado!') ? true : false;
+            System.assertEquals(result, true);
+        }
+    }
+
+
 }
