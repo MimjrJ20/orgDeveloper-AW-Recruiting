@@ -170,6 +170,7 @@ public with sharing class OpportunityTriggerHandler {
                 posNew.Name = opp.Name;
                 posNew.Status__c = 'New';
                 posNew.Account__c = opp.AccountId;
+                posNew.VagaContrato__c = false;
                 posNew.Job_Description__c = 'Vaga criada a partir de oportunidade que foi fechada. Por favor, preencher o restante das informações.';
 
 
@@ -189,6 +190,8 @@ public with sharing class OpportunityTriggerHandler {
                                             FROM QueueSobject
                                             WHERE Queue.Name = 'Recruiters' AND SobjectType = 'Position__c'
                                             LIMIT 1];
+
+            System.debug(queueRecruiters);
 
             //percorrer o registros o que foi criado para atualizar o owner
             for(Position__c posUp : posNewList){
