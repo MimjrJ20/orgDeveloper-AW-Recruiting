@@ -87,7 +87,7 @@ public with sharing class OpportunityTriggerHandler {
     //--------------------------------------------------------------------------
 
     //método para impedir que fecha a oportunidade
-    public void oppWinWithout(List<Opportunity> oppList){
+    public void oppWinContractWithout(List<Opportunity> oppList){
 
         for(Opportunity opp : oppList){
 
@@ -144,9 +144,9 @@ public with sharing class OpportunityTriggerHandler {
         }
     }
 
-        //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
-    //método para criar contrato
+    //método para criar vaga
     public void oppWinCreatePosition(List<Opportunity> oppList) {
 
         //lista para inserir os novos contratos, atualizar as oporunidades

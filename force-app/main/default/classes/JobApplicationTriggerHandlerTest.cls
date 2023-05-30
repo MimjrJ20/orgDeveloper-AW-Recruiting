@@ -150,7 +150,7 @@ public with sharing class JobApplicationTriggerHandlerTest {
         } catch (Exception error){
             Boolean result = error.getMessage().contains('Por questão de compliance, após a vaga ser aplicada' +
                                                         + ' nestas condições o registro não pode ser deletado!') ? true : false;
-            System.assertEquals(result, true);
+            System.assertEquals(true, result);
         }
     }
 

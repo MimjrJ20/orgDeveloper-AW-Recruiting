@@ -25,7 +25,7 @@ trigger OpportunityTrigger on Opportunity (before insert, before update, after i
 
     if(Trigger.isInsert || Trigger.isUpdate){
         handlerOpp.oppDatePast(Trigger.new);
-        handlerOpp.oppWinWithout(Trigger.new);
+        handlerOpp.oppWinContractWithout(Trigger.new);
     }
 
 }
