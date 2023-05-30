@@ -40,7 +40,7 @@ public with sharing class PositionTriggerHandler {
                     
                     Decimal posAvailable = contracts[0].PositionMonth__c - posSumMonth.size();
 
-                    if (posAvailable <= 0) {
+                    if (posAvailable < 0) {
                         posNew.Account__c.addError('Essa conta não possui vagas disponíves em contrato!');
 
                     }

@@ -2,16 +2,33 @@
 public with sharing class JobApplicationTriggerHandlerTest {
 
     @isTest
-    static void testNewJob(){
+    static void testNewJobPost(){
+
+        Account accNew = new Account();
+        accNew.Name = 'Teste Conta Post New';
+        insert accNew;
+
+        Contract contractNew = new Contract();
+        contractNew.AccountId = accNew.Id;
+        contractNew.Status = 'New';
+        contractNew.ContractTerm = 1;
+        contractNew.StartDate = System.today();
+        contractNew.PositionMonth__c = 1;
+        insert contractNew;
+
+        contractNew.Status = 'Activated';
+        update contractNew;
+
         
         Candidate__c candNew = new Candidate__c();
-        candNew.First_Name__c = 'Teste Candidate New';
+        candNew.First_Name__c = 'Teste Candidate Post New';
         insert candNew;
 
         Position__c posNew = new Position__c();
-        posNew.Name = 'Teste Position New';
+        posNew.Name = 'Teste Position Post New';
         posNew.Approval_Status__c = 'Pending';
         posNew.Status__c = 'New';
+        posNew.Account__c = accNew.Id;
         insert posNew;
 
         Job_Application__c jobNew = new Job_Application__c();
@@ -36,16 +53,33 @@ public with sharing class JobApplicationTriggerHandlerTest {
     }
 
     @isTest
-    static void testUpJob(){
+    static void testUpJobPost(){
+
+        Account accNew = new Account();
+        accNew.Name = 'Teste Conta Post Up';
+        insert accNew;
+
+        Contract contractNew = new Contract();
+        contractNew.AccountId = accNew.Id;
+        contractNew.Status = 'New';
+        contractNew.ContractTerm = 1;
+        contractNew.StartDate = System.today();
+        contractNew.PositionMonth__c = 1;
+        insert contractNew;
+
+        contractNew.Status = 'Activated';
+        update contractNew;
+
         
         Candidate__c candNew = new Candidate__c();
-        candNew.First_Name__c = 'Teste Candidate Up';
+        candNew.First_Name__c = 'Teste Candidate Post Up';
         insert candNew;
 
         Position__c posNew = new Position__c();
         posNew.Name = 'Teste Position Up';
         posNew.Approval_Status__c = 'Pending';
         posNew.Status__c = 'New';
+        posNew.Account__c = accNew.Id;
         insert posNew;
 
         Job_Application__c jobNew = new Job_Application__c();
@@ -75,6 +109,21 @@ public with sharing class JobApplicationTriggerHandlerTest {
     @isTest
     static void testDeleteJob(){
 
+        Account accNew = new Account();
+        accNew.Name = 'Teste Conta Deletar';
+        insert accNew;
+
+        Contract contractNew = new Contract();
+        contractNew.AccountId = accNew.Id;
+        contractNew.Status = 'New';
+        contractNew.ContractTerm = 1;
+        contractNew.StartDate = System.today();
+        contractNew.PositionMonth__c = 1;
+        insert contractNew;
+
+        contractNew.Status = 'Activated';
+        update contractNew;
+
         Candidate__c candNew = new Candidate__c();
         candNew.First_Name__c = 'Teste Candidate Delete';
         insert candNew;
@@ -83,6 +132,7 @@ public with sharing class JobApplicationTriggerHandlerTest {
         posNew.Name = 'Teste Position Delete';
         posNew.Approval_Status__c = 'Pending';
         posNew.Status__c = 'New';
+        posNew.Account__c = accNew.Id;
         insert posNew;
 
         Job_Application__c jobNew = new Job_Application__c();
