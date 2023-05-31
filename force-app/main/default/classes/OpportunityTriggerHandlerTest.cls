@@ -284,20 +284,27 @@ public with sharing class OpportunityTriggerHandlerTest {
         oppNew.StageName = 'Prospecting';
         insert oppNew;
 
+        oppNew.PositionMonth__c = 1 ;
+        oppNew.StartDate__c = System.today() + 30;
+        oppNew.Term__c = 3;
         oppNew.StageName = 'Closed Won';
-        
+
         oppList.add(oppNew);
 
         Test.startTest();
         update oppList;
         Test.stopTest();
 
-        // Consultar a posição criada a partir do update da oportunidade
-        Contract[] contractCreate = [SELECT Id, OwnerId FROM Contract WHERE Name = :oppNew.Name];
+        // Consultar o contrato vinculado à oportunidade após o update
+        Opportunity oppAfterUpdate = [SELECT ContractId FROM Opportunity WHERE Id = :oppNew.Id];
 
-        Boolean result = contractCreate != null;
-     
-        System.assertEquals(true, result);
+        Contract[] contractCreate = [SELECT Id
+                                    FROM Contract  
+                                    WHERE Id = :oppAfterUpdate.ContractId];
+       
+        Boolean resultContract = contractCreate != null;
+
+        System.assertEquals(true, resultContract);
         System.assertEquals(1, contractCreate.size());
     }
 }
