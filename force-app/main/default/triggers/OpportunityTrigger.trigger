@@ -7,17 +7,6 @@ trigger OpportunityTrigger on Opportunity (before insert, before update, after i
         handlerOpp.oppWinCreatePosition(Trigger.new);
 
     }
-
-    if (Trigger.isAfter && Trigger.isUpdate) {
-
-        List<Id> oppIds = new List<Id>();
-        for (Opportunity opp : Trigger.new) {
-            oppIds.add(opp.Id);
-        }
-        if (!oppIds.isEmpty()) {
-            OpportunityTriggerHandler.updateOppsAsync(new List<Id>(oppIds));
-        }
-    }
     
     if(Trigger.isAfter && Trigger.isUpdate){
         handlerOpp.oppClosedNotEdit(Trigger.oldMap, Trigger.newMap);

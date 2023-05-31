@@ -224,4 +224,80 @@ public with sharing class OpportunityTriggerHandlerTest {
             System.assertEquals(true, result);
         }
     }
+
+    @isTest
+    static void testOppCreatePosition(){
+        
+        List<Opportunity> oppList = new List<Opportunity>();
+
+        RecordType recordTypePosition = [SELECT Id FROM RecordType WHERE Name = 'Position' LIMIT 1];
+
+        Account accNew = new Account();
+        accNew.Name = 'Teste Conta Opp Win Position';
+        insert accNew;
+
+        Opportunity oppNew = new Opportunity();
+        oppNew.RecordTypeId = recordTypePosition.Id;
+        oppNew.Name = 'Teste Opp Opp Win Position';
+        oppNew.CloseDate = System.today() + 30 ;
+        oppNew.AccountId = accNew.Id;
+        oppNew.StageName = 'Prospecting';
+        insert oppNew;
+
+        oppNew.StageName = 'Closed Won';
+        
+        oppList.add(oppNew);
+
+        Test.startTest();
+
+        OpportunityTriggerHandler handler = new OpportunityTriggerHandler();
+
+        handler.oppWinCreatePosition(oppList);
+
+        Test.stopTest();
+
+        // Consultar a posição criada a partir do update da oportunidade
+        Position__c[] posCreate = [SELECT Id, OwnerId FROM Position__c WHERE Name = :oppNew.Name];
+
+        Boolean result = posCreate != null;
+     
+        System.assertEquals(true, result);
+        System.assertEquals(1, posCreate.size());
+    }
+
+    @isTest
+    static void testOppCreateContract(){
+        
+        List<Opportunity> oppList = new List<Opportunity>();
+
+        RecordType recordTypePosition = [SELECT Id FROM RecordType WHERE Name = 'Contract' LIMIT 1];
+
+        Account accNew = new Account();
+        accNew.Name = 'Teste Conta Opp Win Contract';
+        insert accNew;
+
+        Opportunity oppNew = new Opportunity();
+        oppNew.RecordTypeId = recordTypePosition.Id;
+        oppNew.Name = 'Teste Opp Opp Win Contract';
+        oppNew.CloseDate = System.today() + 30 ;
+        oppNew.AccountId = accNew.Id;
+        oppNew.StageName = 'Prospecting';
+        insert oppNew;
+
+        oppNew.StageName = 'Closed Won';
+        
+        oppList.add(oppNew);
+
+        Test.startTest();
+        update oppList;
+        Test.stopTest();
+
+        // Consultar a posição criada a partir do update da oportunidade
+        Contract[] contractCreate = [SELECT Id, OwnerId FROM Contract WHERE Name = :oppNew.Name];
+
+        Boolean result = contractCreate != null;
+     
+        System.assertEquals(true, result);
+        System.assertEquals(1, contractCreate.size());
+    }
 }

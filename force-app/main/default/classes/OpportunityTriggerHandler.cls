@@ -66,24 +66,7 @@ public with sharing class OpportunityTriggerHandler {
             }
         }
     }
-
-    //método futuro chamado acima
-    @future
-    public static void updateOppsAsync(List<Id> oppIds) {
-        
-        if (!System.isFuture()) {
-
-            //criando uma lista que será atualizado com o id igual ao id passado no método
-            List<Opportunity> oppUpdateListAsync = [SELECT Id, ContractId FROM Opportunity WHERE Id IN :oppIds];
-            
-            //atualiza as oportunidades da lista
-            if (!oppUpdateListAsync.isEmpty()) {
-                update oppUpdateListAsync;
-            }
-        }
-    }
     
-
     //--------------------------------------------------------------------------
 
     //método para impedir que fecha a oportunidade
@@ -175,16 +158,17 @@ public with sharing class OpportunityTriggerHandler {
                 posNew.Job_Description__c = 'Vaga criada a partir de oportunidade que foi fechada. Por favor, preencher o restante das informações.';
 
 
-                //adiciona o registro para lista de novos poisições
+                //adiciona o registro para lista de novos posições
                 posNewList.add(posNew);    
             }
         }
 
-        //cria os contratos da lista
+        //cria as vagas da lista
         if (!posNewList.isEmpty()) {
             insert posNewList;
         }
 
+        //se a lista NÃO estiver vazia 
         if (!posNewList.isEmpty()) {
             
             QueueSobject[] queueRecruiters = [SELECT Id, Queue.Id, Queue.Name, Queue.Type, SobjectType
