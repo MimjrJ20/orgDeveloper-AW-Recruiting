@@ -130,9 +130,10 @@ public with sharing class OpportunityTriggerHandler {
 
                 if(oppOld != null){
                     
-                    if((oppOld.StageName == 'Closed Won' || oppOld.StageName == 'Closed Lost')
-                    || (oppOld.StageName == 'Closed Won' && oppNew.StageName != 'Closed Won')
-                    || (oppOld.StageName == 'Closed Lost' && oppNew.StageName != 'Closed Lost')){
+                    if(
+                        (oppOld.StageName == 'Closed Won' || oppOld.StageName == 'Closed Lost')
+                    ||  (oppOld.StageName == 'Closed Won' && oppNew.StageName != 'Closed Won')
+                    ||  (oppOld.StageName == 'Closed Lost' && oppNew.StageName != 'Closed Lost')){
 
                         if(!oppListOld.equals(oppListNew)){
                             
@@ -190,8 +191,6 @@ public with sharing class OpportunityTriggerHandler {
                                             FROM QueueSobject
                                             WHERE Queue.Name = 'Recruiters' AND SobjectType = 'Position__c'
                                             LIMIT 1];
-
-            System.debug(queueRecruiters);
 
             //percorrer o registros o que foi criado para atualizar o owner
             for(Position__c posUp : posNewList){
