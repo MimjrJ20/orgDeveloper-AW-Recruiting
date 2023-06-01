@@ -14,7 +14,9 @@ global with sharing class ContractUpdateBatchJob implements Database.Batchable<S
 
         for (Contract contrUp : contractList){
             contrUp.Status = 'Activated';
+            contrUp.Description = 'Contrato ativado através de schedule.';
             contractUpdate.add(contrUp);
+            
         }
 
         update contractUpdate;
