@@ -3,7 +3,7 @@ global with sharing class ContractUpdateBatchJob implements Database.Batchable<S
 
     //você define a consulta que usará neste contexto de lote 'selecionar ID da conta'
     global Database.QueryLocator start(Database.BatchableContext bc){
-        String query = 'SELECT Id, StartDate, Status FROM Contract';
+        String query = 'SELECT Id, StartDate, EndDate, Status, Description FROM Contract';
         return Database.getQueryLocator(query);
     }
 
