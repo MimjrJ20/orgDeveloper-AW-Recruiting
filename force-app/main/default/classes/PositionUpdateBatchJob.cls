@@ -20,7 +20,7 @@ global with sharing class PositionUpdateBatchJob implements Database.Batchable<S
             
             if (posUp.VagaContrato__c) {
 
-                if (!contracts.isEmpty()) {
+                if (contracts.isEmpty()) {
                     posUp.Status__c = 'Canceled';
                     posUpdate.add(posUp);
 
