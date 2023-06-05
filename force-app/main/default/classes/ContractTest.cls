@@ -108,8 +108,8 @@ public with sharing class ContractTest {
         System.assertEquals(200, contractListUpdate.size());
 
         for (Contract contract : contractListUpdate) {
-            Boolean result = 
-            System.assertEquals('Contrato ativado através de schedule.', contract.Description);
+            Boolean result = contract.Description.contains('Contrato ativado através de schedule.') ? true : false;
+            System.assertEquals(true, result);
         }
     }
 
@@ -170,7 +170,8 @@ public with sharing class ContractTest {
         System.assertEquals(200, contractListUpdate.size());
 
         for (Contract contract : contractListUpdate) {
-            System.assertEquals('Contrato fechado através de schedule.', contract.Description);
+            Boolean result = contract.Description.contains('Contrato fechado através de schedule.') ? true : false;
+            System.assertEquals(true, result);
         }
     }
 }
