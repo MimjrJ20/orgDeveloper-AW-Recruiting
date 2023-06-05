@@ -1,5 +1,5 @@
 @isTest
-public with sharing class PositionTriggerHandlerTest {
+public with sharing class PositionTest {
 
     @isTest
     static void testPositionWithoutContractActive(){

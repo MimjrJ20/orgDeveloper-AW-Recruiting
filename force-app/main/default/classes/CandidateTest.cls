@@ -1,5 +1,5 @@
 @isTest
-public with sharing class CandidateTriggerHandlerTest {
+public with sharing class CandidateTest {
 
     //testar novo candidato e o CPF se não for numérico
     @isTest

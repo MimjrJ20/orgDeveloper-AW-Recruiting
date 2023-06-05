@@ -1,5 +1,5 @@
 @isTest
-public with sharing class ContractTriggerHandlerTest {
+public with sharing class ContractTest {
 
     @isTest
     static void contractDuplicateMonthActual(){

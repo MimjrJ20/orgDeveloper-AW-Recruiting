@@ -1,5 +1,5 @@
 @isTest
-public with sharing class OpportunityTriggerHandlerTest {
+public with sharing class OpportunityTest {
 
     @isTest
     static void testOppInfoWitohut(){

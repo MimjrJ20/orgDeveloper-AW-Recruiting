@@ -1,5 +1,5 @@
 @isTest
-public with sharing class JobApplicationTriggerHandlerTest {
+public with sharing class JobApplicationTest {
 
     @isTest
     static void testNewJobPost(){
