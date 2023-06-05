@@ -67,7 +67,6 @@ public with sharing class ContractTest {
     static void testBatchContractActive(){
 
         // Criação de contas de teste
-
         List<Account> accList = new List<Account>();
             
         for(Integer i = 0; i<200; i++){
@@ -80,7 +79,6 @@ public with sharing class ContractTest {
         insert accList;
 
         // Criação de contratos para cada conta
-
         List<Contract> contractList = new List<Contract>();
 
         for (Account acc : accList) {
@@ -117,7 +115,6 @@ public with sharing class ContractTest {
     static void testBatchContractClosed(){
 
         // Criação de contas de teste
-
         List<Account> accList = new List<Account>();
             
         for(Integer i = 0; i<200; i++){
@@ -130,7 +127,6 @@ public with sharing class ContractTest {
         insert accList;
 
         // Criação de contratos para cada conta
-
         List<Contract> contractList = new List<Contract>();
 
         for(Account acc : accList) {
@@ -158,14 +154,15 @@ public with sharing class ContractTest {
         update contractListUp;
 
         Test.startTest();
+
         // Executa o agendador
         ContractSchedulerHandler contractScheduler = new ContractSchedulerHandler();
         contractScheduler.execute(null);
+
         Test.stopTest();
 
         // Verifica se os contratos foram atualizados corretamente
         List<Contract> contractListUpdate = [SELECT Id, Status, Description, EndDate FROM Contract WHERE Status = 'Closed'];
-        System.debug(contractListUpdate[0]);
 
         System.assertEquals(200, contractListUpdate.size());
 
