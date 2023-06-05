@@ -158,15 +158,15 @@ public with sharing class PositionTest {
 
         insert contractList;
 
-        List<Contract> contractListUp = new List<Contract>();
+        List<Contract> contractListUpActive = new List<Contract>();
 
-        for(Contract contrUp : contractList){
+        for(Contract contrUpActive : contractList){
             
-            contrUp.Status = 'Activated';
-            contractListUp.add(contrUp);
+            contrUpActive.Status = 'Activated';
+            contractListUpActive.add(contrUpActive);
         }
 
-        update contractListUp;
+        update contractListUpActive;
         //System.debug('Lista contratos ativos: ' + contractListUp.size());
 
         List<Position__c> posList = new List<Position__c>();
@@ -181,10 +181,17 @@ public with sharing class PositionTest {
         }
         insert posList;
 
-        System.debug('Lista position inserida: ' + posList.size());
+        List<Contract> contractListUpClosed = new List<Contract>();
+
+        for(Contract contrUpClosed : contractListUpActive){
+            
+            contrUpClosed.Status = 'Closed';
+            contractListUpClosed.add(contrUpClosed);
+        }
+
+        update contractListUpClosed;
 
         Test.startTest();
-
 
         //executa o agendador
         PositionSchedulerHandler positionScheduler = new PositionSchedulerHandler();
@@ -197,8 +204,6 @@ public with sharing class PositionTest {
 
         //verifica se os contratos foram atualizados corretamente
         List<Position__c> posListUpdate = [SELECT Id, Status__c FROM Position__c WHERE Status__c = 'Canceled'];
-
-        System.debug(posListUpdate);
 
         System.assertEquals(200, posListUpdate.size());
 
