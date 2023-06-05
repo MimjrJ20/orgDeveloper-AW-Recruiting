@@ -179,11 +179,12 @@ public with sharing class PositionTest {
             posNew.Account__c = acc.Id;
             posList.add(posNew);
         }
+        insert posList;
 
         System.debug('Lista position inserida: ' + posList.size());
 
         Test.startTest();
-        insert posList;
+
 
         //executa o agendador
         PositionSchedulerHandler positionScheduler = new PositionSchedulerHandler();
@@ -196,6 +197,9 @@ public with sharing class PositionTest {
 
         //verifica se os contratos foram atualizados corretamente
         List<Position__c> posListUpdate = [SELECT Id, Status__c FROM Position__c WHERE Status__c = 'Canceled'];
+
+        System.debug(posListUpdate);
+
         System.assertEquals(200, posListUpdate.size());
 
 

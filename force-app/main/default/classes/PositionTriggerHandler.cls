@@ -23,16 +23,21 @@ public with sharing class PositionTriggerHandler {
                                                                         WHERE AccountId IN :accountIds 
                                                                             AND Status = 'Activated']);
         
+        //armazenar a contagem de posições para cada conta.
         Map<Id, Integer> posCountMap = new Map<Id, Integer>();
 
+        //armazenar as posições existentes no mês atual para as contas fornecidas
         List<Position__c> posExisting = [SELECT Id, Account__c, CreatedDate
                                             FROM Position__c 
                                             WHERE Account__c IN :accountIds 
                                                 AND CreatedDate = THIS_MONTH];
 
+        //para cada posição, o ID da conta é recuperado. 
+        //verifica-se se a conta já existe como chave no mapa posCountMap. 
+        //se não existir, é adicionada uma entrada com o valor 0. 
+        //a contagem de posições para a conta é incrementada em 1 e atualizada no mapa.
         for (Position__c posMap : posExisting) {
                         
-            //ID da conta da posição
             Id accountId = posMap.Account__c;
             
             if (!posCountMap.containsKey(accountId)) {
@@ -78,10 +83,10 @@ public with sharing class PositionTriggerHandler {
     
                     if (dateAvailable) {
 
+                        //verifica se há uma contagem de posições registrada para uma determinada conta no mapa posCountMap e atribui esse valor à variável 
+                        //xaso não haja uma contagem de posições registrada, o valor 0 é atribuído à variável 
                         Integer posCount = posCountMap.containsKey(accountId) ? posCountMap.get(accountId) : 0;
 
-                        System.debug('aqui o posCountMap: ' + posCountMap);
-                        System.debug('aqui o posCount: ' + posCount);
                             
                         if (posCount > contract.PositionMonth__c) {
                             posNew.Account__c.addError('Essa conta não possui vagas disponíves em contrato! ' + 
