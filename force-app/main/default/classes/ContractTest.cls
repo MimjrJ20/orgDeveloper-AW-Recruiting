@@ -96,12 +96,15 @@ public with sharing class ContractTest {
         insert contractList;
 
         Test.startTest();
-        // Executa o agendador
+        //executa o agendador
         ContractSchedulerHandler contractScheduler = new ContractSchedulerHandler();
+
+        //null pois será simulado a execução do agendador sem fornecer um contexto real de agendamento. 
+        //o objetivo principal é verificar o comportamento e os resultados do agendador
         contractScheduler.execute(null);
         Test.stopTest();
 
-        // Verifica se os contratos foram atualizados corretamente
+        //verifica se os contratos foram atualizados corretamente
         List<Contract> contractListUpdate = [SELECT Id, Status, Description,StartDate FROM Contract WHERE Status = 'Activated'];
         System.assertEquals(200, contractListUpdate.size());
 
@@ -155,15 +158,17 @@ public with sharing class ContractTest {
 
         Test.startTest();
 
-        // Executa o agendador
+        //executa o agendador
         ContractSchedulerHandler contractScheduler = new ContractSchedulerHandler();
+
+        //null pois será simulado a execução do agendador sem fornecer um contexto real de agendamento. 
+        //o objetivo principal é verificar o comportamento e os resultados do agendador
         contractScheduler.execute(null);
 
         Test.stopTest();
 
         // Verifica se os contratos foram atualizados corretamente
         List<Contract> contractListUpdate = [SELECT Id, Status, Description, EndDate FROM Contract WHERE Status = 'Closed'];
-
         System.assertEquals(200, contractListUpdate.size());
 
         for (Contract contract : contractListUpdate) {
