@@ -36,15 +36,14 @@ public with sharing class PositionTriggerHandler {
     
                         Position__c[] posSumMonth = [SELECT Id, CreatedDate, VagaContrato__c
                                                       FROM Position__c
-                                                      WHERE 
-                                                            CreatedDate = THIS_MONTH
+                                                      WHERE CreatedDate = THIS_MONTH
                                                             AND VagaContrato__c = true];
                         
                         Decimal posAvailable = contracts[0].PositionMonth__c - posSumMonth.size();
     
                         if (posAvailable < 0) {
                             posNew.Account__c.addError('Essa conta não possui vagas disponíves em contrato! ' + 
-                                                        +'Vaga(s) utilizada(s): ' + (posSumMonth.size()-1) + ' / Vaga(s) disponível(is): ' + contracts[0].PositionMonth__c);
+                                                        +'Vaga(s) utilizada(s): ' + (posSumMonth.size()-1) + ' / Vaga(s) disponível(is): ' + contracts[0].PositionMonth__c + '.');
                         }
                     }
                 }  
