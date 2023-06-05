@@ -28,7 +28,7 @@ public with sharing class ContractTest {
             
         } catch (Exception error) {
             Boolean result = error.getMessage().contains('Já existe um contrato com a mesma Conta e com datas conflitantes!');
-            system.assertEquals(true, result);
+            System.assertEquals(true, result);
         }
     }
 
@@ -59,7 +59,7 @@ public with sharing class ContractTest {
             
         } catch (Exception error) {
             Boolean result = error.getMessage().contains('Já existe um contrato com a mesma Conta e com datas conflitantes!');
-            system.assertEquals(true, result);
+            System.assertEquals(true, result);
         }
     }
 

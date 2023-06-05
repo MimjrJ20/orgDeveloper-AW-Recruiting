@@ -167,7 +167,7 @@ public with sharing class PositionTest {
         }
 
         update contractListUp;
-        System.debug('Lista contratos ativos: ' + contractListUp.size());
+        //System.debug('Lista contratos ativos: ' + contractListUp.size());
 
         List<Position__c> posList = new List<Position__c>();
 
@@ -180,10 +180,10 @@ public with sharing class PositionTest {
             posList.add(posNew);
         }
 
-        insert posList;
-        System.debug('Lista posiiton inserida: ' + posList.size());
+        System.debug('Lista position inserida: ' + posList.size());
 
         Test.startTest();
+        insert posList;
 
         //executa o agendador
         PositionSchedulerHandler positionScheduler = new PositionSchedulerHandler();

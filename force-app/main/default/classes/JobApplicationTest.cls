@@ -19,7 +19,6 @@ public with sharing class JobApplicationTest {
         contractNew.Status = 'Activated';
         update contractNew;
 
-        
         Candidate__c candNew = new Candidate__c();
         candNew.First_Name__c = 'Teste Candidate Post New';
         insert candNew;
