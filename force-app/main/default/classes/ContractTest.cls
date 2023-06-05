@@ -62,4 +62,115 @@ public with sharing class ContractTest {
             system.assertEquals(true, result);
         }
     }
+
+    @isTest
+    static void testBatchContractActive(){
+
+        // Criação de contas de teste
+
+        List<Account> accList = new List<Account>();
+            
+        for(Integer i = 0; i<200; i++){
+            
+            Account accNew = new Account();
+            accNew.Name = 'Teste conta ' + i;
+            accList.add(accNew);
+        }
+        
+        insert accList;
+
+        // Criação de contratos para cada conta
+
+        List<Contract> contractList = new List<Contract>();
+
+        for (Account acc : accList) {
+
+            Contract contrNew = new Contract();
+            contrNew.AccountId = acc.Id;
+            contrNew.Status = 'New';
+            contrNew.ContractTerm = 1;
+            contrNew.StartDate = System.today();
+            contrNew.PositionMonth__c = 1;
+            
+            contractList.add(contrNew);
+        }
+
+        insert contractList;
+
+        Test.startTest();
+        // Executa o agendador
+        ContractSchedulerHandler contractScheduler = new ContractSchedulerHandler();
+        contractScheduler.execute(null);
+        Test.stopTest();
+
+        // Verifica se os contratos foram atualizados corretamente
+        List<Contract> contractListUpdate = [SELECT Id, Status, Description,StartDate FROM Contract WHERE Status = 'Activated'];
+        System.assertEquals(200, contractListUpdate.size());
+
+        for (Contract contract : contractListUpdate) {
+            Boolean result = 
+            System.assertEquals('Contrato ativado através de schedule.', contract.Description);
+        }
+    }
+
+    @isTest
+    static void testBatchContractClosed(){
+
+        // Criação de contas de teste
+
+        List<Account> accList = new List<Account>();
+            
+        for(Integer i = 0; i<200; i++){
+            
+            Account accNew = new Account();
+            accNew.Name = 'Teste conta ' + i;
+            accList.add(accNew);
+        }
+        
+        insert accList;
+
+        // Criação de contratos para cada conta
+
+        List<Contract> contractList = new List<Contract>();
+
+        for(Account acc : accList) {
+
+            Contract contrNew = new Contract();
+            contrNew.AccountId = acc.Id;
+            contrNew.Status = 'New';
+            contrNew.ContractTerm = 1;
+            contrNew.StartDate = System.today() - 60;
+            contrNew.PositionMonth__c = 1;
+            
+            contractList.add(contrNew);
+        }
+
+        insert contractList;
+
+        List<Contract> contractListUp = new List<Contract>();
+
+        for(Contract contrUp : contractList){
+            
+            contrUp.Status = 'Activated';
+            contractListUp.add(contrUp);
+        }
+
+        update contractListUp;
+
+        Test.startTest();
+        // Executa o agendador
+        ContractSchedulerHandler contractScheduler = new ContractSchedulerHandler();
+        contractScheduler.execute(null);
+        Test.stopTest();
+
+        // Verifica se os contratos foram atualizados corretamente
+        List<Contract> contractListUpdate = [SELECT Id, Status, Description, EndDate FROM Contract WHERE Status = 'Closed'];
+        System.debug(contractListUpdate[0]);
+
+        System.assertEquals(200, contractListUpdate.size());
+
+        for (Contract contract : contractListUpdate) {
+            System.assertEquals('Contrato fechado através de schedule.', contract.Description);
+        }
+    }
 }
