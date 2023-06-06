@@ -15,7 +15,7 @@ global with sharing class ContractUpdateBatchJob implements Database.Batchable<S
 
             if (contrUp.Status == 'New' || contrUp.Status == 'Draft' || contrUp.Status == 'In Approval Process') {
 
-                if (contrUp.StartDate == System.TODAY()) {
+                if (contrUp.StartDate <= System.TODAY()) {
                     contrUp.Status = 'Activated';
                     contrUp.Description = 'Contrato ativado através de schedule.';
                     contractUpdate.add(contrUp);
