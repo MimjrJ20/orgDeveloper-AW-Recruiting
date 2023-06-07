@@ -27,7 +27,7 @@ public with sharing class JobApplicationTriggerHandler {
             FROM Job_Application__c
             WHERE Id IN :jobApplicationIds];
 
-        for (Job_Application__c jobNew : jobApplications) {
+        for(Job_Application__c jobNew : jobApplications) {
 
             Id jobId = jobNew.Id;
 

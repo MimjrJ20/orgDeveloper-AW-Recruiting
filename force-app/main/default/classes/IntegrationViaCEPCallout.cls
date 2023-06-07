@@ -6,13 +6,17 @@ global with sharing class IntegrationViaCEPCallout {
     public static void getCEP(String endCEP, Id id){
 
         ViaCEP returnValue = sendRequest(endCEP);
+
+        List<Candidate__c> candList = [SELECT Id, Zip_Postal_Code__c FROM Candidate__c WHERE Id = :id];
+
+        List<Candidate__c> candToUpdate = new List<Candidate__c>();
+
+        List<Candidate__c> candToUpdateEmpty = new List<Candidate__c>();
         
         //se retornar o endereço
         if (returnValue != null) {
             
-            List<Candidate__c> candToUpdate = new List<Candidate__c>();
-    
-            for (Candidate__c cand : [SELECT Id, Zip_Postal_Code__c FROM Candidate__c WHERE Id = :id]) {
+            for(Candidate__c cand : candList) {
                 cand.Street_Address_1__c = returnValue.logradouro;
                 cand.Street_Address_3__c = returnValue.bairro;
                 cand.State_Province__c = returnValue.uf;
@@ -24,9 +28,7 @@ global with sharing class IntegrationViaCEPCallout {
             //se não retornar nenhum endereço
             if(returnValue.error == 'true'){
 
-                List<Candidate__c> candToUpdateEmpty = new List<Candidate__c>();
-        
-                for (Candidate__c candEmpty : [SELECT Id, Zip_Postal_Code__c FROM Candidate__c WHERE Id = :id]) {
+                for(Candidate__c candEmpty : candList) {
                     candEmpty.Street_Address_1__c = '';
                     candEmpty.Street_Address_2__c = '';
                     candEmpty.Street_Address_3__c = '';
@@ -41,6 +43,7 @@ global with sharing class IntegrationViaCEPCallout {
 
     //Método http
     public static ViaCEP sendRequest(String cep){
+
         HttpRequest req = new HttpRequest();
         req.setEndpoint('https://viacep.com.br/ws/' + cep + '/json/');
         req.setMethod('GET');
@@ -61,7 +64,7 @@ global with sharing class IntegrationViaCEPCallout {
 
     global class ViaCEP {
     
-        //Atributos
+        //atributos
         public String cep;
         public String logradouro;
         public String complemento;

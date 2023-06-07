@@ -100,7 +100,7 @@ public with sharing class CandidateTriggerHandler {
     public void setAddressViaCEP(Map<Id, Candidate__c> candidateListOld, Map<Id, Candidate__c> candidateListNew){
 
         //itera sobre as chaves (IDs dos candidatos)
-        for (Id candId : candidateListNew.keySet()) {
+        for(Id candId : candidateListNew.keySet()) {
 
             //atual dentro do loop e o armazena na variável cand. 
             //Isso permite acessar os campos do candidato

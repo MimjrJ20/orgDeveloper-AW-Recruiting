@@ -11,12 +11,9 @@ global with sharing class PositionUpdateBatchJob implements Database.Batchable<S
 
         List<Position__c> posUpdate = new List<Position__c>();
 
-        for (Position__c posUp : posList){
+        for(Position__c posUp : posList){
 
-            Contract[] contracts = [SELECT Id, AccountId, StartDate, EndDate, Status
-                                    FROM Contract 
-                                    WHERE AccountId = :posUp.Account__c AND Status = 'Activated'
-                                    LIMIT 1];
+            Contract[] contracts = [SELECT Id, AccountId, StartDate, EndDate, Status FROM Contract WHERE AccountId = :posUp.Account__c AND Status = 'Activated' LIMIT 1];
             
             if (posUp.VagaContrato__c) {
 

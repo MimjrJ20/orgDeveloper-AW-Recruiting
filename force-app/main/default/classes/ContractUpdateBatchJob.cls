@@ -11,7 +11,7 @@ global with sharing class ContractUpdateBatchJob implements Database.Batchable<S
 
         List<Contract> contractUpdate = new List<Contract>();
 
-        for (Contract contrUp : contractList){
+        for(Contract contrUp : contractList){
 
             if (contrUp.Status == 'New' || contrUp.Status == 'Draft' || contrUp.Status == 'In Approval Process') {
 

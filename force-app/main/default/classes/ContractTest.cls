@@ -81,7 +81,7 @@ public with sharing class ContractTest {
         //criação de contratos para cada conta
         List<Contract> contractList = new List<Contract>();
 
-        for (Account acc : accList) {
+        for(Account acc : accList) {
 
             Contract contrNew = new Contract();
             contrNew.AccountId = acc.Id;
@@ -110,7 +110,7 @@ public with sharing class ContractTest {
         List<Contract> contractListUpdate = [SELECT Id, Status, Description, StartDate FROM Contract WHERE Status = 'Activated'];
         System.assertEquals(200, contractListUpdate.size());
 
-        for (Contract contract : contractListUpdate) {
+        for(Contract contract : contractListUpdate) {
             Boolean result = contract.Description.contains('Contrato ativado através de schedule.') ? true : false;
             System.assertEquals(true, result);
         }
@@ -173,7 +173,7 @@ public with sharing class ContractTest {
         List<Contract> contractListUpdate = [SELECT Id, Status, Description, EndDate FROM Contract WHERE Status = 'Closed'];
         System.assertEquals(200, contractListUpdate.size());
 
-        for (Contract contract : contractListUpdate) {
+        for(Contract contract : contractListUpdate) {
             Boolean result = contract.Description.contains('Contrato fechado através de schedule.') ? true : false;
             System.assertEquals(true, result);
         }

@@ -144,7 +144,7 @@ public with sharing class PositionTest {
         //criação de contratos para cada conta
         List<Contract> contractList = new List<Contract>();
 
-        for (Account acc : accList) {
+        for(Account acc : accList) {
 
             Contract contrNew = new Contract();
             contrNew.AccountId = acc.Id;

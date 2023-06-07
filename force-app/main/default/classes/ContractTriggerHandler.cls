@@ -30,7 +30,7 @@ public with sharing class ContractTriggerHandler {
                                                         AND Id NOT IN :contractList];
             
 
-            for (Contract contract : contractList) {
+            for(Contract contract : contractList) {
                 
                 if (contractListExisting.size() > 0) {
                     contract.addError('Já existe um contrato com a mesma Conta e com datas conflitantes!');    

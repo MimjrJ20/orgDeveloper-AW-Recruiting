@@ -36,7 +36,7 @@ public with sharing class PositionTriggerHandler {
         //verifica-se se a conta já existe como chave no mapa posCountMap. 
         //se não existir, é adicionada uma entrada com o valor 0. 
         //a contagem de posições para a conta é incrementada em 1 e atualizada no mapa.
-        for (Position__c posMap : posExisting) {
+        for(Position__c posMap : posExisting) {
                         
             Id accountId = posMap.Account__c;
             
@@ -60,7 +60,7 @@ public with sharing class PositionTriggerHandler {
             Contract contract = null;
 
             //percorre sobre os valores do mapa para encontrar o contrato com a conta correspondente
-            for (Contract contractMap : activeContractsMap.values()) {
+            for(Contract contractMap : activeContractsMap.values()) {
                 if (contractMap.AccountId == accountId) {
                     contract = contractMap;
                     break;

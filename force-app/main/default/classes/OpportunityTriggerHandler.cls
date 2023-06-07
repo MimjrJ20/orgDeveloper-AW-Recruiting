@@ -50,7 +50,7 @@ public with sharing class OpportunityTriggerHandler {
         }
 
         //percorrer a lista de oportuidade para atualizar o campo com o contrato criado
-        for (Opportunity opp : oppList) {
+        for(Opportunity opp : oppList) {
 
             //condição se o map do Contrato contem o Id da oportunidade da lista percorrida
             if (contractMap.containsKey(opp.Id)) {
@@ -72,9 +72,9 @@ public with sharing class OpportunityTriggerHandler {
     //método para impedir que fecha a oportunidade
     public void oppWinContractWithout(List<Opportunity> oppList){
 
-        for(Opportunity opp : oppList){
+        RecordType recordTypeContract = [SELECT Id FROM RecordType WHERE Name = 'Contract' LIMIT 1];
 
-            RecordType recordTypeContract = [SELECT Id FROM RecordType WHERE Name = 'Contract' LIMIT 1];
+        for(Opportunity opp : oppList){
 
             if(opp.StageName == 'Closed Won' && opp.RecordTypeId == recordTypeContract.Id) {
 
@@ -138,10 +138,7 @@ public with sharing class OpportunityTriggerHandler {
         List<Position__c> posUpList = new List<Position__c>();
 
         //busca do id do RecordType igual a Position
-        RecordType recordTypePosition = [SELECT Id 
-                                        FROM RecordType 
-                                        WHERE Name = 'Position' 
-                                        LIMIT 1];
+        RecordType recordTypePosition = [SELECT Id FROM RecordType WHERE Name = 'Position' LIMIT 1];
 
         //percorrer a lista de oportunidade para criar a posição
         for(Opportunity opp : oppList) {
@@ -171,10 +168,7 @@ public with sharing class OpportunityTriggerHandler {
         //se a lista NÃO estiver vazia 
         if (!posNewList.isEmpty()) {
             
-            QueueSobject[] queueRecruiters = [SELECT Id, Queue.Id, Queue.Name, Queue.Type, SobjectType
-                                            FROM QueueSobject
-                                            WHERE Queue.Name = 'Recruiters' AND SobjectType = 'Position__c'
-                                            LIMIT 1];
+            QueueSobject[] queueRecruiters = [SELECT Id, Queue.Id, Queue.Name, Queue.Type, SobjectType FROM QueueSobject WHERE Queue.Name = 'Recruiters' AND SobjectType = 'Position__c' LIMIT 1];
 
             //percorrer o registros o que foi criado para atualizar o owner
             for(Position__c posUp : posNewList){
