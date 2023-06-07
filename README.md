@@ -28,14 +28,14 @@
 - As posições que tiverem contas com contratos fechados serão canceladas.
 
 
-### Trello
+### Trello:
 
 ![Quadro do trello](https://github.com/MimjrJ20/orgDeveloper-AW-Recruiting/blob/main/img/trello-1.jpg)
 <sub> Utilizado ferramenta ágil </sub>
 
 
-### 
-##### Observação importante!!!
+
+### Observação importante!!!
 
 ###### Este projeto é fruto de auto-estudo.
 ###### Este projeto foi desconsiderado qualquer ferramenta do Salesforce, utilizando unicamente o modo programático com *Class* e *Trigger*.
