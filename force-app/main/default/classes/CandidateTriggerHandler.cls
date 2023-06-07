@@ -10,7 +10,7 @@ public with sharing class CandidateTriggerHandler {
     //Método para validar o CPF
     public void validateCPF(List <Candidate__c> candidateList){
 
-        //List<Candidate__c> candidateList = new List <Candidate__c>();
+        //List<Candidate__c> candidateListUp = [SELECT Id, CPF__c FROM Candidate__c WHERE Id IN :candidateList];
 
         Integer numCPF = 11;
 
@@ -139,6 +139,8 @@ public with sharing class CandidateTriggerHandler {
 
     //validação número cep
     public void validateCEP(List <Candidate__c> candidateList){
+
+        //List<Candidate__c> candidateListUp = [SELECT Id, Zip_Postal_Code__c, Country_List__c FROM Candidate__c WHERE Id IN :candidateList];
 
         for(Candidate__c cand : candidateList){
 
