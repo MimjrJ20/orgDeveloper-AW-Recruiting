@@ -1,7 +1,6 @@
 # **Project AW Recruiting**
 
-## AW é uma empresa que gerencia oportunidades, contratos e vagas. 
-## No qual as atividades estão relacionadas aos diversos objetos.
+## AW é uma empresa que gerencia oportunidades, contratos e vagas. No qual as atividades estão relacionadas aos diversos objetos.
 
 ### Objetos Padrões e Objetos Customizados, sendo eles:
 - Objetos Padrões: Account, Contract, Opportunity
