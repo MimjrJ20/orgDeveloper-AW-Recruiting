@@ -159,4 +159,31 @@ public with sharing class CandidateTriggerHandler {
 
     //--------------------------------------------------------
 
+    //validação número x cep
+    public void validateAddress(List <Candidate__c> candidateList){
+
+        for(Candidate__c cand : candidateList){
+
+            if(cand.Zip_Postal_Code__c == null && cand.Street_Address_1__c != null){
+
+                cand.Street_Address_1__c.addError('Só digite o \'Addres 1\' se houver CEP!');
+
+            }
+
+            if(cand.Zip_Postal_Code__c == null && cand.Street_Address_2__c != null){
+
+                cand.Street_Address_2__c.addError('Só digite o \'Addres 2\' se houver CEP!');
+
+            }
+
+            if(cand.Zip_Postal_Code__c == null && cand.Street_Address_3__c != null){
+
+                cand.Street_Address_3__c.addError('Só digite o \'Addres 3\' se houver CEP!');
+
+            }
+        }
+    }
+
+    //--------------------------------------------------------
+
 }

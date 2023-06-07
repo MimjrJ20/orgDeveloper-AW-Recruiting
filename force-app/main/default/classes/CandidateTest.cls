@@ -16,7 +16,7 @@ public with sharing class CandidateTest {
 
         } catch (Exception error){
             Boolean result = error.getMessage().contains('O CPF só pode haver números. Sem letras, pontos e traços!') ? true : false;
-            System.assertEquals(result, true);
+            System.assertEquals(true, result);
         }
     }
 
@@ -39,7 +39,7 @@ public with sharing class CandidateTest {
 
         } catch (Exception error){
             Boolean result = error.getMessage().contains('O CPF só pode haver números. Sem letras, pontos e traços!') ? true : false;
-            System.assertEquals(result, true);
+            System.assertEquals(true, result);
         }
     }
 
@@ -58,7 +58,7 @@ public with sharing class CandidateTest {
 
         } catch (Exception error){
             Boolean result = error.getMessage().contains('O CPF precisa ter 11 números!') ? true : false;
-            System.assertEquals(result, true);
+            System.assertEquals(true, result);
         }
     }
 
@@ -81,7 +81,7 @@ public with sharing class CandidateTest {
 
         } catch (Exception error){
             Boolean result = error.getMessage().contains('O CPF precisa ter 11 números!') ? true : false;
-            System.assertEquals(result, true);
+            System.assertEquals(true, result);
         }
     }
 
@@ -101,7 +101,7 @@ public with sharing class CandidateTest {
 
         } catch (Exception error){
             Boolean result = error.getMessage().contains('Este CPF não é válido!') ? true : false;
-            System.assertEquals(result, true);
+            System.assertEquals(true, result);
         }
     }
 
@@ -124,7 +124,7 @@ public with sharing class CandidateTest {
 
         } catch(Exception error) {
             Boolean result = error.getMessage().contains('Este CPF não é válido!') ? true : false;
-            System.assertEquals(result, true);
+            System.assertEquals(true, result);
         }
     }
 
@@ -143,7 +143,7 @@ public with sharing class CandidateTest {
 
         } catch (Exception error) {
             Boolean result = error.getMessage().contains('O CPF não pode ser composto por um único número!') ? true : false;
-            System.assertEquals(result, true);
+            System.assertEquals(true, result);
         }
         
     }
@@ -167,7 +167,7 @@ public with sharing class CandidateTest {
 
         } catch (Exception error) {
             Boolean result = error.getMessage().contains('O CPF não pode ser composto por um único número!') ? true : false;
-            System.assertEquals(result, true);
+            System.assertEquals(true, result);
         }
         
     }
@@ -188,7 +188,7 @@ public with sharing class CandidateTest {
 
         } catch (Exception error) {
             Boolean result = error.getMessage().contains('O CEP para o país Brasil deve conter 8 dígitos!') ? true : false;
-            System.assertEquals(result, true);            
+            System.assertEquals(true, result);
         }
     }
 
@@ -212,7 +212,7 @@ public with sharing class CandidateTest {
 
         } catch (Exception error) {
             Boolean result = error.getMessage().contains('O CEP para o país Brasil deve conter 8 dígitos!') ? true : false;
-            System.assertEquals(result, true);
+            System.assertEquals(true, result);
             
         }
     }
@@ -232,7 +232,7 @@ public with sharing class CandidateTest {
 
         } catch (Exception error) {
             Boolean result = error.getMessage().contains('No CEP não pode ser inserido letra ou ponto!') ? true : false;
-            System.assertEquals(result, true); 
+            System.assertEquals(true, result);
         }
     }
 
@@ -255,11 +255,11 @@ public with sharing class CandidateTest {
 
         } catch (Exception error) {
             Boolean result = error.getMessage().contains('No CEP não pode ser inserido letra ou ponto!') ? true : false;
-            System.assertEquals(result, true);            
+            System.assertEquals(true, result);
         }
     }
 
-    //testar a chamada da Integração do viaCEP
+    //testar a chamada da Integração do viaCEP com cep definido
     @isTest
     static void testSetAddresViaCepOldNotEqualsNew(){
 
@@ -296,6 +296,7 @@ public with sharing class CandidateTest {
         System.assertNotEquals(candOld.Zip_Postal_Code__c, candNew.Zip_Postal_Code__c);   
     }
 
+    //testar a chamada da Integração do viaCEP com cep iguais
     @isTest
     static void testSetAddresViaCepOldEqualsNew(){
 
@@ -331,7 +332,8 @@ public with sharing class CandidateTest {
         
         System.assertEquals(candOld.Zip_Postal_Code__c, candNew.Zip_Postal_Code__c);   
     }
-
+    
+    //testar a chamada da Integração do viaCEP com cep vazio
     @isTest
     static void testSetAddresViaCepOldNull(){
 
@@ -368,5 +370,64 @@ public with sharing class CandidateTest {
         System.assertEquals(candOld.Zip_Postal_Code__c, null);   
     }
 
+    //testar a chamada da Integração do viaCEP com cep vazio e Address 1 definido
+    @isTest
+    static void testSetAddresViaCepNullOne(){
+
+        Candidate__c candNew = new Candidate__c();
+        candNew.First_Name__c = 'Teste';
+        candNew.Zip_Postal_Code__c = null;
+        candNew.Street_Address_1__c = 'Teste address 1';
+
+        try {
+            Test.startTest();
+            insert candNew;
+            Test.stopTest();
+
+        } catch (Exception error) {
+            Boolean result = error.getMessage().contains('Só digite o \'Addres 1\' se houver CEP!') ? true : false;
+            System.assertEquals(true, result);
+        }
+    }
+
+    //testar a chamada da Integração do viaCEP com cep vazio e Address 2 definido
+    @isTest
+    static void testSetAddresViaCepNullTwo(){
+
+        Candidate__c candNew = new Candidate__c();
+        candNew.First_Name__c = 'Teste';
+        candNew.Zip_Postal_Code__c = null;
+        candNew.Street_Address_2__c = 'Teste address 2';
+
+        try {
+            Test.startTest();
+            insert candNew;
+            Test.stopTest();
+
+        } catch (Exception error) {
+            Boolean result = error.getMessage().contains('Só digite o \'Addres 2\' se houver CEP!') ? true : false;
+            System.assertEquals(true, result);
+        }
+    }
+
+    //testar a chamada da Integração do viaCEP com cep vazio e Address 2 definido
+    @isTest
+    static void testSetAddresViaCepNullThree(){
+
+        Candidate__c candNew = new Candidate__c();
+        candNew.First_Name__c = 'Teste';
+        candNew.Zip_Postal_Code__c = null;
+        candNew.Street_Address_3__c = 'Teste address 3';
+
+        try {
+            Test.startTest();
+            insert candNew;
+            Test.stopTest();
+
+        } catch (Exception error) {
+            Boolean result = error.getMessage().contains('Só digite o \'Addres 3\' se houver CEP!') ? true : false;
+            System.assertEquals(true, result);
+        }
+    }
     
 }
