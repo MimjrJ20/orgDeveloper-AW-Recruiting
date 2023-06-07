@@ -30,6 +30,9 @@ Objetos Customizados: Position__c, Interview__c, Job_Application__c, Candidate__
 
 
 
+### Trello
+
+![alt text](https://github.com/MimjrJ20/orgDeveloper-AW-Recruiting/blob/main/img/trello-1.jpg)
 
 # --------------------------------------------------------
 ##### Observação Importante!!!
