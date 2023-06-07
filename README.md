@@ -1,13 +1,11 @@
 # **Project AW Recruiting**
 
-## AW é uma empresa que gerencia oportunidades, contratos e vagas, no qual as atividades estão relacionadas aos diversos objetos.
+## AW é uma empresa que gerencia oportunidades, contratos e vagas. 
+## No qual as atividades estão relacionadas aos diversos objetos.
 
-#### Objetos Padrões e Objetos Customizados, sendo eles:
-
-Objetos Padrões: Account, Contract, Opportunity
-
-Objetos Customizados: Position__c, Interview__c, Job_Application__c, Candidate__c
-
+### Objetos Padrões e Objetos Customizados, sendo eles:
+- Objetos Padrões: Account, Contract, Opportunity
+- Objetos Customizados: Position__c, Interview__c, Job_Application__c, Candidate__c
 
 ### Regras de negócios:
 #### Candidatos (validações CPF e CEP)
@@ -35,7 +33,8 @@ Objetos Customizados: Position__c, Interview__c, Job_Application__c, Candidate__
 
 ![Quadro do trello](https://github.com/MimjrJ20/orgDeveloper-AW-Recruiting/blob/main/img/trello-1.jpg)
 <sub> Utilizado ferramenta ágil </sub>
-
+#####
+#####
 ##### Observação importante!!!
 
 ###### Este projeto é fruto de auto-estudo.
