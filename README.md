@@ -1,4 +1,4 @@
-# Project AW Recruiting
+# **Project AW Recruiting**
 
 ## AW é uma empresa que gerencia oportunidades, contratos e vagas, no qual possui atividades relacionadas aos diversos objetos.
 
@@ -32,6 +32,7 @@ Objetos Customizados: Position__c, Interview__c, Job_Application__c, Candidate__
 
 
 ### Trello
+<sub> Utilizado ferramenta ágil </sub>
 
 ![alt text](https://github.com/MimjrJ20/orgDeveloper-AW-Recruiting/blob/main/img/trello-1.jpg)
 
