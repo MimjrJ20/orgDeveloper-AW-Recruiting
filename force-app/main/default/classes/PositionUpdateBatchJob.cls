@@ -9,12 +9,23 @@ global with sharing class PositionUpdateBatchJob implements Database.Batchable<S
     //mas recebe apenas uma lista relativamente curta de registros (padrão 200)
     global void execute (Database.BatchableContext bc, List<Position__c> posList){
 
+        // Lista para atualizar vagas
         List<Position__c> posUpdate = new List<Position__c>();
+
+        // Conjunto para armazenar os Ids das contas
+        Set<Id> accountsIds = new Set<Id>(); 
+
+        for(Position__c posAcc : posList){
+
+            // Adiciona o Id da conta atual ao conjunto
+            accountsIds.add(posAcc.Account__c); 
+        }
+
+        Contract[] contracts = [SELECT Id, AccountId, StartDate, EndDate, Status FROM Contract WHERE AccountId = :accountsIds AND Status = 'Activated' LIMIT 1];
 
         for(Position__c posUp : posList){
 
-            Contract[] contracts = [SELECT Id, AccountId, StartDate, EndDate, Status FROM Contract WHERE AccountId = :posUp.Account__c AND Status = 'Activated' LIMIT 1];
-            
+            //Contract[] contracts = [SELECT Id, AccountId, StartDate, EndDate, Status FROM Contract WHERE AccountId = :posUp.Account__c AND Status = 'Activated' LIMIT 1];
             if (posUp.VagaContrato__c) {
 
                 if (contracts.isEmpty()) {
@@ -23,7 +34,6 @@ global with sharing class PositionUpdateBatchJob implements Database.Batchable<S
 
                 } 
             }
-
         }
 
         update posUpdate;
