@@ -232,6 +232,15 @@
         <customTabListAdditionalFields>ACCOUNT.NAME</customTabListAdditionalFields>
         <customTabListAdditionalFields>ACCOUNT.ADDRESS1_CITY</customTabListAdditionalFields>
         <customTabListAdditionalFields>ACCOUNT.PHONE1</customTabListAdditionalFields>
+        <excludedStandardButtons>OpenListInQuip</excludedStandardButtons>
+        <excludedStandardButtons>NewFromDocument</excludedStandardButtons>
+        <excludedStandardButtons>ListClean</excludedStandardButtons>
+        <excludedStandardButtons>DataDotComGetAccountsMultiAddAction</excludedStandardButtons>
+        <excludedStandardButtons>NavigateToAccountDiscoveryDashboard</excludedStandardButtons>
+        <excludedStandardButtons>MassCreateCallList</excludedStandardButtons>
+        <excludedStandardButtons>PrintableListView</excludedStandardButtons>
+        <excludedStandardButtons>SendBulkMessageAction</excludedStandardButtons>
+        <excludedStandardButtons>DiscoveryGetAccountsAction</excludedStandardButtons>
         <lookupDialogsAdditionalFields>ACCOUNT.NAME</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>ACCOUNT.SITE</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>CORE.USERS.ALIAS</lookupDialogsAdditionalFields>
