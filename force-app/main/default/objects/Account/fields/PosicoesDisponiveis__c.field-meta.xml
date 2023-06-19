@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PosicoesDisponiveis__c</fullName>
+    <description>Quantidade de posicoes disponiveis com oportunidades aprovadas.</description>
+    <externalId>false</externalId>
+    <label>Posições Disponíveis</label>
+    <summarizedField>Opportunity.PositionMonth__c</summarizedField>
+    <summaryFilterItems>
+        <field>Opportunity.RecordTypeId</field>
+        <operation>equals</operation>
+        <value>Contract</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Opportunity.AccountId</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <type>Summary</type>
+</CustomField>

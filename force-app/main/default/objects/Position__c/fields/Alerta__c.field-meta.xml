@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Alerta__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF( 
+
+ISPICKVAL(Status__c, &apos;New&apos;), 
+IMAGE(&quot;/img/samples/color_yellow.gif&quot;, &quot;yellow&quot;, 15, 15),
+
+IF(ISPICKVAL(Status__c, &apos;Canceled&apos;),
+IMAGE(&quot;/img/samples/color_red.gif&quot;, &quot;red&quot;, 15, 15),
+
+IF(ISPICKVAL(Status__c, &apos;Closed&apos;),
+IMAGE(&quot;/img/samples/color_red.gif&quot;, &quot;red&quot;, 15, 15),
+
+IF(ISPICKVAL(Status__c, &apos;Open&apos;),
+IMAGE(&quot;/img/samples/color_green.gif&quot;, &quot;green&quot;, 15, 15),
+
+IMAGE(&quot;/img/samples/color_red.gif&quot;, &quot;red&quot;, 15, 15)
+
+))))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Alerta</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

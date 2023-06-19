@@ -3,6 +3,7 @@
     <fullName>Position</fullName>
     <active>true</active>
     <businessProcess>Position</businessProcess>
+    <compactLayoutAssignment>LayoutCompactoOportunidadePosico</compactLayoutAssignment>
     <label>Position</label>
     <picklistValues>
         <picklist>DeliveryInstallationStatus__c</picklist>

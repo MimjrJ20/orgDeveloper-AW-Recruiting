@@ -87,7 +87,7 @@ public with sharing class CandidateTriggerHandler {
                 Matcher validFieldCPF = numOnly.matcher(cand.CPF__c);
 
                 if(validFieldCPF.matches()){
-                    cand.CPF__c.addError('O CPF não pode ser composto por um único número!');
+                    cand.CPF__c.addError('O CPF não pode ser composto por UM único número!');
                 }
             }    
         }

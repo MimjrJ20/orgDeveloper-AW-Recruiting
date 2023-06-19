@@ -3,6 +3,7 @@
     <fullName>Contract</fullName>
     <active>true</active>
     <businessProcess>Contract</businessProcess>
+    <compactLayoutAssignment>LayoutCompactoOportunidadeContrato</compactLayoutAssignment>
     <label>Contract</label>
     <picklistValues>
         <picklist>DeliveryInstallationStatus__c</picklist>
