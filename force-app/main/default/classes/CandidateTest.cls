@@ -142,7 +142,7 @@ public with sharing class CandidateTest {
             Test.stopTest();
 
         } catch (Exception error) {
-            Boolean result = error.getMessage().contains('O CPF não pode ser composto por um único número!') ? true : false;
+            Boolean result = error.getMessage().contains('O CPF não pode ser composto por UM único número!') ? true : false;
             System.assertEquals(true, result);
         }
         
@@ -166,7 +166,7 @@ public with sharing class CandidateTest {
             Test.stopTest();
 
         } catch (Exception error) {
-            Boolean result = error.getMessage().contains('O CPF não pode ser composto por um único número!') ? true : false;
+            Boolean result = error.getMessage().contains('O CPF não pode ser composto por UM único número!') ? true : false;
             System.assertEquals(true, result);
         }
         
