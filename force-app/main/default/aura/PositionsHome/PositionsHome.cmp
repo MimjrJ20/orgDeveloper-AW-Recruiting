@@ -1,35 +1,43 @@
 <aura:component implements="flexipage:availableForAllPageTypes" access="global" controller="PositionsHomeController">
-	<aura:attribute name="Positions" type="Position__c"/>
-    <aura:attribute name="searchTerm" type="String" />
+    <aura:attribute name="positions" type="Position__c[]"/>
+    <aura:attribute name="searchTerm" type="String"/>
+    <aura:attribute name="allPositions" type="Position__c[]" />
+
     <aura:handler name="init" action="{!c.doInit}" value="{!this}"/>
+
     <lightning:card title="List Positions">
         <aura:set attribute="body">
-            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
-                <thead>
-                    <tr class="slds-text-title_caps">
-                        <th scope="col">Approvals Status</th>
-                        <th scope="col">Position Name</th>
-                        <th scope="col">Position Description</th>
-                        <th scope="col">Account</th>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <th><lightning:input type="text" value="{!v.searchTerm}" placeholder="Search Position" /></th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <aura:iteration items="{!v.Positions}" var="positions">
-                        <tr scope="row">
-                            <td>{!positions.Approval_Status__c}</td>
-                            <td>{!positions.Name}</td>
-                            <td>{!positions.Job_Description__c}</td>
-                            <td>{!positions.Account__r.Name}</td>
+            <div class="slds-m-around_x-small">
+                <div class="slds-size_1-of-2 slds-m-bottom_x-small">
+                    <lightning:input type="search" value="{!v.searchTerm}" placeholder="Search positions" onchange="{!c.searchTable}"/>
+                </div>
+                <div class="slds-size_1-of-2">
+                    <lightning:button class="slds-button slds-button_brand" label="Clear search" onclick="{!c.clearSearch}"/>
+                </div>
+            </div>
+            <div class="slds-scrollable slds-m-around_x-small">
+                <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-table_striped">
+                    <thead>
+                        <tr class="slds-text-title_caps">
+                            <th scope="col">Approvals Status</th>
+                            <th scope="col">Position Name</th>
+                            <th scope="col">Position Description</th>
+                            <th scope="col">Account</th>
                         </tr>
-                    </aura:iteration>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.positions}" var="position">
+                            <tr scope="row">
+                                <td>{!position.Approval_Status__c}</td>
+                                <td>{!position.Name}</td>
+                                <td>{!position.Job_Description__c}</td>
+                                <td>{!position.Account__r.Name}</td>
+                            </tr>
+                        </aura:iteration>
+                    </tbody>
+                </table>
+            </div>
         </aura:set>
     </lightning:card>
 </aura:component>
+
