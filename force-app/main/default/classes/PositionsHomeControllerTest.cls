@@ -32,7 +32,7 @@ public with sharing class PositionsHomeControllerTest {
       
         insert listPositions;
                 
-		Boolean result = PositionsHomeController.getPositions().isEmpty() ? false : true;
+		Boolean result = PositionsHomeController.getPositionsAndAccount().isEmpty() ? false : true;
         System.assertEquals(true, result);
     }
     
