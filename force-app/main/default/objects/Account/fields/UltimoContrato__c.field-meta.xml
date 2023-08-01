@@ -7,5 +7,6 @@
     <summarizedField>Opportunity.StartDate__c</summarizedField>
     <summaryForeignKey>Opportunity.AccountId</summaryForeignKey>
     <summaryOperation>max</summaryOperation>
+    <trackHistory>false</trackHistory>
     <type>Summary</type>
 </CustomField>

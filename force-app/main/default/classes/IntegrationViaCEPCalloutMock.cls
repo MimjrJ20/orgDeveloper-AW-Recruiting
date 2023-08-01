@@ -16,4 +16,3 @@ global with sharing class IntegrationViaCEPCalloutMock implements HttpCalloutMoc
         return res;
     }
 }
-
