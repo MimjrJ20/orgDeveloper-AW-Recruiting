@@ -2,7 +2,6 @@
 global with sharing class CandidateRestResource {
 
     //método para obter o Candidato
-    //
     //Para listar os candidatos, deve ser possível mostrar todos ou filtrar por um desses campos:
     //Email, Candidate Number, Currently Employed ou City (troquei Currently Employed por Current_Employer__c e adicionei por CPF)
     @HttpGet
@@ -79,7 +78,10 @@ global with sharing class CandidateRestResource {
 
         insert candidate;
 
-        return candidate.Id;
+        String msg = 'Candidate inserted. Id: ' + candidate.Id;
+
+        return msg;
+
     }
 
     //método para atualizar um candidato
@@ -117,7 +119,10 @@ global with sharing class CandidateRestResource {
         
         upsert candidate;
 
-        return candidate.Id;
+        String msg = 'Candidate updated. Id: ' + candidate.Id;
+
+        return msg;
+
     }
 
     //método para excluir um candidato
@@ -128,13 +133,14 @@ global with sharing class CandidateRestResource {
         RestResponse res = RestContext.response;
         String candidateInfo = req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
 
-        Candidate__c candidate = [SELECT Id, Name FROM Candidate__c WHERE (Id = :candidateInfo) OR (Name = :candidateInfo) OR (CPF__c = :candidateInfo) LIMIT 1];
-        String msg = 'Candidate '+ candidate.Name + ' deleted.';
+        Candidate__c candidate = [SELECT Id, Name FROM Candidate__c WHERE (Id = :candidateInfo) OR (Name = :candidateInfo) OR (CPF__c = :candidateInfo) OR (Email__c = :candidateInfo) LIMIT 1];
+        String msg = 'Candidate '+ candidate.Name + ' deleted. Id: ' + candidate.Id;
 
         //Candidate__c candidate = new Candidate__c();
         //candidate.Id = candidateId;
         delete candidate;
 
         return msg;
+
     }
 }
