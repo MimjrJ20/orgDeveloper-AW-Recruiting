@@ -51,9 +51,9 @@ global with sharing class CandidateRestResource {
     //método para inserir um candidato
     @HttpPost
     global static String doPost(String firstName, String lastName, String email, String mobile, String education,
-                                String currentEmployer, Integer yearsOfExperience, String streetAddress1, 
+                                String currentEmployer, Integer yearsExperience, String streetAddress1, 
                                 String streetAddress2, String streetAddress3, String city, String stateProvince,
-                                String zipPostalCode, String cpf, String country) {
+                                String zipPostalCode, String cpf, String country, Boolean currentlyEmployed) {
 
         Candidate__c candidate = new Candidate__c();
 
@@ -63,7 +63,7 @@ global with sharing class CandidateRestResource {
         candidate.Mobile__c = mobile;
         candidate.Education__c = education;
         candidate.Current_Employer__c = currentEmployer;
-        candidate.Years_of_Experience__c = yearsOfExperience;
+        candidate.Years_of_Experience__c = yearsExperience;
         candidate.Street_Address_1__c = streetAddress1;
         candidate.Street_Address_2__c = streetAddress2;
         candidate.City__c = city;
@@ -74,7 +74,14 @@ global with sharing class CandidateRestResource {
         candidate.Street_Address_3__c = streetAddress3;
 
         candidate.Should_Redirect__c = false;
-        candidate.Currently_Employed__c = false;
+
+        if (currentlyEmployed != null){
+
+            candidate.Currently_Employed__c = currentlyEmployed;
+
+        } else{
+            candidate.Currently_Employed__c = false;
+        }
 
         insert candidate;
 
@@ -87,7 +94,7 @@ global with sharing class CandidateRestResource {
     //método para atualizar um candidato
     @HttpPut
     global static String doPut(String candidateId, String firstName, String lastName, String email, String mobile, String education,
-                               String currentEmployer, Integer yearsOfExperience, String streetAddress1, String streetAddress2, String streetAddress3,
+                               String currentEmployer, Integer yearsExperience, String streetAddress1, String streetAddress2, String streetAddress3,
                                String city, String stateProvince, String zipPostalCode, String country, String cpf) {
 
                                 
@@ -104,7 +111,7 @@ global with sharing class CandidateRestResource {
         candidate.Mobile__c = mobile;
         candidate.Education__c = education;
         candidate.Current_Employer__c = currentEmployer;
-        candidate.Years_of_Experience__c = yearsOfExperience;
+        candidate.Years_of_Experience__c = yearsExperience;
         candidate.Street_Address_1__c = streetAddress1;
         candidate.Street_Address_2__c = streetAddress2;
         candidate.City__c = city;
