@@ -1,0 +1,28 @@
+<apex:page id="CandidatePDF" standardController="Candidate__c" renderAs="pdf">
+
+    <body style="font-family: 'Lucida Console', 'Courier New', monospace;">
+
+        <table style="width: 100%;">
+            <tr>
+                <td style="text-align: right;">
+                    <apex:image url="{!$Resource.companyLogo}"/>
+                </td>
+            </tr>
+        </table>
+
+        <h1> Employment Proposal </h1> 
+
+        <table>
+            <tr>
+                <th>Candidate Number:</th>
+                <td><apex:outputText value="{!Candidate__c.Name}"/></td>
+            </tr>
+            <tr>
+                <th>Candidate Name:</th>
+                <td><apex:outputText value="{!Candidate__c.First_Name__c}"/></td>
+            </tr>
+        </table>
+
+    </body>
+
+</apex:page>

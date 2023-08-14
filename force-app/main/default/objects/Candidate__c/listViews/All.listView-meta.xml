@@ -3,10 +3,13 @@
     <fullName>All</fullName>
     <columns>NAME</columns>
     <columns>First_Name__c</columns>
+    <columns>Last_Name__c</columns>
+    <columns>Email__c</columns>
     <columns>CPF__c</columns>
     <columns>Zip_Postal_Code__c</columns>
     <columns>Street_Address_1__c</columns>
     <columns>Street_Address_3__c</columns>
+    <columns>City__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>
