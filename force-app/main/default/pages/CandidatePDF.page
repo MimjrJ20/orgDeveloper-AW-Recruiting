@@ -1,28 +1,128 @@
 <apex:page id="CandidatePDF" standardController="Candidate__c" renderAs="pdf">
 
-    <body style="font-family: 'Lucida Console', 'Courier New', monospace;">
-
-        <table style="width: 100%;">
-            <tr>
-                <td style="text-align: right;">
-                    <apex:image url="{!$Resource.companyLogo}"/>
-                </td>
-            </tr>
-        </table>
-
-        <h1> Employment Proposal </h1> 
-
-        <table>
-            <tr>
-                <th>Candidate Number:</th>
-                <td><apex:outputText value="{!Candidate__c.Name}"/></td>
-            </tr>
-            <tr>
-                <th>Candidate Name:</th>
-                <td><apex:outputText value="{!Candidate__c.First_Name__c}"/></td>
-            </tr>
-        </table>
-
-    </body>
+    <html>
+        <head>
+        </head>
+    
+        <body style="font-family: 'Lucida Console', 'Courier New', monospace; text-align: justify;">
+        
+            <div style="position: fixed; top: 0; right: 0; text-align: right;">
+            
+                <table style="width: 100%;">
+                    <tr>
+                        <td>
+                            <h1> Employment Proposal </h1>
+                        </td>
+                        <td style="text-align: right;">
+                            <apex:image url="{!$Resource.companyLogo}" width="100px" height="100px"/>
+                        </td>
+                    </tr>
+                </table>
+                
+            </div>
+    
+                <!-- Conteúdo principal do documento -->
+                <div style="margin-top: 100px;">
+                
+                    <div style="margin-top: 20px;">
+                    
+                        <div style="margin-bottom: 10px;">
+                            <span>
+                                <apex:outputText value="{0,date,dd ' ' MMMM ' ' yyyy}">
+                                    <apex:param value="{!NOW()}"/>
+                                </apex:outputText>
+                            </span>
+                        </div>
+                    
+                        <div style="margin-bottom: 10px;">
+                            {!Candidate__c.State_Province__c}, {!Candidate__c.Country_List__c}
+                        </div>
+                        
+                    </div>
+                    
+                    <div style="margin-top: 40px; margin-bottom: 10px;">
+                        Dear <span style="font-weight: bold;">{!Candidate__c.First_Name__c}</span>,
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        I hope this letter finds you well. It is with great pleasure that I extend an offer of employment to you for the position of <span style="font-weight: bold;">[Job Title]</span>  at <span style="font-weight: bold;">[Company Name]</span>. 
+                        After careful consideration of your qualifications and experience, we are confident that you are an ideal fit for our team.
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        As a 
+                        <span style="font-weight: bold;">[Job Title]</span>
+                        , you will play a crucial role in <span style="font-weight: bold;">[Company Name]</span>
+                        's continued success. We were particularly impressed by your 
+                        <span style="font-weight: bold;">[specific skills or experiences mentioned in the interview]</span>
+                        , and we believe that your expertise will significantly contribute to our projects and initiatives.
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        Here are some key details about the position:
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <span style="font-weight: bold;">- Position:</span> [Job Title]
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <span style="font-weight: bold;">- Department:</span> [Department Name]
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <span style="font-weight: bold;">- Start Date: </span>[Start Date]
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <span style="font-weight: bold;">- Compensation: </span>[Salary or Compensation Details]
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        In addition to your role-specific responsibilities, 
+                        you will have the opportunity to work with a talented and dedicated team, 
+                        collaborate on innovative projects, and grow professionally within our organization.
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        Please take your time to review the enclosed employment agreement and other related documents. 
+                        If you have any questions or require further information, please feel free to reach out to 
+                        <span style="font-weight: bold;">[Hiring Manager's Name]</span>, 
+                        who will be your main point of contact throughout the onboarding process.
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        To formally accept this offer, please sign and return a copy of the enclosed employment agreement by 
+                        <span style="font-weight: bold;">[Acceptance Deadline]</span>. 
+                        We are excited about the prospect of having you join our team and look forward to a successful partnership.
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        Once again, congratulations on your offer of employment. We are thrilled to welcome you to the 
+                        <span style="font-weight: bold;">[Company Name]</span> 
+                        family.
+                    </div>
+                    
+                    <div style="margin-top: 30px;">
+                    
+                        <div style="margin-bottom: 10px;">
+                        Sincerely,
+                        </div>
+                        
+                        <div style="margin-bottom: 10px;">
+                        [Your Name]
+                        </div>
+                        
+                        <div style="margin-bottom: 10px; font-weight: bold; font-size: 20px;">
+                        AW Computing
+                        </div> 
+                    
+                    </div>                       
+               
+            </div>       
+            
+        </body>
+    
+    </html>
 
 </apex:page>
