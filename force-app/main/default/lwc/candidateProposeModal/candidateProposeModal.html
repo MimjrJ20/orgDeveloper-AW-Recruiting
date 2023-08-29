@@ -1,0 +1,37 @@
+<template>
+
+    <lightning-card>
+
+        <!-- Header -->
+        <lightning-modal-header label="Choose Job"></lightning-modal-header>
+
+        <!-- Body -->
+        <lightning-modal-body>
+
+            <p>Choose a vacancy to generate the proposal:</p>
+
+                <lightning-combobox
+                    name="progress"
+                    label="Job(s)"
+                    value={value}
+                    placeholder="select job"
+                    options={options}
+                    onchange={handleChange}
+                    class="slds-p-top_medium">
+                </lightning-combobox>
+
+        </lightning-modal-body>
+
+        <!-- Footer -->
+        <lightning-modal-footer>
+
+            <lightning-button label="Generate" onclick={handleGeneratePdfClick} class="slds-p-left_xx-small"></lightning-button>
+            <lightning-button label="Cancel" onclick={handleNoOkay} class="slds-p-left_xx-small"></lightning-button>
+
+        </lightning-modal-footer>
+
+        <!-- <c-candidate-propose-modal id-candidate={candidateId}></c-candidate-propose-modal> -->
+
+    </lightning-card>
+
+</template>
