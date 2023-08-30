@@ -10,7 +10,8 @@
 #### Candidatos (validações CPF e CEP)
 - O CPF do candidato é validado;
 - O CEP do cadastro para o candidato, caso sua localidade seja no Brasil, haverá uma consulta na api ViaCEP;
-- Toda vez que uma vaga é aplicada ao candidato ou atualizada é criado um post no Chatter com um resumo da vaga.
+- Toda vez que uma vaga é aplicada ao candidato ou atualizada é criado um post no Chatter com um resumo da vaga;
+- Ao entrar na páginda de registro de um candidato é possível imprimir a carta proposta de uma vaga cuja entrevista consta como finalizada.
 
 #### Oportunidades
 - As oportunidades fechadas não podem ser alteradas;
