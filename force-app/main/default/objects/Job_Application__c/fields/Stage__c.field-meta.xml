@@ -55,6 +55,11 @@
                 <default>false</default>
                 <label>Closed - Position Closed</label>
             </value>
+            <value>
+                <fullName>Generate Proposal</fullName>
+                <default>false</default>
+                <label>Generate Proposal</label>
+            </value>
         </valueSetDefinition>
         <valueSettings>
             <controllingFieldValue>Open</controllingFieldValue>
@@ -91,6 +96,10 @@
         <valueSettings>
             <controllingFieldValue>Closed</controllingFieldValue>
             <valueName>Closed - Position Closed</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Proposal</controllingFieldValue>
+            <valueName>Generate Proposal</valueName>
         </valueSettings>
     </valueSet>
 </CustomField>

@@ -3,18 +3,17 @@
     <lightning-card>
 
         <!-- Header -->
-        <lightning-modal-header label="Choose Job"></lightning-modal-header>
+        <lightning-modal-header label="Choose a Job"></lightning-modal-header>
 
         <!-- Body -->
         <lightning-modal-body>
 
-            <p>Choose a vacancy to generate the proposal:</p>
+            <p class="slds-text-heading_medium">Choose a job to generate the proposal:</p>
 
                 <lightning-combobox
                     name="progress"
-                    label="Job(s)"
                     value={value}
-                    placeholder="select job"
+                    placeholder="Select a job"
                     options={options}
                     onchange={handleChange}
                     class="slds-p-top_medium">
@@ -29,8 +28,6 @@
             <lightning-button label="Cancel" onclick={handleNoOkay} class="slds-p-left_xx-small"></lightning-button>
 
         </lightning-modal-footer>
-
-        <!-- <c-candidate-propose-modal id-candidate={candidateId}></c-candidate-propose-modal> -->
 
     </lightning-card>
 

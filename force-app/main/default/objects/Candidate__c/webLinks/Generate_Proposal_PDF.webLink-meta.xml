@@ -3,17 +3,10 @@
     <fullName>Generate_Proposal_PDF</fullName>
     <availability>online</availability>
     <displayType>button</displayType>
-    <hasMenubar>false</hasMenubar>
-    <hasScrollbars>true</hasScrollbars>
-    <hasToolbar>false</hasToolbar>
     <height>600</height>
-    <isResizable>true</isResizable>
     <linkType>page</linkType>
     <masterLabel>Generate Proposal PDF</masterLabel>
-    <openType>newWindow</openType>
+    <openType>noSidebar</openType>
     <page>CandidatePDF</page>
-    <position>none</position>
     <protected>false</protected>
-    <showsLocation>false</showsLocation>
-    <showsStatus>false</showsStatus>
 </WebLink>

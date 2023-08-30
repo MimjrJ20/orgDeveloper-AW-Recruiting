@@ -24,6 +24,11 @@
                 <default>false</default>
                 <label>Closed</label>
             </value>
+            <value>
+                <fullName>Proposal</fullName>
+                <default>false</default>
+                <label>Proposal</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

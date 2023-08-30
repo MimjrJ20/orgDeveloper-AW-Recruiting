@@ -30,7 +30,10 @@ public with sharing class JobApplicationDAO {
 
         String interview = 'Interviews Completed';
 
-        return [SELECT Status__c, Position__c, Legacy_Job_Application_Number__c, Candidate__c, Candidate__r.Name, Id, Name, Position__r.Name 
+        return [SELECT 
+                    Id, Name, Status__c, Legacy_Job_Application_Number__c,
+                    Position__c, Position__r.Name, Position__r.Account__r.Name, Position__r.Skills_Required__c, Position__r.Job_Description__c,
+                    Candidate__c, Candidate__r.Name, Candidate__r.City__c , Candidate__r.Country_List__c, Candidate__r.Email__c, Candidate__r.First_Name__c, Candidate__r.Last_Name__c, Candidate__r.State_Province__c
                 FROM Job_Application__c
                 WHERE Candidate__c = :idCandidate AND Stage__c = :interview
                 ORDER BY Name];
