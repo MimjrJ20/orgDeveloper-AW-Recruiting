@@ -12,6 +12,11 @@ export default class CandidateProposeModal extends LightningModal{
     value;
     options = [];
 
+    isEmptyOptions = false;
+    isNotEmptyOptions = false;
+
+
+
     //-----------//
     //função para extrair o ID do candidato da UR
     extractIdFromUrl(url) { 
@@ -38,7 +43,6 @@ export default class CandidateProposeModal extends LightningModal{
 
         getCurrentUserName()
         .then(result => {
-            const encodedUserName = encodeURIComponent(result);
     
             const visualforceUrl = `/apex/CandidatePDF?idCandidate=${this.idCandidate}`;
             
@@ -88,6 +92,18 @@ export default class CandidateProposeModal extends LightningModal{
                     label: job.Name + " - " + job.Position__r.Name,
                     value: job.Id
                 }));
+
+                if(result != null && result.length > 0){
+
+                    this.isEmptyOptions = false;
+                    this.isNotEmptyOptions = true;
+
+                } else {
+
+                    this.isEmptyOptions = true;
+                    this.isNotEmptyOptions = false;
+
+                }
             })
 
             .catch((error) => {
@@ -100,7 +116,6 @@ export default class CandidateProposeModal extends LightningModal{
     handleChange(event) {
 
         this.value = event.detail.value;
-        console.log("valor selecionado : ", this.value);
 
     }
 
@@ -115,5 +130,5 @@ export default class CandidateProposeModal extends LightningModal{
         });
         this.dispatchEvent(toastEvent);
     }
-
+    
 }
