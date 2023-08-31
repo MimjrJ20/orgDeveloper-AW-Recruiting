@@ -21,7 +21,7 @@
             <table style="width: 100%;">
                 <tr>
                     <td style="text-align: right;">
-                        <apex:image url="{!$Resource.companyLogo}" width="100px" height="100px"/>
+                        <apex:image url="{!$Resource.companyLogo}" width="150px" height="150px"/>
                     </td>
                 </tr>
             </table>    
@@ -81,11 +81,11 @@
                 </div>
                 
                 <div style="margin-bottom: 10px;">
-                    <span style="font-weight: bold;">- Start Date: </span> {!$CurrentPage.parameters.stateProvince}
+                    <span style="font-weight: bold;">- Start Date: </span> {!$CurrentPage.parameters.startDate}
                 </div>
                 
                 <div style="margin-bottom: 10px;">
-                    <span style="font-weight: bold;">- Compensation: </span> {!$CurrentPage.parameters.stateProvince}
+                    <span style="font-weight: bold;">- Compensation: </span> {!$CurrentPage.parameters.salary}
                 </div>
                 
                 <div style="margin-bottom: 10px;">
@@ -97,13 +97,13 @@
                 <div style="margin-bottom: 10px;">
                     Please take your time to review the enclosed employment agreement and other related documents. 
                     If you have any questions or require further information, please feel free to reach out to 
-                    <span style="font-weight: bold;">{!$CurrentPage.parameters.stateProvince}</span>, 
+                    <span style="font-weight: bold;">{!$CurrentPage.parameters.manager}</span>, 
                     who will be your main point of contact throughout the onboarding process.
                 </div>
                 
                 <div style="margin-bottom: 10px;">
                     To formally accept this offer, please sign and return a copy of the enclosed employment agreement by 
-                    <span style="font-weight: bold;">{!$CurrentPage.parameters.stateProvince}</span>. 
+                    <span style="font-weight: bold;">{!$CurrentPage.parameters.deadline}</span>. 
                     We are excited about the prospect of having you join our team and look forward to a successful partnership.
                 </div>
                 
@@ -119,7 +119,7 @@
                     </div>
                     
                     <div style="margin-bottom: 10px;">
-                    [Your Name]
+                    <span style="font-weight: bold;">{!$CurrentPage.parameters.userInfo}</span> 
                     </div>
                     
                     <div style="margin-bottom: 10px; font-weight: bold; font-size: 20px;">

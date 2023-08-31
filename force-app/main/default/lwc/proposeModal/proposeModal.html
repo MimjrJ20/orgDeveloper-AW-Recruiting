@@ -1,23 +1,25 @@
 <template>
-    
-    <lightning-card title="General Proposal">
-
-        <!-- Button open modal -->
-        <div class="slds-p-left_small">
-
-            <lightning-button 
-            
-                variant="brand"
-                label="Select Job"
-                title="titleName"
-                onclick={handleClick}>
-
-            </lightning-button>
-
+    <lightning-card>
+        <div class="slds-grid slds-grid_vertical-align-center slds-p-around_medium">        
+            <div class="slds-col slds-m-left_small">
+                <lightning-icon 
+                    icon-name="standard:customer_portal_users" 
+                    alternative-text="Proposal" 
+                    title="Proposal">
+                </lightning-icon>
+            </div>
+            <div class="slds-col slds-text-heading_medium">
+                General Proposal
+            </div>
+            <div class="slds-col slds-m-left_medium">
+                <lightning-button 
+                    variant="brand" 
+                    label="Select a Job for Proposal" 
+                    title="Choose a job that you would like to create a proposal for" 
+                    icon-name="utility:pdf_ext"
+                    onclick={handleClick}>
+                </lightning-button>
+            </div>
         </div>
-
-
-
     </lightning-card>
-
 </template>

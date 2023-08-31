@@ -32,7 +32,7 @@ public with sharing class JobApplicationDAO {
 
         return [SELECT 
                     Id, Name, Status__c, Legacy_Job_Application_Number__c,
-                    Position__c, Position__r.Name, Position__r.Account__r.Name, Position__r.Skills_Required__c, Position__r.Job_Description__c,
+                    Position__c, Position__r.Name, Position__r.Account__r.Name, Position__r.Skills_Required__c, Position__r.Job_Description__c, Position__r.Hiring_Manager__c, Position__r.Hiring_Manager__r.FirstName, Position__r.Hiring_Manager__r.LastName,
                     Candidate__c, Candidate__r.Name, Candidate__r.City__c , Candidate__r.Country_List__c, Candidate__r.Email__c, Candidate__r.First_Name__c, Candidate__r.Last_Name__c, Candidate__r.State_Province__c
                 FROM Job_Application__c
                 WHERE Candidate__c = :idCandidate AND Stage__c = :interview
