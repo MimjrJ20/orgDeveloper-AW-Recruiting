@@ -5,6 +5,8 @@
 ### Objetos Padrões e Objetos Customizados, sendo eles:
 - Objetos Padrões: Account, Contract, Opportunity
 - Objetos Customizados: Position__c, Interview__c, Job_Application__c, Candidate__c
+![Schema Builder](https://github.com/MimjrJ20/orgDeveloper-AW-Recruiting/blob/main/img/img-schema_builder_all.jpg)
+
 
 ### Regras de negócios:
 #### Candidatos (validações CPF e CEP)
@@ -31,7 +33,7 @@
 
 ### Trello:
 
-![Quadro do trello](https://github.com/MimjrJ20/orgDeveloper-AW-Recruiting/blob/main/img/trello-1.jpg)
+![Quadro do trello](https://github.com/MimjrJ20/orgDeveloper-AW-Recruiting/blob/main/img/img-trello-2.jpg)
 <sub> Utilizado ferramenta ágil </sub>
 
 
