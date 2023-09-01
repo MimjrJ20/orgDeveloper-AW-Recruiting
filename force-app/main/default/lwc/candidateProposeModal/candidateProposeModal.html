@@ -3,13 +3,19 @@
     <lightning-card>
 
         <!-- Header -->
-        <lightning-modal-header label="Choose a job to generate the proposal" class="my-modal-header"></lightning-modal-header>
+        <template lwc:if={isNotEmptyOptions}>
+            <lightning-modal-header label="Choose a job to generate the proposal" class="my-modal-header-success"></lightning-modal-header>
+        </template>
+
+        <template lwc:if={isEmptyOptions}>
+            <lightning-modal-header label="Choose a job to generate the proposal" class="my-modal-header-error"></lightning-modal-header>
+        </template>
 
         <!-- Body -->
         <lightning-modal-body>
 
             <template lwc:if={isNotEmptyOptions}>
-                <p class="slds-text-heading_small">Please select a job for generating the proposal.</p>
+                <p class="slds-text-heading_small">Please select a job for generating the proposal.</p><br>
                 <p class="slds-text-heading_small">Your choice will determine the details of the generated proposal.</p>
 
                 <lightning-combobox
@@ -18,12 +24,12 @@
                     placeholder="Select a job here"
                     options={options}
                     onchange={handleChange}
-                    class="slds-p-top_medium">
+                    class="slds-p-top_medium slds-p-bottom_large">
                 </lightning-combobox>
             </template>
 
             <template lwc:if={isEmptyOptions}>
-                <p class="slds-text-heading_small">There are no available job(s) with completed interviews.</p>
+                <p class="slds-text-heading_small slds-text-color_error">There are no available job(s) with completed interviews.</p>
             </template>
 
         </lightning-modal-body>

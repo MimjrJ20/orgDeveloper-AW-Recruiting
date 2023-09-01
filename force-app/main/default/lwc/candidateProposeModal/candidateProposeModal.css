@@ -1,3 +1,7 @@
-.my-modal-header {
-    --slds-c-modal-header-color-background: lightblue;
+.my-modal-header-success {
+    --slds-c-modal-header-color-background: rgb(185, 230, 245);
+}
+
+.my-modal-header-error {
+    --slds-c-modal-header-color-background: rgb(251, 179, 151);
 }

@@ -4,6 +4,8 @@ import LightningModal from "lightning/modal";
 import searchJobByIdCandidateAndInterview from "@salesforce/apex/JobApplicationDAO.searchJobByIdCandidateAndInterview";
 import updateJobApplicationProposal from "@salesforce/apex/JobApplicationController.updateJobApplicationProposal";
 import getCurrentUserName from "@salesforce/apex/UserController.getCurrentUserName";
+import savePDFCandidate from "@salesforce/apex/CandidatePDFController.savePDFCandidate";
+import generatePDFContent from "@salesforce/apex/CandidatePDFController.generatePDFContent";
 
 export default class CandidateProposeModal extends LightningModal{
 
@@ -15,7 +17,8 @@ export default class CandidateProposeModal extends LightningModal{
     isEmptyOptions = false;
     isNotEmptyOptions = false;
 
-
+    pdfBody;
+    jobName;
 
     //-----------//
     //função para extrair o ID do candidato da UR
@@ -38,38 +41,55 @@ export default class CandidateProposeModal extends LightningModal{
     }
 
     //-----------//
+    //rastrear qual opção foi selecionada
+    handleChange(event) {
+        this.value = event.detail.value;
+    }
+
+    //-----------//
+    //função para simplificar as chamadas de toast
+    showToast(title, message, variant){
+        
+        const toastEvent = new ShowToastEvent({
+            title: title,
+            message: message,
+            variant: variant
+        });
+        this.dispatchEvent(toastEvent);
+    }
+
+    //-----------//
     //função para chamar o pdf
     handleGeneratePdfClick() {
+        //atualiza o status e stage do job
+        updateJobApplicationProposal({
+            idJob: this.value
+        })
+        .then((result) => {
+            this.jobName = result.jobName;
+            this.showToast("Success","Proposal saved and Job status updated successfully.", "success");          
 
-        getCurrentUserName()
-        .then(result => {
-    
-            const visualforceUrl = `/apex/CandidatePDF?idCandidate=${this.idCandidate}`;
-            
-            //atualiza o status e stage do job
-            updateJobApplicationProposal({
-                idJob: this.value
-            })
-            .then(() => {
-                this.showToast("Success","Generate proposal and Job status updated successfully.", "success");
-                setTimeout(() => {
-                    window.open(visualforceUrl, "_blank");
-                    this.handleNoOkay();
-                    location.reload();
-                }, 2000);
-            })
-            .catch(error => {
-                this.showToast("Error","An error occurred while updating job status or generate proposal. Alert your administrator!", "error");
-            });
+            //um tempo para carregar a página e salvar o pdf
+            setTimeout(() => {
+                generatePDFContent({ candidateId: this.idCandidate })
+                    .then((result) => {
+                        this.pdfBody = result;
+                        this.savePDF();
+                    })
+                    .catch((error) => {
+                        console.error('Error generating PDF: ', error);
+                    });
+                this.handleNoOkay();
+            }, 2000);
+
         })
         .catch(error => {
-            console.error("Error getting user info: ", error);
+            this.showToast("Error","An error occurred while updating job status or generate proposal. Alert your administrator!", "error");
         });
     }
     
-
     //-----------//
-    //função
+    //função que faz a busca do Job
     connectedCallback(){
 
         const urlId = this.extractIdFromUrl(window.location.href);
@@ -112,23 +132,22 @@ export default class CandidateProposeModal extends LightningModal{
     }
 
     //-----------//
-    //rastrear qual opção foi selecionada
-    handleChange(event) {
+    // Método para chamar o Apex para salvar o PDF
+    savePDF() {
 
-        this.value = event.detail.value;
+        savePDFCandidate({
+            idCandidate: this.idCandidate,
+            pdfBody: this.pdfBody,
+            jobName: this.jobName            
+        })        
+        .then(() => {
+            location.reload();
+            console.log("PDF saved successfully.");
 
-    }
-
-    //-----------//
-    //função para simplificar as chamadas de toast
-    showToast(title, message, variant){
-        
-        const toastEvent = new ShowToastEvent({
-            title: title,
-            message: message,
-            variant: variant
+        })
+        .catch(error => {
+            console.error("Error saving PDF: ", error);
         });
-        this.dispatchEvent(toastEvent);
     }
     
 }

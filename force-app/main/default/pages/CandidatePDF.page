@@ -1,5 +1,7 @@
 <apex:page id="CandidatePDF" standardController="Candidate__c" renderAs="pdf">
-
+    <apex:facet name="header">
+        <apex:facet name="Access-Control-Allow-Origin">*</apex:facet>
+    </apex:facet>
     <html>
         <head>
         </head>
