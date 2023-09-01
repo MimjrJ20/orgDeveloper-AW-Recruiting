@@ -31,7 +31,7 @@
                 <field>CPF__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Required</behavior>
                 <field>First_Name__c</field>
             </layoutItems>
             <layoutItems>
@@ -62,7 +62,7 @@
         <label>Address</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Required</behavior>
                 <field>Country_List__c</field>
             </layoutItems>
         </layoutColumns>

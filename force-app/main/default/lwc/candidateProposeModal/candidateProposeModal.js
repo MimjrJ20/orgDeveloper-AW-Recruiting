@@ -11,14 +11,34 @@ export default class CandidateProposeModal extends LightningModal{
 
     @api idCandidate; 
 
+    //variaveis para seleção do Job no modal value é o id e options a lista que retorna com as opções de job para aquele candidato
     value;
     options = [];
 
+    //variaveis para tags do html condicional
     isEmptyOptions = false;
     isNotEmptyOptions = false;
 
+    //variaveis para salvar o pdf
     pdfBody;
     jobName;
+
+    //variaveis para gerar o pdf
+    city;
+    state;
+    country;
+    candidateNumber;
+    candidateName;
+    positionName;
+    accountName;
+    description;
+    skills;
+    department;
+    startDate;
+    salary;
+    manager;
+    deadline;
+
 
     //-----------//
     //função para extrair o ID do candidato da UR
@@ -67,17 +87,50 @@ export default class CandidateProposeModal extends LightningModal{
         })
         .then((result) => {
             this.jobName = result.jobName;
+            this.city = result.city;
+            this.state = result.state;
+            this.country = result.country;
+            this.candidateNumber = result.candidateNumber;
+            this.candidateName = result.candidateName;
+            this.positionName = result.positionName;
+            this.accountName = result.accountName;
+            this.description = result.description;
+            this.skills = result.skills;
+            this.department = result.department;
+            this.startDate = result.startDate;
+            this.salary = result.salary;
+            this.manager = result.manager;
+            this.deadline = result.deadline;
+
             this.showToast("Success","Proposal saved and Job status updated successfully.", "success");          
+            console.log("result job: ", result);
+
 
             //um tempo para carregar a página e salvar o pdf
             setTimeout(() => {
-                generatePDFContent({ candidateId: this.idCandidate })
+                generatePDFContent({ 
+                    candidateId: this.idCandidate,
+                    city: this.city,
+                    state: this.state,
+                    country: this.country,
+                    candidateNumber: this.candidateNumber,
+                    candidateName: this.candidateName,
+                    positionName: this.positionName,
+                    accountName: this.accountName,
+                    description: this.description,
+                    skills: this.skills,
+                    department: this.department,
+                    startDate: this.startDate,
+                    salary: this.salary,
+                    manager: this.manager,
+                    deadline: this.deadline
+                 })
                     .then((result) => {
                         this.pdfBody = result;
                         this.savePDF();
                     })
                     .catch((error) => {
-                        console.error('Error generating PDF: ', error);
+                        console.error("Error generating PDF: ", error);
                     });
                 this.handleNoOkay();
             }, 2000);
@@ -85,6 +138,8 @@ export default class CandidateProposeModal extends LightningModal{
         })
         .catch(error => {
             this.showToast("Error","An error occurred while updating job status or generate proposal. Alert your administrator!", "error");
+            console.error("Error update job: ", error);
+
         });
     }
     

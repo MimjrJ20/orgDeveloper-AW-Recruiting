@@ -42,17 +42,17 @@
                     </div>
                 
                     <div style="margin-bottom: 10px;">
-                        {!$CurrentPage.parameters.stateProvince}, {!$CurrentPage.parameters.country}
+                        {!$CurrentPage.parameters.city} - {!$CurrentPage.parameters.state}, {!$CurrentPage.parameters.country}
                     </div>
                     
                 </div>
 
                 <div style="margin-top: 40px; margin-bottom: 10px;">
-                    N. Candidate: <span style="font-weight: bold;">{!$CurrentPage.parameters.name}</span>
+                    N. Candidate: <span style="font-weight: bold;">{!$CurrentPage.parameters.candidateNumber}</span>
                 </div>
                 
                 <div style="margin-top: 40px; margin-bottom: 10px;">
-                    Dear <span style="font-weight: bold;">{!$CurrentPage.parameters.firstName} {!$CurrentPage.parameters.lastName}</span>,
+                    Dear <span style="font-weight: bold;">{!$CurrentPage.parameters.candidateName}</span>,
                 </div>
                 
                 <div style="margin-bottom: 10px;">
@@ -62,12 +62,15 @@
                 </div>
                 
                 <div style="margin-bottom: 10px;">
-                    As a 
-                    <span style="font-weight: bold;">{!$CurrentPage.parameters.positionName}</span>
-                    , you will play a crucial role in <span style="font-weight: bold;">{!$CurrentPage.parameters.accountName}</span>
-                    's continued success. We were particularly impressed by your 
-                    <span style="font-weight: bold;">{!$CurrentPage.parameters.skills}</span>
-                    , and we believe that your expertise will significantly contribute to our projects and initiatives.
+                As a 
+                <span style="font-weight: bold;">{!$CurrentPage.parameters.positionName}</span> 
+                role, which includes 
+                <span style="font-weight: bold;">{!$CurrentPage.parameters.description}</span>,
+                you will play a crucial role in 
+                <span style="font-weight: bold;">{!$CurrentPage.parameters.accountName}</span>'s 
+                continued success. We were particularly impressed by yours skills, how 
+                <span style="font-weight: bold;">{!$CurrentPage.parameters.skills}</span>
+                And believe that your expertise will significantly contribute to our projects and initiatives.
                 </div>
                 
                 <div style="margin-bottom: 10px;">
@@ -121,7 +124,7 @@
                     </div>
                     
                     <div style="margin-bottom: 10px;">
-                    <span style="font-weight: bold;">{!$CurrentPage.parameters.userInfo}</span> 
+                    <span style="font-weight: bold;">{!$CurrentPage.parameters.userInfo}Name de quem clicou o botão</span> 
                     </div>
                     
                     <div style="margin-bottom: 10px; font-weight: bold; font-size: 20px;">
