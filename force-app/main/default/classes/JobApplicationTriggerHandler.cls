@@ -87,13 +87,18 @@ public with sharing class JobApplicationTriggerHandler {
             
             if (!jobsList.isEmpty()) {
 
-                Integer days = System.today().daysBetween(job.Expected_Start_Date__c);
+                if (job.Expected_Start_Date__c != null) {
+                    
+                    Integer days = System.today().daysBetween(job.Expected_Start_Date__c);
 
-                if (days <= 30) {
+                    if (days <= 30) {
 
-                    job.addError('Devido ao fluxo de contratação, a data de início deve ser MAIOR que 30 dias a partir de hoje!' + 
-                                 + ' Diferença inserida: ' + days + ' dias.');
+                        job.addError('Devido ao fluxo de contratação, a data de início deve ser MAIOR que 30 dias a partir de hoje!' + 
+                                    + ' Diferença inserida: ' + days + ' dias.');
+                    }
                 }
+
+                
          
             }
         }
