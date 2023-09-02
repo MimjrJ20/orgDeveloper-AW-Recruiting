@@ -124,7 +124,7 @@
                     </div>
                     
                     <div style="margin-bottom: 10px;">
-                    <span style="font-weight: bold;">{!$CurrentPage.parameters.userInfo}Name de quem clicou o botão</span> 
+                    <span style="font-weight: bold;">{!$CurrentPage.parameters.userName}</span> 
                     </div>
                     
                     <div style="margin-bottom: 10px; font-weight: bold; font-size: 20px;">

@@ -26,7 +26,7 @@ public with sharing class CandidatePDFController {
     @AuraEnabled
     public static String generatePDFContent(String idCandidate, String city, String state, String country, String candidateNumber, String candidateName, 
                                             String positionName, String accountName, String description, String skills, String department, String salary, 
-                                            String manager, String startDate, String deadline) {
+                                            String manager, String startDate, String deadline, String userName) {
 
         PageReference pref = Page.CandidatePDF; 
         pref.getParameters().put('id', idCandidate);
@@ -44,6 +44,7 @@ public with sharing class CandidatePDFController {
         pref.getParameters().put('manager', manager);
         pref.getParameters().put('startDate', startDate);
         pref.getParameters().put('deadline', deadline);
+        pref.getParameters().put('userName', userName);
         pref.setRedirect(true);
         Blob bdata = pref.getContentAsPDF();
     

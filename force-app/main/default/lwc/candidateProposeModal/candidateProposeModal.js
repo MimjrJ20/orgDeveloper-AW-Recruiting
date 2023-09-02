@@ -38,7 +38,13 @@ export default class CandidateProposeModal extends LightningModal{
     salary;
     manager;
     deadline;
+    userName;
 
+    //-----------//
+    //função para fechar o modal
+    handleNoOkay() {
+        this.close("okay");
+    }
 
     //-----------//
     //função para extrair o ID do candidato da UR
@@ -55,15 +61,28 @@ export default class CandidateProposeModal extends LightningModal{
     }
 
     //-----------//
-    //função para fechar o modal
-    handleNoOkay() {
-        this.close("okay");
-    }
-
-    //-----------//
     //rastrear qual opção foi selecionada
     handleChange(event) {
         this.value = event.detail.value;
+    }
+
+    //-----------//
+    // Método para chamar o Apex para salvar o PDF
+    savePDF() {
+
+        savePDFCandidate({
+            idCandidate: this.idCandidate,
+            pdfBody: this.pdfBody,
+            jobName: this.jobName            
+        })        
+        .then(() => {
+            location.reload();
+            console.log("PDF saved successfully.");
+
+        })
+        .catch(error => {
+            console.error("Error saving PDF: ", error);
+        });
     }
 
     //-----------//
@@ -79,8 +98,18 @@ export default class CandidateProposeModal extends LightningModal{
     }
 
     //-----------//
-    //função para chamar o pdf
+    //função para clicar no botã  do 'generate' pdf
     handleGeneratePdfClick() {
+
+        //retorna o nome do usuário que clica no botão
+        getCurrentUserName()
+        .then((result) => {
+            this.userName = result;
+        })
+        .catch(error => {
+            console.error("Error get userName: ", error);
+        });
+
         //atualiza o status e stage do job
         updateJobApplicationProposal({
             idJob: this.value
@@ -102,12 +131,12 @@ export default class CandidateProposeModal extends LightningModal{
             this.manager = result.manager;
             this.deadline = result.deadline;
 
-            this.showToast("Success","Proposal saved and Job status updated successfully.", "success");          
-            console.log("result job: ", result);
-
+            this.showToast("Success","Proposal saved and Job status updated successfully.", "success");
 
             //um tempo para carregar a página e salvar o pdf
             setTimeout(() => {
+
+                //gerar o pdf com as infos pertinentes
                 generatePDFContent({ 
                     candidateId: this.idCandidate,
                     city: this.city,
@@ -123,23 +152,25 @@ export default class CandidateProposeModal extends LightningModal{
                     startDate: this.startDate,
                     salary: this.salary,
                     manager: this.manager,
-                    deadline: this.deadline
-                 })
-                    .then((result) => {
-                        this.pdfBody = result;
-                        this.savePDF();
-                    })
-                    .catch((error) => {
-                        console.error("Error generating PDF: ", error);
-                    });
+                    deadline: this.deadline,
+                    userName: this.userName
+                })
+                .then((result) => {
+                    this.pdfBody = result;
+                    this.savePDF();
+                })
+                .catch((error) => {
+                    console.error("Error generating PDF: ", error);
+                });
+
                 this.handleNoOkay();
+
             }, 2000);
 
         })
         .catch(error => {
             this.showToast("Error","An error occurred while updating job status or generate proposal. Alert your administrator!", "error");
             console.error("Error update job: ", error);
-
         });
     }
     
@@ -180,29 +211,8 @@ export default class CandidateProposeModal extends LightningModal{
 
                 }
             })
-
             .catch((error) => {
                 console.log(error);
             });
-    }
-
-    //-----------//
-    // Método para chamar o Apex para salvar o PDF
-    savePDF() {
-
-        savePDFCandidate({
-            idCandidate: this.idCandidate,
-            pdfBody: this.pdfBody,
-            jobName: this.jobName            
-        })        
-        .then(() => {
-            location.reload();
-            console.log("PDF saved successfully.");
-
-        })
-        .catch(error => {
-            console.error("Error saving PDF: ", error);
-        });
-    }
-    
+    }  
 }
