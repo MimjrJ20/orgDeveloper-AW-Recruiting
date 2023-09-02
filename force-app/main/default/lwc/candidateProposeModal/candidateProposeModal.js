@@ -170,7 +170,7 @@ export default class CandidateProposeModal extends LightningModal{
         })
         .catch(error => {
             this.showToast("Error","An error occurred while updating job status or generate proposal. Alert your administrator!", "error");
-            console.error("Error update job: ", error);
+            console.error("Error to update job or to generate pdf: ", error);
         });
     }
     
