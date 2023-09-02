@@ -72,14 +72,31 @@ public with sharing class JobApplicationTriggerHandler {
         for(Job_Application__c job : jobsList){
             
             if (!jobsList.isEmpty()) {
-                    job.addError('Por questão de compliance, após a vaga ser aplicada' +
-                                        + ' nestas condições o registro não pode ser deletado!');            
+                    job.addError('Por questão de compliance, após a vaga ser aplicada nestas condições o registro não pode ser deletado!');            
             }
         }
     }
 
 
     //-----------------------------------------------------------------
+    //-----------------------------------------------------------------
 
+    public void jobStartDateDays(List<Job_Application__c> jobsList){
+
+        for(Job_Application__c job : jobsList){
+            
+            if (!jobsList.isEmpty()) {
+
+                Integer days = System.today().daysBetween(job.Expected_Start_Date__c);
+
+                if (days <= 30) {
+
+                    job.addError('Devido ao fluxo de contratação, a data de início deve ser MAIOR que 30 dias a partir de hoje!' + 
+                                 + ' Diferença inserida: ' + days + ' dias.');
+                }
+         
+            }
+        }
+    }
 
 }
