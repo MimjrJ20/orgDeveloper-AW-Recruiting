@@ -8,8 +8,7 @@ export default class ProposeModal extends LightningElement {
     async handleClick(){
 
         var result = await CandidateProposeModal.open({
-            size: "Small",
-            description: "My modal open."
+            size: "Small"
         });
 
         this.result = result;
