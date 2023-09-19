@@ -1,18 +1,56 @@
 <template>
 
-    <lightning-card  title="Hello">
+    <lightning-card  title="Position's">
         <lightning-button label="New" slot="actions"></lightning-button>
-        <p class="slds-p-horizontal_small">Card Body (custom component)</p>
+
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_3-of-4">
+                <div class="slds-p-around_large">
+                    <lightning-input
+                        name="enter-search"
+                        label="Search for Position Title or Account Name and when the user hits the 'enter' key."
+                        type="search"
+                        onkeyup={handleKeyUp}>
+                    </lightning-input>
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+                <div class="slds-p-around_large">        
+                    <lightning-combobox
+                        name="progress"
+                        label="Status"
+                        value={value}
+                        placeholder="Select Progress"
+                        options={options}
+                        onchange={handleChange}>
+                    </lightning-combobox>
+                </div>
+            </div>
+        </div>
+
+        <template lwc:if={queryTerm}>
+            <template if:true={existingData}>
+                <p class="slds-p-horizontal_large slds-p-bottom_large slds-text-body_small slds-text-color_success">
+                    Searched for {queryTerm}!
+                </p>
+            </template>
+            <template if:false={existingData}>
+                <p class="slds-p-horizontal_large slds-p-bottom_large slds-text-body_small slds-text-color_error">
+                    None results!
+                </p>
+            </template>
+        </template>
+
+
+        <p class="slds-p-horizontal_large">Screen for tracking and assigning responsibilities for recruitment</p>
         <p slot="footer">Card Footer</p>
 
-        <div style="height: 300px;">
+        <div style="height: 300px;" class="slds-p-around_large">
             <lightning-datatable
                     key-field="id"
-                    data={data}
-                    show-row-number-column
-                    row-number-offset={rowOffset}
-                    suppress-bottom-bar
-                    columns={columns}>
+                    data={filteredData}
+                    columns={columns}
+                    show-row-number-column>
             </lightning-datatable>
         </div>
     </lightning-card>
