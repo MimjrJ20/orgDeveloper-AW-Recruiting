@@ -4,9 +4,9 @@ import getPositionsAvailable from "@salesforce/apex/PositionDAO.getPositionsAvai
 const columns = [
     { label: "Title", fieldName: "Name" },
     { label: "Account", fieldName: "AccountName" },
-    { label: "Approval Status", fieldName: "Approval_Status__c", editable: true },
-    { label: "Status", fieldName: "Status__c", editable: true },
-    { label: "Owner", fieldName: "OwnerName", editable: true },
+    { label: "Approval Status", fieldName: "Approval_Status__c" },
+    { label: "Status", fieldName: "Status__c" },
+    { label: "Owner", fieldName: "OwnerName" },
 ];
 
 export default class RecruitmentManagementTab extends LightningElement {
@@ -19,7 +19,7 @@ export default class RecruitmentManagementTab extends LightningElement {
     existingData;
     selectedStatus = "All";
 
-    //função - seja executado uma vez, escreva o código para evitar que ele seja executado duas vezes
+    //função - seja executado uma vez, para evitar que ele seja executado duas vezes
     connectedCallback() {
         this.loadTable();
     }
