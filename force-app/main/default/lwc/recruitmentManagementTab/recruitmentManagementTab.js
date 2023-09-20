@@ -1,5 +1,6 @@
-import { LightningElement } from "lwc";
+import { LightningElement, track } from "lwc";
 import getPositionsAvailable from "@salesforce/apex/PositionDAO.getPositionsAvailable";
+import RecruitmentManagementModal from "c/recruitmentManagementModal";
 
 const columns = [
     { label: "Title", fieldName: "Name" },
@@ -93,4 +94,32 @@ export default class RecruitmentManagementTab extends LightningElement {
         this.selectedStatus = event.detail.value;
         this.filterData(); 
     }
+
+
+
+
+    //---------------------//
+    //modal filho
+
+    @track isOpenModal;
+    @track selectedRows;
+
+    async openModal(){
+
+        console.log("Passei aqui no botão openModal.");
+
+        var isOpenModal = await RecruitmentManagementModal.open({
+            size: "Small"
+        });
+        this.isOpenModal = isOpenModal;
+
+
+        const rows = ['a'];
+        this.selectedRows = rows;
+        console.log("Passei aqui selectedRows: ", this.selectedRows);
+
+
+    }
+
+
 }

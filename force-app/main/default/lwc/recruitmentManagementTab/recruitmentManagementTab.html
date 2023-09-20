@@ -1,7 +1,7 @@
 <template>
 
     <lightning-card  title="Position's">
-        <lightning-button label="New" slot="actions"></lightning-button>
+    <lightning-button label="Change Position" onclick={openModal} slot="actions"></lightning-button>
 
         <div class="slds-grid slds-gutters">
             <div class="slds-col slds-size_3-of-4">
@@ -50,6 +50,7 @@
                     key-field="id"
                     data={filteredData}
                     columns={columns}
+                    selected-rows={selectedRows}
                     show-row-number-column>
             </lightning-datatable>
         </div>

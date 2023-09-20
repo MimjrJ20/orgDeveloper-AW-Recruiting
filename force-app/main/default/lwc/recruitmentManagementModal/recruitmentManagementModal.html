@@ -1,0 +1,38 @@
+<template>
+    <lightning-card title="Edit Position">
+
+        <div class="slds-modal__header">
+            <h2 class="slds-text-heading_medium">Edit Selected Positions</h2>
+        </div>
+        <div class="slds-modal__content slds-p-around_medium">
+            <lightning-input 
+                label="Owner" 
+                value={owner} 
+                onchange={handleOwnerChange}>
+            </lightning-input>
+            <lightning-combobox
+                name="progress"
+                label="Status"
+                value={status}
+                placeholder="Select Status"
+                options={optionsStatus}
+                onchange={handleStatusChange}>
+            </lightning-combobox>
+            <lightning-combobox
+                name="progress"
+                label="Approval Status"
+                value={approvalStatus}
+                placeholder="Select Approval Status"
+                options={optionsApprovalStatus}
+                onchange={handleApprovalStatusChange}>
+            </lightning-combobox>
+
+        </div>
+        <div class="slds-modal__footer">
+            <button class="slds-button slds-button_brand" onclick={saveChanges}>Save</button>
+            <button class="slds-button slds-button_neutral" onclick={closeModal}>Cancel</button>
+        </div>
+    </lightning-card>
+
+
+</template>
