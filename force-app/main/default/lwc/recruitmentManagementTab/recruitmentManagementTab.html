@@ -1,3 +1,4 @@
+<!-- sldsValidatorIgnore -->
 <template>
 
     <lightning-card  title="Position's">
@@ -28,20 +29,6 @@
             </div>
         </div>
 
-        <template lwc:if={queryTerm}>
-            <template if:true={existingData}>
-                <p class="slds-p-horizontal_large slds-p-bottom_large slds-text-body_small slds-text-color_success">
-                    Searched for {queryTerm}!
-                </p>
-            </template>
-            <template if:false={existingData}>
-                <p class="slds-p-horizontal_large slds-p-bottom_large slds-text-body_small slds-text-color_error">
-                    None results!
-                </p>
-            </template>
-        </template>
-
-
         <p class="slds-p-horizontal_large">Screen for tracking and assigning responsibilities for recruitment</p>
         <p slot="footer">Card Footer</p>
 
@@ -51,6 +38,8 @@
                     data={filteredData}
                     columns={columns}
                     selected-rows={selectedRows}
+                    onsavechanges={handleSaveChanges}
+                    onrowselection={getSelectedId}
                     show-row-number-column>
             </lightning-datatable>
         </div>

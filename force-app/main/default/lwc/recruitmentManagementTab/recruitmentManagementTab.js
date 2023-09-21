@@ -1,6 +1,8 @@
 import { LightningElement, track } from "lwc";
 import getPositionsAvailable from "@salesforce/apex/PositionDAO.getPositionsAvailable";
 import RecruitmentManagementModal from "c/recruitmentManagementModal";
+import { ShowToastEvent } from "lightning/platformShowToastEvent";
+
 
 const columns = [
     { label: "Title", fieldName: "Name" },
@@ -17,7 +19,6 @@ export default class RecruitmentManagementTab extends LightningElement {
     columns = columns;
     queryTerm = "";
     filteredData = [];
-    existingData;
     selectedStatus = "All";
 
     //função - seja executado uma vez, para evitar que ele seja executado duas vezes
@@ -82,8 +83,6 @@ export default class RecruitmentManagementTab extends LightningElement {
                 && (this.selectedStatus === "All" || row.Status__c === this.selectedStatus)
             );
 
-            this.existingData = this.filteredData !== "" ? true : false;
-
         } else {
             this.filteredData = [...this.data];
         }
@@ -96,30 +95,72 @@ export default class RecruitmentManagementTab extends LightningElement {
     }
 
 
-
+    //função - simplificar as chamadas de toast
+    showToast(title, message, variant){
+        
+        const toastEvent = new ShowToastEvent({
+            title: title,
+            message: message,
+            variant: variant
+        });
+        this.dispatchEvent(toastEvent);
+    }
 
     //---------------------//
     //modal filho
 
     @track isOpenModal;
     @track selectedRows;
+    @track selectedRowsIds = [];
 
-    async openModal(){
+    //
+    async openModal() {
 
-        console.log("Passei aqui no botão openModal.");
+        const selectedRows = this.template.querySelector('lightning-datatable').getSelectedRows();
 
-        var isOpenModal = await RecruitmentManagementModal.open({
-            size: "Small"
-        });
-        this.isOpenModal = isOpenModal;
+        if (selectedRows.length === 0) {
 
+           this.showToast("None row selected","Please select at least one row to change position(s)!","error");
 
-        const rows = ['a'];
-        this.selectedRows = rows;
-        console.log("Passei aqui selectedRows: ", this.selectedRows);
+        } else {
 
+            const isOpenModal = await RecruitmentManagementModal.open({
+                size: "Small",
+                selectedRowsIds: this.selectedRowsIds,
+            });
+            console.log("Selected IDs: ", this.selectedRowsIds);
 
+            this.isOpenModal = isOpenModal;
+
+            // // Adicionar um listener para quando o modal fechar e limpar os IDs selecionados
+            // this.isOpenModal.addEventListener("close", () => {
+            //     this.selectedRowsIds = [];
+            // });
+
+        }
+    
     }
 
+
+    //
+    getSelectedId(event) {
+
+        const selectedRows = event.detail.selectedRows;
+    
+        if (selectedRows && selectedRows.length > 0) {
+
+            for (let i = 0; i < selectedRows.length; i++) {
+
+                if (selectedRows[i].Id) {
+                    console.log("You selected: " + selectedRows[i].Id);
+                    this.selectedRowsIds.push(selectedRows[i].Id);
+                }
+            }
+
+        } else {
+            console.log("No rows selected.");
+        }
+    }
+    
 
 }
