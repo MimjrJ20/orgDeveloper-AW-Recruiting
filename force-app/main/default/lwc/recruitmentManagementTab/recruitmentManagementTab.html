@@ -1,11 +1,12 @@
-<!-- sldsValidatorIgnore -->
 <template>
 
-    <lightning-card  title="Position's">
-    <lightning-button label="Change Position" onclick={openModal} slot="actions"></lightning-button>
+    <!-- Card -->
+    <lightning-card title="Position's">
 
         <div class="slds-grid slds-gutters">
-            <div class="slds-col slds-size_3-of-4">
+
+            <!-- Filtro de pesquisa (Título ou Conta) -->
+            <div class="slds-col slds-size_3-of-5">
                 <div class="slds-p-around_large">
                     <lightning-input
                         name="enter-search"
@@ -15,8 +16,10 @@
                     </lightning-input>
                 </div>
             </div>
-            <div class="slds-col slds-size_1-of-4">
-                <div class="slds-p-around_large">        
+    
+            <!-- Filtro lista (Status) -->
+            <div class="slds-col slds-size_1-of-5">
+                <div class="slds-p-around_large">
                     <lightning-combobox
                         name="progress"
                         label="Status"
@@ -27,23 +30,151 @@
                     </lightning-combobox>
                 </div>
             </div>
+  
+            <!-- Botão Modal -->
+            <div class="slds-col slds-size_1-of-5">
+                <div class="slds-m-top_xx-large slds-m-left_small">
+                    <lightning-button
+                        label="Show Selected Positions"
+                        onclick={showPositions}
+                        variant="brand">
+                    </lightning-button>
+                </div>
+            </div>
+
+
+        </div>
+  
+        <br>
+    
+        <!-- Tabela -->
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <thead>
+                <tr class="slds-line-height_reset">
+
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Number">#</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate">
+                            <lightning-input onchange={allSelected} type="checkbox"></lightning-input>
+                        </div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Title">Title</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Account">Account</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Status">Status</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Approval Status">Approval Status</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Owner">Owner</div>
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <template for:each={data} for:item="pos" for:index="index">
+                    <tr key={pos.Id}>
+                        <th scope="col">
+                            <div>
+                                <span>{pos.rowNumber}</span>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div>
+                                <lightning-input
+                                    type="checkbox"
+                                    value={pos.Name}
+                                    data-id={pos.Id}>
+                                </lightning-input>
+                            </div>
+                        </th>
+                        <th scope="col">
+                            <div>{pos.Name}</div>
+                        </th>
+                        <th scope="col">
+                            <div>{pos.Account__r.Name}</div>
+                        </th>
+                        <th scope="col">
+                            <div>{pos.Status__c}</div>
+                        </th>
+                        <th scope="col">
+                            <div>{pos.Approval_Status__c}</div>
+                        </th>
+                        <th scope="col">
+                            <div>{pos.Owner.Name}</div>
+                        </th>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    
+        <!-- Modal -->
+        <div if:true={selectedCons}>
+            <template if:true={bShowModal}>
+                <section
+                    aria-describedby="modal-content-id-1"
+                    aria-labelledby="modal-heading-01"
+                    aria-modal="true"
+                    class="slds-modal slds-fade-in-open"
+                    role="dialog"
+                    tabindex="-1">
+
+                    <div class="slds-modal__container">
+
+                        <!-- Cabeçalho modal -->
+                        <header class="slds-modal__header">
+                            <button
+                                class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                onclick={closeModal}
+                                title="Close">
+
+                                <lightning-icon
+                                    alternative-text="close"
+                                    icon-name="utility:close"
+                                    size="small"
+                                    variant="inverse">
+                                </lightning-icon>
+
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+
+                            <h2 class="slds-text-heading_medium slds-hyphenate" id="modal-heading-01">
+                                Selected Positions Records
+                            </h2>
+                        </header>
+            
+                        <!-- Corpo modal -->
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                            <template for:each={selectedCons} for:item="pos">
+                                <dl class="slds-list_horizontal slds-wrap" if:true={pos.Id} key={pos.Id}>
+                                    <dt class="slds-item_label slds-truncate" title="Name">Position Title:</dt>
+                                    <dd class="slds-item_detail slds-truncate">{pos.Name}</dd>
+                                </dl>
+                            </template>
+                            <input type="text">
+                        </div>
+            
+                        <!-- Rodapé modal -->
+                        <footer class="slds-modal__footer">
+                            <lightning-button label="Cancel" title="Cancel" onclick={closeModal} class="slds-m-left_x-small slds-float_left"></lightning-button>
+                            <lightning-button variant="brand" label="Save" title="Save" onclick={saveChanges} class="slds-m-left_x-small"></lightning-button>
+                        </footer>
+
+                    </div>
+                    
+                </section>
+        
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </template>
         </div>
 
-        <p class="slds-p-horizontal_large">Screen for tracking and assigning responsibilities for recruitment</p>
-        <p slot="footer">Card Footer</p>
-
-        <div style="height: 300px;" class="slds-p-around_large">
-            <lightning-datatable
-                    key-field="id"
-                    data={filteredData}
-                    columns={columns}
-                    selected-rows={selectedRows}
-                    onsavechanges={handleSaveChanges}
-                    onrowselection={getSelectedId}
-                    show-row-number-column>
-            </lightning-datatable>
-        </div>
     </lightning-card>
-
-
 </template>
+  
