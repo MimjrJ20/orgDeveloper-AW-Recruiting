@@ -42,13 +42,11 @@
                 </div>
             </div>
 
-
         </div>
   
-        <br>
     
         <!-- Tabela -->
-        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-p-around_medium">
             <thead>
                 <tr class="slds-line-height_reset">
 
@@ -74,6 +72,10 @@
                     </th>
                     <th class="" scope="col">
                         <div class="slds-truncate" title="Owner">Owner</div>
+                    </th>
+
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Owner">Created Date</div>
                     </th>
                 </tr>
             </thead>
@@ -110,6 +112,9 @@
                         <th scope="col">
                             <div>{pos.Owner.Name}</div>
                         </th>
+                        <th scope="col">
+                            <div>{pos.CreatedDate}</div>
+                        </th>
                     </tr>
                 </template>
             </tbody>
@@ -145,20 +150,55 @@
                                 <span class="slds-assistive-text">Close</span>
                             </button>
 
-                            <h2 class="slds-text-heading_medium slds-hyphenate" id="modal-heading-01">
-                                Selected Positions Records
-                            </h2>
+                            <div class="slds-text-heading_large slds-m-vertical_medium">Positions for Changes</div>
                         </header>
             
                         <!-- Corpo modal -->
                         <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
-                            <template for:each={selectedCons} for:item="pos">
-                                <dl class="slds-list_horizontal slds-wrap" if:true={pos.Id} key={pos.Id}>
-                                    <dt class="slds-item_label slds-truncate" title="Name">Position Title:</dt>
-                                    <dd class="slds-item_detail slds-truncate">{pos.Name}</dd>
-                                </dl>
-                            </template>
-                            <input type="text">
+
+                            <!-- Tabela -->
+                            <div class="slds-text-heading_medium slds-m-vertical_medium">Positions selected: {countSelectedPositions}</div>
+
+                            <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="Name">Position Title</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={selectedCons} for:item="pos">
+                                        <tr key={pos.Id}>
+                                            <td>
+                                                <div>{pos.Name}</div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+
+                            
+                            <!-- Inputs -->
+                            <div class="slds-form-element slds-m-top_medium">
+
+                                <div class="slds-text-heading_medium slds-m-vertical_medium">Values for changes</div>
+
+                                <label class="slds-form-element__label" for="approvalStatus">Approval Status</label>
+                                <div class="slds-form-element__control">
+                                    <input type="text" id="approvalStatus" placeholder="Choose approval status" required="" class="slds-input" />
+                                </div>
+
+                                <label class="slds-form-element__label" for="status">Status</label>
+                                <div class="slds-form-element__control">
+                                    <input type="text" id="status" placeholder="Choose status" required="" class="slds-input" />
+                                </div>
+
+                                <label class="slds-form-element__label" for="owner">Owner</label>
+                                <div class="slds-form-element__control">
+                                    <input type="text" id="owner" placeholder="Choose owner" required="" class="slds-input" />
+                                </div>
+                            </div>
                         </div>
             
                         <!-- Rodapé modal -->

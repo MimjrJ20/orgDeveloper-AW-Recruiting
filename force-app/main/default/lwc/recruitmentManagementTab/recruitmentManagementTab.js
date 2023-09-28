@@ -1,9 +1,11 @@
-// recruitmentManagementTab.js
 import { LightningElement, track } from "lwc";
 import retrivePositions from "@salesforce/apex/PositionDAO.getPositionsAvailable";
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+
 
 export default class RecruitmentManagementTab extends LightningElement {
 
+    //-----------------
     //variáveis
     @track data = [];
     @track filteredData = [];
@@ -14,6 +16,9 @@ export default class RecruitmentManagementTab extends LightningElement {
     @track selectedCons = [];
     @track value = "All";
     @track rowNumber = 1;
+
+    //-----------------
+    //funções
 
     //função - abrir modal
     openModal() { this.bShowModal = true; }
@@ -90,38 +95,43 @@ export default class RecruitmentManagementTab extends LightningElement {
                 console.log("Result: ", result);
             })
             .catch((error) => {
-            console.error("Error loading positions: ", error);
+                console.error("Error loading positions: ", error);
             });
     }
 
     //função - selecionar todas as linhas
     allSelected(event) {
-    let selectedRows = this.template.querySelectorAll("lightning-input");
+        
+        var selectedRows = this.template.querySelectorAll("lightning-input");
 
         for (let i = 0; i < selectedRows.length; i++) {
             if (selectedRows[i].type === "checkbox") {
-            selectedRows[i].checked = event.target.checked;
+                selectedRows[i].checked = event.target.checked;
             }
         }
     }
 
-    //função - mostrar posições
+    //função - abrir modal e mostrar positions
     showPositions() {
-        
 
-        this.bShowModal = true;
-        this.selectedCons = [];
-        let selectedRows = this.template.querySelectorAll("lightning-input");
-    
-        //com base na linha selecionada, obtenha os valores da posição
+        var selectedRows = this.template.querySelectorAll("lightning-input");
+        var selectedCons = [];
+
+        //com base na linha selecionada, obtenha os valores das positions
         for (let i = 0; i < selectedRows.length; i++) {
             if (selectedRows[i].checked && selectedRows[i].type === "checkbox") {
-
-                this.selectedCons.push({
-                    Name: selectedRows[i].value,
-                    Id: selectedRows[i].dataset.id,
+                    selectedCons.push({
+                        Name: selectedRows[i].value,
+                        Id: selectedRows[i].dataset.id,
                 });
             }
+        }
+
+        if (selectedCons.length > 0) {
+            this.bShowModal = true;
+            this.selectedCons = selectedCons;
+        } else {
+            this.showToast("None row selected!", "Please select at least one row to change the position(s)!!!", "error");
         }
     }
 
@@ -129,4 +139,10 @@ export default class RecruitmentManagementTab extends LightningElement {
         this.bShowModal = false;
 
     }
+
+    
+
+    
+
+    
 }
