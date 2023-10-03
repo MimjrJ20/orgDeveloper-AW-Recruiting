@@ -18,7 +18,7 @@ public with sharing class PositionDAO {
 
     //pegar lista de positions disponíveis com status igual a New ou Open
     @AuraEnabled
-    public static List<Position__c> getPositionsAvailable(String searchTerm, String selectedStatus){
+    public static List<Position__c> getPositionsAvailable(String searchTerm, String selectedStatus, String selectedOwner){
     
         Set<String> statusValues = new Set<String> {'New', 'Open'};
     
@@ -34,8 +34,35 @@ public with sharing class PositionDAO {
         if (selectedStatus != 'All') {
             query += ' AND Status__c = :selectedStatus';
         }
+
+        if (selectedOwner != 'All') {
+            query += ' AND OwnerId = :selectedOwner';
+        }
     
         return Database.query(query);
+    }
+
+    //pegar valores de picklist
+    @AuraEnabled
+    public static List<String> getPicklistValues(String fieldApiName) {
+        
+        List<String> picklistValues = new List<String>();
+        
+        String objectApiName = 'Position__c';
+        
+
+        Schema.DescribeFieldResult fieldDescribe = Schema.getGlobalDescribe().get(objectApiName).getDescribe().fields.getMap().get(fieldApiName).getDescribe();
+        
+        if (fieldDescribe.getType() == Schema.DisplayType.Picklist || fieldDescribe.getType() == Schema.DisplayType.MultiPicklist) {
+
+            List<Schema.PicklistEntry> picklistEntries = fieldDescribe.getPicklistValues();
+            
+            for (Schema.PicklistEntry entry : picklistEntries) {
+                picklistValues.add(entry.getValue());
+            }
+        }
+        
+        return picklistValues;
     }
     
 }

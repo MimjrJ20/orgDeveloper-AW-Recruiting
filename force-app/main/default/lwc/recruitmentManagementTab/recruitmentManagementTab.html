@@ -1,12 +1,12 @@
-<template>
+<template >
 
     <!-- Card -->
     <lightning-card title="Position's">
 
-        <div class="slds-grid slds-gutters">
+        <div class="slds-grid slds-gutters" >
 
             <!-- Filtro de pesquisa (Título ou Conta) -->
-            <div class="slds-col slds-size_3-of-5">
+            <div class="slds-col slds-size_4-of-8">
                 <div class="slds-p-around_large">
                     <lightning-input
                         name="enter-search"
@@ -18,22 +18,38 @@
             </div>
     
             <!-- Filtro lista (Status) -->
-            <div class="slds-col slds-size_1-of-5">
+            <div class="slds-col slds-size_1-of-8">
                 <div class="slds-p-around_large">
                     <lightning-combobox
-                        name="progress"
+                        name="status"
                         label="Status"
-                        value={value}
-                        placeholder="Select Progress"
-                        options={options}
-                        onchange={handleChange}>
+                        value={statusValueTable}
+                        placeholder="..."
+                        options={statusOptionsTable}
+                        onchange={handleChangeStatusTable}>
                     </lightning-combobox>
                 </div>
             </div>
-  
+
+            <!-- Filtro lista (Owner) -->
+            <div class="slds-col slds-size_1-of-8">
+                <div class="slds-p-around_large">
+                    <lightning-combobox
+                        name="owner"
+                        label="Owner"
+                        value={ownerValueTable}
+                        placeholder="..."
+                        options={ownerOptionsTable}
+                        onchange={handleChangeOwnerTable}
+                        disabled={disableOptions}>
+                    </lightning-combobox>
+                </div>
+            </div>
+              
+
             <!-- Botão Modal -->
-            <div class="slds-col slds-size_1-of-5">
-                <div class="slds-m-top_xx-large slds-m-left_small">
+            <div class="slds-col slds-size_1-of-8">
+                <div class="slds-m-top_xx-large slds-m-left_x-small">
                     <lightning-button
                         label="Show Selected Positions"
                         onclick={showPositions}
@@ -42,6 +58,18 @@
                 </div>
             </div>
 
+            <!-- Refresh -->
+            <div class="slds-col slds-size_1-of-8">
+                <div class="slds-m-top_xx-large">
+                    <lightning-button-icon 
+                        icon-name="utility:refresh"  
+                        variant="brand" 
+                        alternative-text="Refresh"
+                        onclick={loadTableRefresh}>
+                    </lightning-button-icon>
+                </div>
+            </div>
+            
         </div>
   
     
@@ -127,7 +155,7 @@
                     aria-describedby="modal-content-id-1"
                     aria-labelledby="modal-heading-01"
                     aria-modal="true"
-                    class="slds-modal slds-fade-in-open"
+                    class="slds-modal slds-fade-in-open slds-modal_medium"
                     role="dialog"
                     tabindex="-1">
 
@@ -150,14 +178,14 @@
                                 <span class="slds-assistive-text">Close</span>
                             </button>
 
-                            <div class="slds-text-heading_large slds-m-vertical_medium">Positions for Changes</div>
+                            <div class="slds-text-heading_large slds-m-vertical_medium">Positions to Changes</div>
                         </header>
             
                         <!-- Corpo modal -->
                         <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
 
                             <!-- Tabela -->
-                            <div class="slds-text-heading_medium slds-m-vertical_medium">Positions selected: {countSelectedPositions}</div>
+                            <div class="slds-text-heading_medium slds-m-vertical_medium">Positions selected: </div>
 
                             <table class="slds-table slds-table_cell-buffer slds-table_bordered">
                                 <thead>
@@ -180,24 +208,43 @@
 
                             
                             <!-- Inputs -->
-                            <div class="slds-form-element slds-m-top_medium">
+                            <div class="slds-form-element slds-m-top_xx-large">
 
-                                <div class="slds-text-heading_medium slds-m-vertical_medium">Values for changes</div>
+                                <div class="slds-text-heading_medium slds-m-top_medium">Values to changes</div>
 
-                                <label class="slds-form-element__label" for="approvalStatus">Approval Status</label>
-                                <div class="slds-form-element__control">
-                                    <input type="text" id="approvalStatus" placeholder="Choose approval status" required="" class="slds-input" />
+                                <div class="slds-form-element__control slds-m-bottom_x-small slds-m-top_medium">
+                                    <lightning-combobox
+                                        id="approvalStatus" 
+                                        name="approvalStatus"
+                                        label="Approval Status"
+                                        value={approvalStatusValue}
+                                        options={approvalStatusOptions}
+                                        onchange={handleChangeApprovalStatus}>
+                                    </lightning-combobox>
                                 </div>
 
-                                <label class="slds-form-element__label" for="status">Status</label>
-                                <div class="slds-form-element__control">
-                                    <input type="text" id="status" placeholder="Choose status" required="" class="slds-input" />
+                                <div class="slds-form-element__control slds-m-bottom_x-small slds-m-top_medium">
+                                    <lightning-combobox
+                                        id="status" 
+                                        name="status"
+                                        label="Status"
+                                        value={statusValue}
+                                        options={statusOptions}
+                                        onchange={handleChangeStatus}>
+                                    </lightning-combobox>
                                 </div>
 
-                                <label class="slds-form-element__label" for="owner">Owner</label>
-                                <div class="slds-form-element__control">
-                                    <input type="text" id="owner" placeholder="Choose owner" required="" class="slds-input" />
+                                <div class="slds-form-element__control slds-m-bottom_x-small slds-m-top_medium">
+                                    <lightning-combobox
+                                        id="owner" 
+                                        name="owner"
+                                        label="Owner"
+                                        value={ownerValue}
+                                        options={ownerOptions}
+                                        onchange={handleChangeOwner}>
+                                    </lightning-combobox>
                                 </div>
+
                             </div>
                         </div>
             
