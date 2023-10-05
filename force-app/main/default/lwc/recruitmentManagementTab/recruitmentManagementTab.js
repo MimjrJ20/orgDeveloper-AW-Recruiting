@@ -33,13 +33,15 @@ export default class RecruitmentManagementTab extends LightningElement {
     @track statusValueTable = "All";
     @track ownerValueTable = "All";
 
-
     @track rowNumber;
     @track idProfile;
     @track nameProfile;
+    @track idUser;
+    @track nameUser;
 
     @track bShowModal = false;
     @track disableOptions = false;
+    @track profileHumanResource = false;
 
 
     //-----------------
@@ -120,57 +122,140 @@ export default class RecruitmentManagementTab extends LightningElement {
 
         this.rowNumber = 1;
 
-        //método apex para obter os registros
-        retrivePositions({
-            searchTerm: this.queryTerm,
-            selectedStatus: this.selectedStatus,
-            selectedOwner: this.selectedOwner
-        })
-        .then((result) => {
+        getCurrentUserProfileId({})
+        .then((profileId) => {
 
-            result.forEach((item) => {
-                item.rowNumber = this.rowNumber;
-                this.rowNumber++;
-                item.CreatedDate = this.formatDate(item.CreatedDate);
+            this.idProfile = profileId;
+
+            getProfileName({ id: this.idProfile })
+            .then((profileName) => {
+
+                this.nameProfile = profileName;
+
+                if (this.nameProfile === "Human Resources") {
+                    this.profileHumanResource = true;
+                    this.disableOptions = true;
+
+                    getCurrentUserId({})
+                    .then((userId) =>{
+                        this.idUser = userId;
+
+                        //método apex para obter os registros
+                        retrivePositions({
+                            searchTerm: this.queryTerm,
+                            selectedStatus: this.selectedStatus,
+                            selectedOwner: this.selectedOwner,
+                            profileHumanResource: this.profileHumanResource,
+                            idUser: this.idUser
+                        })
+                        .then((result) => {
+
+                            result.forEach((item) => {
+                                item.rowNumber = this.rowNumber;
+                                item.CreatedDate = this.formatDate(item.CreatedDate);
+                                this.rowNumber++;
+                            });
+
+                            this.data = result;
+
+                            //pegando os valores para Status__c no result e passando para uma lista Set para que sejam valores únicos
+                            const uniqueStatusValues = [...new Set(result.map((row) => row.Status__c))];
+
+                            this.statusOptionsTable = [
+                                { label: this.statusValueTable, value: this.statusValueTable },
+                                ...uniqueStatusValues.map((status) => ({
+                                    label: status,
+                                    value: status
+                                }))
+                            ];
+
+                            getCurrentUserName({})
+
+                            .then((userName) => {
+
+                                this.nameUser = userName;
+                                this.ownerOptionsTable = [];
+                                const currentUserOption = { label: this.nameUser, value: this.idUser };
+                                this.ownerOptionsTable.push(currentUserOption);
+                                this.selectedOwner = this.idUser;
+                                this.ownerValueTable = this.idUser;
+                        
+                            })
+                            .catch((error) => {
+                                console.error("Error loading user name: ", error);
+                            });
+                        })
+                        .catch((error) => {
+                            console.error("Error loading positions: ", error);
+                        });
+                    })
+                    .catch((error) => {
+                        console.error("Error loading user id: ", error);
+                    });
+                
+                } else {
+                    
+                    //método apex para obter os registros
+                    retrivePositions({
+                        searchTerm: this.queryTerm,
+                        selectedStatus: this.selectedStatus,
+                        selectedOwner: this.selectedOwner,
+                        profileHumanResource: this.profileHumanResource,
+                        idUser: this.idUser
+                    })
+                    .then((result) => {
+
+                        result.forEach((item) => {
+                            item.rowNumber = this.rowNumber;
+                            item.CreatedDate = this.formatDate(item.CreatedDate);
+                            this.rowNumber++;
+                        });
+
+                        this.data = result;
+
+                        //pegando os valores para Status__c no result e passando para uma lista Set para que sejam valores únicos
+                        const uniqueStatusValues = [...new Set(result.map((row) => row.Status__c))];
+
+                        this.statusOptionsTable = [
+                            { label: this.statusValueTable, value: this.statusValueTable },
+                            ...uniqueStatusValues.map((status) => ({
+                                label: status,
+                                value: status
+                            }))
+                        ];
+
+                        //pegando os valores para Owner no result e passando para uma lista Set para que sejam valores únicos
+                        const uniqueOwnerValues = [...new Set(result.map((row) => row.OwnerId))];
+                        const ownerNamesMap = new Map();
+                        
+                        result.forEach((row) => {
+                            ownerNamesMap.set(row.OwnerId, row.Owner.Name);
+                        });
+                        
+                        this.ownerOptionsTable = [
+                            { label: this.ownerValueTable, value: this.ownerValueTable },
+                            ...uniqueOwnerValues.map((ownerId) => ({
+                                label: ownerNamesMap.get(ownerId),
+                                value: ownerId
+                            }))
+                        ];
+                    })
+                    .catch((error) => {
+                        console.error("Error loading positions: ", error);
+                    });
+                }
+            })
+            .catch((error) => {
+                console.error("Error loading profile name: ", error);
             });
-
-            this.data = result;
-
-            //pegando os valores para Status__c no result e passando para uma lista Set para que sejam valores únicos
-            const uniqueStatusValues = [...new Set(result.map((row) => row.Status__c))];
-
-            this.statusOptionsTable = [
-                { label: this.statusValueTable, value: this.statusValueTable },
-                ...uniqueStatusValues.map((status) => ({
-                    label: status,
-                    value: status
-                }))
-            ];
-
-            //pegando os valores para Owner no result e passando para uma lista Set para que sejam valores únicos
-            const uniqueOwnerValues = [...new Set(result.map((row) => row.OwnerId))];
-            const ownerNamesMap = new Map();
-            
-            result.forEach((row) => {
-                ownerNamesMap.set(row.OwnerId, row.Owner.Name);
-            });
-            
-            this.ownerOptionsTable = [
-                { label: this.ownerValueTable, value: this.ownerValueTable },
-                ...uniqueOwnerValues.map((ownerId) => ({
-                    label: ownerNamesMap.get(ownerId),
-                    value: ownerId
-                }))
-            ];
-            console.log("this.selectedOwner: ", this.selectedOwner);
-
         })
         .catch((error) => {
-            console.error("Error loading positions: ", error);
+            console.error("Error loading profile id: ", error);
         });
+        
 
     }
-
+    
     //função - para refresh
     loadTableRefresh(){
         this.loadTable();
@@ -271,7 +356,6 @@ export default class RecruitmentManagementTab extends LightningElement {
         });
         
     }
-
 
     //função - formatar data
     formatDate(dateString) {

@@ -18,7 +18,7 @@ public with sharing class PositionDAO {
 
     //pegar lista de positions disponíveis com status igual a New ou Open
     @AuraEnabled
-    public static List<Position__c> getPositionsAvailable(String searchTerm, String selectedStatus, String selectedOwner){
+    public static List<Position__c> getPositionsAvailable(String searchTerm, String selectedStatus, String selectedOwner, Boolean profileHumanResource, String idUser){
     
         Set<String> statusValues = new Set<String> {'New', 'Open'};
     
@@ -26,19 +26,35 @@ public with sharing class PositionDAO {
                         'FROM Position__c ' +
                         'WHERE Status__c IN :statusValues';
     
-        if (!String.isBlank(searchTerm)) {
-            searchTerm = '%' + searchTerm + '%'; 
-            query += ' AND (Name LIKE :searchTerm OR Account__r.Name LIKE :searchTerm)';
-        }
-
-        if (selectedStatus != 'All') {
-            query += ' AND Status__c = :selectedStatus';
-        }
-
-        if (selectedOwner != 'All') {
-            query += ' AND OwnerId = :selectedOwner';
-        }
+        if (profileHumanResource) {
+            if (!String.isBlank(searchTerm)) {
+                searchTerm = '%' + searchTerm + '%'; 
+                query += ' AND (Name LIKE :searchTerm OR Account__r.Name LIKE :searchTerm)';
+            }
     
+            if (selectedStatus != 'All') {
+                query += ' AND Status__c = :selectedStatus';
+            }
+    
+            if (idUser != null) {
+                query += ' AND OwnerId = :idUser';
+            }
+        } else {
+            
+            if (!String.isBlank(searchTerm)) {
+                searchTerm = '%' + searchTerm + '%'; 
+                query += ' AND (Name LIKE :searchTerm OR Account__r.Name LIKE :searchTerm)';
+            }
+    
+            if (selectedStatus != 'All') {
+                query += ' AND Status__c = :selectedStatus';
+            }
+    
+            if (selectedOwner != 'All') {
+                query += ' AND OwnerId = :selectedOwner';
+            }
+        }
+        
         return Database.query(query);
     }
 
