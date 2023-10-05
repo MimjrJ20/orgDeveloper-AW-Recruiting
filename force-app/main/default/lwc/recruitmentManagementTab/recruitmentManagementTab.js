@@ -8,6 +8,8 @@ import getCurrentUserProfileId from "@salesforce/apex/UserController.getCurrentU
 import getProfileName from "@salesforce/apex/UserController.getProfileName";
 import getCurrentUserId from "@salesforce/apex/UserController.getCurrentUserId";
 import getCurrentUserName from "@salesforce/apex/UserController.getCurrentUserName";
+import getUsers from "@salesforce/apex/UserController.getUsers";
+import getQueues from "@salesforce/apex/UserController.getQueues";
 
 
 export default class RecruitmentManagementTab extends LightningElement {
@@ -38,20 +40,28 @@ export default class RecruitmentManagementTab extends LightningElement {
     @track nameProfile;
     @track idUser;
     @track nameUser;
+    @track titleOwner;
 
     @track bShowModal = false;
     @track disableOptions = false;
     @track profileHumanResource = false;
+    @track disableOwner = false;
 
 
     //-----------------
-    //funções geral
+    //funções
 
+
+    //--------
+    //funções geral
     //função - fechar modal
     closeModal() {
         this.bShowModal = false;
         this.selectedCons = [];
         this.recordIds = [];
+        this.approvalStatusValue = "";
+        this.statusValue = "";
+        this.ownerValue = "";
     }
     
     //função - simplificar as chamadas de toast
@@ -69,9 +79,10 @@ export default class RecruitmentManagementTab extends LightningElement {
         this.loadTable(); 
         this.loadPicklistValues("Status__c");
         this.loadPicklistValues("Approval_Status__c");
+        this.loadUsers();
     }
 
-    //-----------------
+    //--------
     //funções de evento
 
     //função - verifica se foi pressionada a tecla ENTER e chama a função que filtra a tabela
@@ -114,7 +125,19 @@ export default class RecruitmentManagementTab extends LightningElement {
         this.ownerValue = event.target.value;
     }
 
-    //-----------------
+    //função - selecionar todas as linhas
+    allSelected(event) {
+    
+        var selectedRows = this.template.querySelectorAll("lightning-input");
+
+        for (let i = 0; i < selectedRows.length; i++) {
+            if (selectedRows[i].type === "checkbox") {
+                selectedRows[i].checked = event.target.checked;
+            }
+        }
+    }
+
+    //--------
     //funções carregar
 
     //função - carregar a tabela e obter os dados
@@ -135,12 +158,14 @@ export default class RecruitmentManagementTab extends LightningElement {
                 if (this.nameProfile === "Human Resources") {
                     this.profileHumanResource = true;
                     this.disableOptions = true;
+                    this.disableOwner = false;
+                    this.titleOwner = "You can only access positions associated with your name"
 
                     getCurrentUserId({})
                     .then((userId) =>{
+
                         this.idUser = userId;
 
-                        //método apex para obter os registros
                         retrivePositions({
                             searchTerm: this.queryTerm,
                             selectedStatus: this.selectedStatus,
@@ -149,11 +174,14 @@ export default class RecruitmentManagementTab extends LightningElement {
                             idUser: this.idUser
                         })
                         .then((result) => {
+                            console.log("result: ", result);
 
                             result.forEach((item) => {
                                 item.rowNumber = this.rowNumber;
-                                item.CreatedDate = this.formatDate(item.CreatedDate);
                                 this.rowNumber++;
+                                item.CreatedDate = this.formatDate(item.CreatedDate);
+                                item.LastModifiedDate = this.formatDate(item.LastModifiedDate);
+                                item.Location__c = item.Location__c || "N/A";
                             });
 
                             this.data = result;
@@ -195,7 +223,9 @@ export default class RecruitmentManagementTab extends LightningElement {
                 
                 } else {
                     
-                    //método apex para obter os registros
+                    this.titleOwner = "Please, select one owner or 'all'"
+                    this.disableOwner = true;
+
                     retrivePositions({
                         searchTerm: this.queryTerm,
                         selectedStatus: this.selectedStatus,
@@ -204,14 +234,18 @@ export default class RecruitmentManagementTab extends LightningElement {
                         idUser: this.idUser
                     })
                     .then((result) => {
+                        console.log("result: ", result);
 
                         result.forEach((item) => {
                             item.rowNumber = this.rowNumber;
-                            item.CreatedDate = this.formatDate(item.CreatedDate);
                             this.rowNumber++;
+                            item.CreatedDate = this.formatDate(item.CreatedDate);
+                            item.LastModifiedDate = this.formatDate(item.LastModifiedDate);
+                            item.Location__c = item.Location__c || "N/A";
                         });
 
                         this.data = result;
+
 
                         //pegando os valores para Status__c no result e passando para uma lista Set para que sejam valores únicos
                         const uniqueStatusValues = [...new Set(result.map((row) => row.Status__c))];
@@ -251,26 +285,12 @@ export default class RecruitmentManagementTab extends LightningElement {
         })
         .catch((error) => {
             console.error("Error loading profile id: ", error);
-        });
-        
-
+        })
     }
     
     //função - para refresh
     loadTableRefresh(){
         this.loadTable();
-    }
-
-    //função - selecionar todas as linhas
-    allSelected(event) {
-        
-        var selectedRows = this.template.querySelectorAll("lightning-input");
-
-        for (let i = 0; i < selectedRows.length; i++) {
-            if (selectedRows[i].type === "checkbox") {
-                selectedRows[i].checked = event.target.checked;
-            }
-        }
     }
 
     //função - abrir modal e mostrar positions
@@ -287,8 +307,8 @@ export default class RecruitmentManagementTab extends LightningElement {
             if (selectedRows[i].checked && selectedRows[i].type === "checkbox") {
                     
                 selectedCons.push({
-                        Name: selectedRows[i].value,
-                        Id: selectedRows[i].dataset.id,
+                    Name: selectedRows[i].value,
+                    Id: selectedRows[i].dataset.id,
                 });
 
                 recordIds.push(selectedRows[i].dataset.id);
@@ -303,6 +323,46 @@ export default class RecruitmentManagementTab extends LightningElement {
             this.showToast("None row selected!", "Please select at least one row to change the position(s)!!!", "error");
         }
 
+    }
+
+    //função - carregar os usuários disponiveis e colocar na lista de opções
+    loadUsers(){
+
+        getUsers({})
+        .then((result) => {
+
+            const options = [{ label: "None", value: "" }];
+
+            result.forEach((row) => {
+                row.Name = this.capitalizeWords(row.Name);
+                options.push({
+                    label: row.Name,
+                    value: row.Id
+                });
+            });
+
+            this.ownerOptions = options;
+        })
+        .catch((error) => {
+            console.error("Error loading users: ", error);
+        });    
+
+        getQueues({})
+        .then((result) => {
+
+            const options = this.ownerOptions;
+            
+            result.forEach((row) => {
+                row.Name = this.capitalizeWords(row.Name);
+                options.push({
+                    label: row.Name,
+                    value: row.Id
+                });
+            });
+        })
+        .catch((error) => {
+            console.error("Error loading queues: ", error);
+        });  
     }
 
     //função - para carregar as opções do picklist
@@ -331,31 +391,46 @@ export default class RecruitmentManagementTab extends LightningElement {
         });
     }
 
+    //--------
+    //funções salvar
+
     //função - salvar os registros selecionados
     saveChanges(){
 
         this.bShowModal = false;
-        const approvalStatusValue = this.approvalStatusValue;
-        const statusValue = this.statusValue;
 
-        updatePosition({
-            ids: this.recordIds,
-            approvalStatus: approvalStatusValue,
-            status: statusValue
-        })
-        .then(() => {
-            console.log("Success to update records selected.");
-            this.showToast("Success to update!", "Sucess to update records selected!", "success");
-            setTimeout(() => {this.loadTable()},2000);
+        getCurrentUserId({})
+        .then((userId) =>{
 
+            this.idUser = userId;
+
+            updatePosition({
+                ids: this.recordIds,
+                approvalStatus: this.approvalStatusValue,
+                status: this.statusValue,
+                owner: this.ownerValue,
+                user: this.idUser
+            })
+            .then(() => {
+                console.log("Success to update records selected.");
+                this.showToast("Success to update!", "Sucess to update records selected!", "success");
+                this.closeModal();
+                setTimeout(() => {this.loadTable()},1000);
+    
+            })
+            .catch(error => {
+                console.error("Error to update records selected: ", error);
+                let errorMessage = "Error to update records selected: " + error.statusText;
+                this.showToast("Error to update!", errorMessage, "error");
+            });
         })
         .catch(error => {
-            console.error("Error to update records selected: ", error);
-            let errorMessage = "Error to update records selected: " + error.statusText;
-            this.showToast("Error to update!", errorMessage, "error");
+            console.error("Error get Id user: ", error);
         });
-        
     }
+
+    //--------
+    //funções formatar
 
     //função - formatar data
     formatDate(dateString) {
@@ -363,5 +438,14 @@ export default class RecruitmentManagementTab extends LightningElement {
         const [month, day, year] = new Date(dateString).toLocaleDateString(undefined, options).split("/");
         return `${day}/${month}/${year}`
     }
-    
+
+    //função - formatar primeira letra de cada palavra para maiuscula
+    capitalizeWords(wordsString) {
+        return wordsString
+            .toLowerCase()
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    }
+ 
 }

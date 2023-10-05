@@ -31,8 +31,11 @@ public with sharing class UserController {
 
     @AuraEnabled
     public static List<User> getUsers() {
-        return [SELECT Id, Name FROM User WHERE IsActive = true];
+        return [SELECT Id, Name, Profile.Name, ProfileId FROM User WHERE (IsActive = true) AND (Profile.Name != '') AND (Profile.Name != 'Chatter Free User') ORDER BY Name ASC];
     }
 
-    
+    @AuraEnabled
+    public static List<Group> getQueues() {
+        return [SELECT Id, Name FROM Group WHERE Type = 'Queue' ORDER BY Name ASC];
+    }    
 }

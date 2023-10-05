@@ -41,7 +41,8 @@
                         placeholder="..."
                         options={ownerOptionsTable}
                         onchange={handleChangeOwnerTable}
-                        disabled={disableOptions}>
+                        disabled={disableOptions}
+                        title={titleOwner}>
                     </lightning-combobox>
                 </div>
             </div>
@@ -90,6 +91,9 @@
                         <div class="slds-truncate" title="Title">Title</div>
                     </th>
                     <th class="" scope="col">
+                        <div class="slds-truncate" title="Account">Location</div>
+                    </th>
+                    <th class="" scope="col">
                         <div class="slds-truncate" title="Account">Account</div>
                     </th>
                     <th class="" scope="col">
@@ -101,9 +105,14 @@
                     <th class="" scope="col">
                         <div class="slds-truncate" title="Owner">Owner</div>
                     </th>
-
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Owner">Hiring Manager</div>
+                    </th>
                     <th class="" scope="col">
                         <div class="slds-truncate" title="Owner">Created Date</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate" title="Owner">Last Modified Date</div>
                     </th>
                 </tr>
             </thead>
@@ -129,6 +138,9 @@
                             <div>{pos.Name}</div>
                         </th>
                         <th scope="col">
+                            <div>{pos.Location__c}</div>
+                        </th>
+                        <th scope="col">
                             <div>{pos.Account__r.Name}</div>
                         </th>
                         <th scope="col">
@@ -141,7 +153,13 @@
                             <div>{pos.Owner.Name}</div>
                         </th>
                         <th scope="col">
+                            <div>{pos.Hiring_Manager__c}</div>
+                        </th>
+                        <th scope="col">
                             <div>{pos.CreatedDate}</div>
+                        </th>
+                        <th scope="col">
+                            <div>{pos.LastModifiedDate}</div>
                         </th>
                     </tr>
                 </template>
@@ -234,16 +252,19 @@
                                     </lightning-combobox>
                                 </div>
 
-                                <div class="slds-form-element__control slds-m-bottom_x-small slds-m-top_medium">
-                                    <lightning-combobox
-                                        id="owner" 
-                                        name="owner"
-                                        label="Owner"
-                                        value={ownerValue}
-                                        options={ownerOptions}
-                                        onchange={handleChangeOwner}>
-                                    </lightning-combobox>
-                                </div>
+                                <template if:true={disableOwner}>
+                                    <div class="slds-form-element__control slds-m-bottom_x-small slds-m-top_medium">
+                                        <lightning-combobox
+                                            id="owner" 
+                                            name="owner"
+                                            label="Owner"
+                                            value={ownerValue}
+                                            options={ownerOptions}
+                                            onchange={handleChangeOwner}>
+                                        </lightning-combobox>
+                                    </div>
+                                </template>
+
 
                             </div>
                         </div>
