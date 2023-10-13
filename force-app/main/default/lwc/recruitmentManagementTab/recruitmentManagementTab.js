@@ -9,7 +9,9 @@ import getProfileName from "@salesforce/apex/UserController.getProfileName";
 import getCurrentUserId from "@salesforce/apex/UserController.getCurrentUserId";
 import getCurrentUserName from "@salesforce/apex/UserController.getCurrentUserName";
 import getUsers from "@salesforce/apex/UserController.getUsers";
+import getUserName from "@salesforce/apex/UserController.getUserName";
 import getQueues from "@salesforce/apex/UserController.getQueues";
+import sendEmail from "@salesforce/apex/SendNotification.sendEmail";
 
 
 export default class RecruitmentManagementTab extends LightningElement {
@@ -41,6 +43,7 @@ export default class RecruitmentManagementTab extends LightningElement {
     @track idUser;
     @track nameUser;
     @track titleOwner;
+    @track nameManager;
 
     @track bShowModal = false;
     @track disableOptions = false;
@@ -66,7 +69,7 @@ export default class RecruitmentManagementTab extends LightningElement {
     
     //função - simplificar as chamadas de toast
     showToast(title, message, variant) {
-        const toastEvent = new ShowToastEvent({
+        let toastEvent = new ShowToastEvent({
             title: title,
             message: message,
             variant: variant,
@@ -87,7 +90,7 @@ export default class RecruitmentManagementTab extends LightningElement {
 
     //função - verifica se foi pressionada a tecla ENTER e chama a função que filtra a tabela
     handleKeyUp(event) {
-        const isEnterKey = event.keyCode === 13;
+        let isEnterKey = event.keyCode === 13;
 
         if (isEnterKey) {
             this.queryTerm = event.target.value;
@@ -128,7 +131,7 @@ export default class RecruitmentManagementTab extends LightningElement {
     //função - selecionar todas as linhas
     allSelected(event) {
     
-        var selectedRows = this.template.querySelectorAll("lightning-input");
+        let selectedRows = this.template.querySelectorAll("lightning-input");
 
         for (let i = 0; i < selectedRows.length; i++) {
             if (selectedRows[i].type === "checkbox") {
@@ -147,47 +150,104 @@ export default class RecruitmentManagementTab extends LightningElement {
 
         getCurrentUserProfileId({})
         .then((profileId) => {
-
             this.idProfile = profileId;
+            return getProfileName({ id: this.idProfile });
+        })
+        .then((profileName) => {
 
-            getProfileName({ id: this.idProfile })
-            .then((profileName) => {
+            this.nameProfile = profileName;
 
-                this.nameProfile = profileName;
+            if (this.nameProfile === "Human Resources") {
+                this.profileHumanResource = true;
+                this.disableOptions = true;
+                this.disableOwner = false;
+                this.titleOwner = "You can only access positions associated with your name";
 
-                if (this.nameProfile === "Human Resources") {
-                    this.profileHumanResource = true;
-                    this.disableOptions = true;
-                    this.disableOwner = false;
-                    this.titleOwner = "You can only access positions associated with your name"
+                getCurrentUserId({})
+                .then((userId) => {
+                    this.idUser = userId;
+                    return retrivePositions({
+                        searchTerm: this.queryTerm,
+                        selectedStatus: this.selectedStatus,
+                        selectedOwner: this.selectedOwner,
+                        profileHumanResource: this.profileHumanResource,
+                        idUser: this.idUser
+                    });
+                    })
+                    .then((result) => {
+                        return Promise.all(result.map(item => 
+                            getUserName({ id: item.Hiring_Manager__c })))
+                            .then(managerNames => {
+                                result.forEach((item, index) => {
+                                    item.rowNumber = this.rowNumber;
+                                    this.rowNumber++;
+                                    item.CreatedDate = this.formatDate(item.CreatedDate);
+                                    item.LastModifiedDate = this.formatDate(item.LastModifiedDate);
+                                    item.Location__c = item.Location__c || "N/A";
+                                    item.nameManager = managerNames[index];
+                                });
 
-                    getCurrentUserId({})
-                    .then((userId) =>{
+                                this.data = result;
+                                
+                                //pegando os valores para Status__c no result e passando para uma lista Set para que sejam valores únicos
+                                let uniqueStatusValues = [...new Set(result.map((row) => row.Status__c))];
 
-                        this.idUser = userId;
+                                this.statusOptionsTable = [
+                                    { label: this.statusValueTable, value: this.statusValueTable },
+                                    ...uniqueStatusValues.map((status) => ({
+                                        label: status,
+                                        value: status
+                                    }))
+                                ];
 
-                        retrivePositions({
-                            searchTerm: this.queryTerm,
-                            selectedStatus: this.selectedStatus,
-                            selectedOwner: this.selectedOwner,
-                            profileHumanResource: this.profileHumanResource,
-                            idUser: this.idUser
-                        })
-                        .then((result) => {
-                            console.log("result: ", result);
+                                getCurrentUserName({})
+                                .then((userName) => {
 
-                            result.forEach((item) => {
+                                    this.nameUser = userName;
+                                    this.ownerOptionsTable = [];
+                                    let currentUserOption = { label: this.nameUser, value: this.idUser };
+                                    this.ownerOptionsTable.push(currentUserOption);
+                                    this.selectedOwner = this.idUser;
+                                    this.ownerValueTable = this.idUser;
+                            
+                                })
+                                .catch((error) => {
+                                    console.error("Error loading user name: ", error);
+                                });
+                            });
+                    })
+                    .catch((error) => {
+                        console.error("Error loading positions: ", error);
+                    });
+
+            } else {
+                this.titleOwner = "Please, select one owner or 'all'";
+                this.disableOwner = true;
+
+                retrivePositions({
+                    searchTerm: this.queryTerm,
+                    selectedStatus: this.selectedStatus,
+                    selectedOwner: this.selectedOwner,
+                    profileHumanResource: this.profileHumanResource,
+                    idUser: this.idUser
+                })
+                .then((result) => {
+                    return Promise.all(result.map(item => 
+                        getUserName({ id: item.Hiring_Manager__c })))
+                        .then(managerNames => {
+                            result.forEach((item, index) => {
                                 item.rowNumber = this.rowNumber;
                                 this.rowNumber++;
                                 item.CreatedDate = this.formatDate(item.CreatedDate);
                                 item.LastModifiedDate = this.formatDate(item.LastModifiedDate);
                                 item.Location__c = item.Location__c || "N/A";
+                                item.nameManager = managerNames[index];
                             });
 
                             this.data = result;
 
                             //pegando os valores para Status__c no result e passando para uma lista Set para que sejam valores únicos
-                            const uniqueStatusValues = [...new Set(result.map((row) => row.Status__c))];
+                            let uniqueStatusValues = [...new Set(result.map((row) => row.Status__c))];
 
                             this.statusOptionsTable = [
                                 { label: this.statusValueTable, value: this.statusValueTable },
@@ -197,110 +257,50 @@ export default class RecruitmentManagementTab extends LightningElement {
                                 }))
                             ];
 
-                            getCurrentUserName({})
-
-                            .then((userName) => {
-
-                                this.nameUser = userName;
-                                this.ownerOptionsTable = [];
-                                const currentUserOption = { label: this.nameUser, value: this.idUser };
-                                this.ownerOptionsTable.push(currentUserOption);
-                                this.selectedOwner = this.idUser;
-                                this.ownerValueTable = this.idUser;
-                        
-                            })
-                            .catch((error) => {
-                                console.error("Error loading user name: ", error);
+                            //pegando os valores para Owner no result e passando para uma lista Set para que sejam valores únicos
+                            let uniqueOwnerValues = [...new Set(result.map((row) => row.OwnerId))];
+                            let ownerNamesMap = new Map();
+                            
+                            result.forEach((row) => {
+                                ownerNamesMap.set(row.OwnerId, row.Owner.Name);
                             });
-                        })
-                        .catch((error) => {
-                            console.error("Error loading positions: ", error);
+                            
+                            this.ownerOptionsTable = [
+                                { label: this.ownerValueTable, value: this.ownerValueTable },
+                                ...uniqueOwnerValues.map((ownerId) => ({
+                                    label: ownerNamesMap.get(ownerId),
+                                    value: ownerId
+                                }))
+                            ];
                         });
-                    })
-                    .catch((error) => {
-                        console.error("Error loading user id: ", error);
-                    });
-                
-                } else {
-                    
-                    this.titleOwner = "Please, select one owner or 'all'"
-                    this.disableOwner = true;
-
-                    retrivePositions({
-                        searchTerm: this.queryTerm,
-                        selectedStatus: this.selectedStatus,
-                        selectedOwner: this.selectedOwner,
-                        profileHumanResource: this.profileHumanResource,
-                        idUser: this.idUser
-                    })
-                    .then((result) => {
-                        console.log("result: ", result);
-
-                        result.forEach((item) => {
-                            item.rowNumber = this.rowNumber;
-                            this.rowNumber++;
-                            item.CreatedDate = this.formatDate(item.CreatedDate);
-                            item.LastModifiedDate = this.formatDate(item.LastModifiedDate);
-                            item.Location__c = item.Location__c || "N/A";
-                        });
-
-                        this.data = result;
-
-
-                        //pegando os valores para Status__c no result e passando para uma lista Set para que sejam valores únicos
-                        const uniqueStatusValues = [...new Set(result.map((row) => row.Status__c))];
-
-                        this.statusOptionsTable = [
-                            { label: this.statusValueTable, value: this.statusValueTable },
-                            ...uniqueStatusValues.map((status) => ({
-                                label: status,
-                                value: status
-                            }))
-                        ];
-
-                        //pegando os valores para Owner no result e passando para uma lista Set para que sejam valores únicos
-                        const uniqueOwnerValues = [...new Set(result.map((row) => row.OwnerId))];
-                        const ownerNamesMap = new Map();
-                        
-                        result.forEach((row) => {
-                            ownerNamesMap.set(row.OwnerId, row.Owner.Name);
-                        });
-                        
-                        this.ownerOptionsTable = [
-                            { label: this.ownerValueTable, value: this.ownerValueTable },
-                            ...uniqueOwnerValues.map((ownerId) => ({
-                                label: ownerNamesMap.get(ownerId),
-                                value: ownerId
-                            }))
-                        ];
-                    })
-                    .catch((error) => {
-                        console.error("Error loading positions: ", error);
-                    });
-                }
-            })
-            .catch((error) => {
-                console.error("Error loading profile name: ", error);
-            });
+                })
+                .catch((error) => {
+                    console.error("Error loading positions: ", error);
+                });
+            }
         })
         .catch((error) => {
             console.error("Error loading profile id: ", error);
-        })
+        });
     }
-    
+
     //função - para refresh
-    loadTableRefresh(){
+    loadTableRefresh() {
+        this.queryTerm = "";
+        this.selectedStatus = "All";
+        this.selectedOwner = "All";
         this.loadTable();
     }
+
 
     //função - abrir modal e mostrar positions
     showPositions() {
 
         this.rowNumber = 1;
 
-        var selectedRows = this.template.querySelectorAll("lightning-input");
-        var selectedCons = [];
-        var recordIds = [];
+        let selectedRows = this.template.querySelectorAll("lightning-input");
+        let selectedCons = [];
+        let recordIds = [];
 
         //com base na linha selecionada, obtenha os valores das positions
         for (let i = 0; i < selectedRows.length; i++) {
@@ -331,7 +331,7 @@ export default class RecruitmentManagementTab extends LightningElement {
         getUsers({})
         .then((result) => {
 
-            const options = [{ label: "None", value: "" }];
+            let options = [{ label: "None", value: "" }];
 
             result.forEach((row) => {
                 row.Name = this.capitalizeWords(row.Name);
@@ -350,8 +350,8 @@ export default class RecruitmentManagementTab extends LightningElement {
         getQueues({})
         .then((result) => {
 
-            const options = this.ownerOptions;
-            
+            let options = this.ownerOptions;
+
             result.forEach((row) => {
                 row.Name = this.capitalizeWords(row.Name);
                 options.push({
@@ -373,7 +373,7 @@ export default class RecruitmentManagementTab extends LightningElement {
         })
         .then((result) => {
 
-            const options = [{ label: "None", value: "" }];
+            let options = [{ label: "None", value: "" }];
 
             result.forEach((value) => {
                 options.push({ label: value, value });
@@ -412,11 +412,19 @@ export default class RecruitmentManagementTab extends LightningElement {
                 user: this.idUser
             })
             .then(() => {
+                
                 console.log("Success to update records selected.");
                 this.showToast("Success to update!", "Sucess to update records selected!", "success");
                 this.closeModal();
-                setTimeout(() => {this.loadTable()},1000);
-    
+                this.loadTable();
+                
+                sendEmail({
+                    emails: "michele.jeniffer.mr@gmail.com",
+                    titlesPositions: this.recordIds
+                })
+                .then(() =>{
+
+                })
             })
             .catch(error => {
                 console.error("Error to update records selected: ", error);
@@ -434,8 +442,8 @@ export default class RecruitmentManagementTab extends LightningElement {
 
     //função - formatar data
     formatDate(dateString) {
-        const options = { day: "2-digit", month: "2-digit", year: "numeric" };
-        const [month, day, year] = new Date(dateString).toLocaleDateString(undefined, options).split("/");
+        let options = { day: "2-digit", month: "2-digit", year: "numeric" };
+        let [month, day, year] = new Date(dateString).toLocaleDateString(undefined, options).split("/");
         return `${day}/${month}/${year}`
     }
 

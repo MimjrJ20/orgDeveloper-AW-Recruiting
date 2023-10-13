@@ -38,4 +38,25 @@ public with sharing class UserController {
     public static List<Group> getQueues() {
         return [SELECT Id, Name FROM Group WHERE Type = 'Queue' ORDER BY Name ASC];
     }    
+
+    @AuraEnabled
+    public static String getUserName(String id) {
+        
+        if (!String.isBlank(id)) {
+            try {
+                User user = [SELECT Id, Name FROM User WHERE Id = :id AND IsActive = true LIMIT 1];
+                if (user != null) {
+                    return user.Name;
+                } else {
+                    return 'User not found';
+                }
+            } catch (QueryException e) {
+                return 'Error: ' + e.getMessage();
+            }
+        } else {
+            return 'N/A';
+        }
+
+    }
+    
 }

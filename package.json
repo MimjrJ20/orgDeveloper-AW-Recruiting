@@ -37,5 +37,10 @@
     "**/{aura,lwc}/**": [
       "eslint"
     ]
+  },
+  "dependencies": {
+    "chart.js": "^4.4.0",
+    "chartjs-gauge": "^0.3.0",
+    "zingchart": "^2.9.12"
   }
 }

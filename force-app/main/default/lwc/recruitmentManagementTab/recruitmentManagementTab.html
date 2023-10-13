@@ -65,7 +65,7 @@
                     <lightning-button-icon 
                         icon-name="utility:refresh"  
                         variant="brand" 
-                        alternative-text="Refresh"
+                        alternative-text="Clear filter and load table"
                         onclick={loadTableRefresh}>
                     </lightning-button-icon>
                 </div>
@@ -106,13 +106,13 @@
                         <div class="slds-truncate" title="Owner">Owner</div>
                     </th>
                     <th class="" scope="col">
-                        <div class="slds-truncate" title="Owner">Hiring Manager</div>
+                        <div class="slds-truncate" title="Hiring Manager">Hiring Manager</div>
                     </th>
                     <th class="" scope="col">
-                        <div class="slds-truncate" title="Owner">Created Date</div>
+                        <div class="slds-truncate" title="Created Date">Created Date</div>
                     </th>
                     <th class="" scope="col">
-                        <div class="slds-truncate" title="Owner">Last Modified Date</div>
+                        <div class="slds-truncate" title="Last Modified Date">Last Modified Date</div>
                     </th>
                 </tr>
             </thead>
@@ -153,7 +153,7 @@
                             <div>{pos.Owner.Name}</div>
                         </th>
                         <th scope="col">
-                            <div>{pos.Hiring_Manager__c}</div>
+                            <div>{pos.nameManager}</div>
                         </th>
                         <th scope="col">
                             <div>{pos.CreatedDate}</div>
