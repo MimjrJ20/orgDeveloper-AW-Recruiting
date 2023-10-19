@@ -3,7 +3,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 import retrivePositions from "@salesforce/apex/PositionDAO.getPositionsAvailable";
 import updatePosition from "@salesforce/apex/PositionController.updatePosition";
-import getPicklistValues from "@salesforce/apex/PositionDAO.getPicklistValues";
+import getPicklistValuesPosition from "@salesforce/apex/PositionDAO.getPicklistValuesPosition";
 import getCurrentUserProfileId from "@salesforce/apex/UserController.getCurrentUserProfileId";
 import getProfileName from "@salesforce/apex/UserController.getProfileName";
 import getCurrentUserId from "@salesforce/apex/UserController.getCurrentUserId";
@@ -12,7 +12,7 @@ import getUsers from "@salesforce/apex/UserController.getUsers";
 import getUserName from "@salesforce/apex/UserController.getUserName";
 import getQueues from "@salesforce/apex/UserController.getQueues";
 import sendEmail from "@salesforce/apex/SendNotification.sendEmail";
-import createNotification from "@salesforce/apex/SendNotification.createNotification";
+import createNotifications from "@salesforce/apex/SendNotification.createNotifications";
 
 
 export default class RecruitmentManagementTab extends LightningElement {
@@ -57,7 +57,6 @@ export default class RecruitmentManagementTab extends LightningElement {
     //-----------------
     //funções
 
-
     //--------
     //funções geral
 
@@ -79,7 +78,6 @@ export default class RecruitmentManagementTab extends LightningElement {
 
         this.bShowModal = false;
 
-
         getCurrentUserId({})
         .then((userId) =>{
 
@@ -95,20 +93,27 @@ export default class RecruitmentManagementTab extends LightningElement {
             .then(() => {
 
                 let hasOwner = this.ownerValue !== "" ? true : false;
-                
                 console.log("Success to update records selected.");
                 this.showToast("Success to update!", "Sucess to update records selected!", "success");
-                this.closeModal();
-                this.loadTable();
                 
                 if (hasOwner) {
 
-                    //this.emails.push("michele.jeniffer.mr@gmail.com");
-                    this.emails.push("bczeulli@gmail.com");
+                    //enviar notificação
+                    createNotifications({
+                        ownerId: this.ownerValue,
+                        targetIds: this.recordIds
+                    })
+                    .then(() => {
+                        console.log("Success to send notifications records selected.");
+                    })
+                    .catch((error) =>{
+                        console.error("Error to create notification: ", error);    
+                    })
 
+                    //enviar email
                     sendEmail({
-                        emails: this.emails,
-                        titlesPositions: this.recordIds
+                        ownerId: this.ownerValue,
+                        recordIds: this.recordIds
                     })
                     .then(() =>{
                         this.showToast("E-mail sended!", "Sucess to send emails!", "success");
@@ -124,20 +129,10 @@ export default class RecruitmentManagementTab extends LightningElement {
                         console.error("Error to send e-mail: ", error);
                         this.showToast("Error to send e-mail!", errorMessage, "error");
                     })
-    
-                    createNotification({
-                        ids: this.ownerValue,
-                        targetId: this.recordIds
-                    })
-                    .then(() => {
-    
-                        console.log("Success to update records selected.");
-                    })
-                    .catch((error) =>{
-                        console.error("Error to create notification: ", error);
-    
-                    })
                 }
+
+                this.closeModal();
+                this.loadTable();
                 
             })
             .catch(error => {
@@ -474,7 +469,7 @@ export default class RecruitmentManagementTab extends LightningElement {
     //função - para carregar as opções do picklist
     loadPicklistValues(fieldApiName) {
 
-        getPicklistValues({
+        getPicklistValuesPosition({
             fieldApiName: fieldApiName
         })
         .then((result) => {
