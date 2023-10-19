@@ -12,6 +12,7 @@ import getUsers from "@salesforce/apex/UserController.getUsers";
 import getUserName from "@salesforce/apex/UserController.getUserName";
 import getQueues from "@salesforce/apex/UserController.getQueues";
 import sendEmail from "@salesforce/apex/SendNotification.sendEmail";
+import createNotification from "@salesforce/apex/SendNotification.createNotification";
 
 
 export default class RecruitmentManagementTab extends LightningElement {
@@ -27,6 +28,7 @@ export default class RecruitmentManagementTab extends LightningElement {
     @track statusOptions = [];
     @track approvalStatusOptions = [];
     @track ownerOptions = [];
+    @track emails = [];
 
     @track queryTerm = "";    
     @track approvalStatusValue = "";
@@ -50,6 +52,7 @@ export default class RecruitmentManagementTab extends LightningElement {
     @track profileHumanResource = false;
     @track disableOwner = false;
 
+    @track selectedCount = 0;
 
     //-----------------
     //funções
@@ -57,6 +60,7 @@ export default class RecruitmentManagementTab extends LightningElement {
 
     //--------
     //funções geral
+
     //função - fechar modal
     closeModal() {
         this.bShowModal = false;
@@ -65,6 +69,93 @@ export default class RecruitmentManagementTab extends LightningElement {
         this.approvalStatusValue = "";
         this.statusValue = "";
         this.ownerValue = "";
+        this.selectedCount = -1;
+        console.log("fechei closeModal: ", this.selectedCount);
+
+    }
+
+    //função - salvar os registros selecionados
+    saveChanges(){
+
+        this.bShowModal = false;
+
+
+        getCurrentUserId({})
+        .then((userId) =>{
+
+            this.idUser = userId;
+
+            updatePosition({
+                ids: this.recordIds,
+                approvalStatus: this.approvalStatusValue,
+                status: this.statusValue,
+                owner: this.ownerValue,
+                user: this.idUser
+            })
+            .then(() => {
+
+                let hasOwner = this.ownerValue !== "" ? true : false;
+                
+                console.log("Success to update records selected.");
+                this.showToast("Success to update!", "Sucess to update records selected!", "success");
+                this.closeModal();
+                this.loadTable();
+                
+                if (hasOwner) {
+
+                    //this.emails.push("michele.jeniffer.mr@gmail.com");
+                    this.emails.push("bczeulli@gmail.com");
+
+                    sendEmail({
+                        emails: this.emails,
+                        titlesPositions: this.recordIds
+                    })
+                    .then(() =>{
+                        this.showToast("E-mail sended!", "Sucess to send emails!", "success");
+                    })
+                    .catch((error) => {
+
+                        let errorMessage = "Error to send e-mail: ";
+                        if (error.body.message) {
+                            errorMessage += error.body.message;
+                        } else {
+                            errorMessage += "Unknown error"; 
+                        }
+                        console.error("Error to send e-mail: ", error);
+                        this.showToast("Error to send e-mail!", errorMessage, "error");
+                    })
+    
+                    createNotification({
+                        ids: this.ownerValue,
+                        targetId: this.recordIds
+                    })
+                    .then(() => {
+    
+                        console.log("Success to update records selected.");
+                    })
+                    .catch((error) =>{
+                        console.error("Error to create notification: ", error);
+    
+                    })
+                }
+                
+            })
+            .catch(error => {
+
+                console.error("Error to update records selected: ", error);
+                let errorMessage = "Error to update records selected: ";
+                if (error.body.pageErrors && error.body.pageErrors.length > 0) {
+                    errorMessage += error.body.pageErrors[0].message;
+                } else {
+                    errorMessage += "Unknown error"; 
+                }
+                this.showToast("Error to update!", errorMessage, "error");
+
+            });
+        })
+        .catch(error => {
+            console.error("Error get Id user: ", error);
+        });
     }
     
     //função - simplificar as chamadas de toast
@@ -132,12 +223,25 @@ export default class RecruitmentManagementTab extends LightningElement {
     allSelected(event) {
     
         let selectedRows = this.template.querySelectorAll("lightning-input");
+        let isChecked = event.target.checked;
+        console.log("antes allSelected: ", this.selectedCount);
 
         for (let i = 0; i < selectedRows.length; i++) {
             if (selectedRows[i].type === "checkbox") {
                 selectedRows[i].checked = event.target.checked;
             }
         }
+        if(isChecked){
+            this.selectedCount = -1;
+            console.log("dentro if allSelected: ", this.selectedCount);
+
+        } else {
+            this.selectedCount = 0;
+            console.log("fora if allSelected: ", this.selectedCount);
+
+        }
+        console.log("depois allSelected: ", this.selectedCount);
+
     }
 
     //--------
@@ -292,29 +396,32 @@ export default class RecruitmentManagementTab extends LightningElement {
         this.loadTable();
     }
 
-
     //função - abrir modal e mostrar positions
     showPositions() {
-
         this.rowNumber = 1;
 
         let selectedRows = this.template.querySelectorAll("lightning-input");
         let selectedCons = [];
         let recordIds = [];
-
-        //com base na linha selecionada, obtenha os valores das positions
+        
         for (let i = 0; i < selectedRows.length; i++) {
             if (selectedRows[i].checked && selectedRows[i].type === "checkbox") {
-                    
                 selectedCons.push({
                     Name: selectedRows[i].value,
                     Id: selectedRows[i].dataset.id,
                 });
 
-                recordIds.push(selectedRows[i].dataset.id);
+                const recordId = selectedRows[i].dataset.id;
+                if (recordId) {
+                    recordIds.push(recordId);
+                }
             }
         }
 
+        let selectedCount = selectedCons.length;
+
+        this.selectedCount += selectedCount;
+        console.log("no showpositions: ", this.selectedCount);
         if (selectedCons.length > 0) {
             this.bShowModal = true;
             this.selectedCons = selectedCons;
@@ -322,7 +429,6 @@ export default class RecruitmentManagementTab extends LightningElement {
         } else {
             this.showToast("None row selected!", "Please select at least one row to change the position(s)!!!", "error");
         }
-
     }
 
     //função - carregar os usuários disponiveis e colocar na lista de opções
@@ -392,52 +498,6 @@ export default class RecruitmentManagementTab extends LightningElement {
     }
 
     //--------
-    //funções salvar
-
-    //função - salvar os registros selecionados
-    saveChanges(){
-
-        this.bShowModal = false;
-
-        getCurrentUserId({})
-        .then((userId) =>{
-
-            this.idUser = userId;
-
-            updatePosition({
-                ids: this.recordIds,
-                approvalStatus: this.approvalStatusValue,
-                status: this.statusValue,
-                owner: this.ownerValue,
-                user: this.idUser
-            })
-            .then(() => {
-                
-                console.log("Success to update records selected.");
-                this.showToast("Success to update!", "Sucess to update records selected!", "success");
-                this.closeModal();
-                this.loadTable();
-                
-                sendEmail({
-                    emails: "michele.jeniffer.mr@gmail.com",
-                    titlesPositions: this.recordIds
-                })
-                .then(() =>{
-
-                })
-            })
-            .catch(error => {
-                console.error("Error to update records selected: ", error);
-                let errorMessage = "Error to update records selected: " + error.statusText;
-                this.showToast("Error to update!", errorMessage, "error");
-            });
-        })
-        .catch(error => {
-            console.error("Error get Id user: ", error);
-        });
-    }
-
-    //--------
     //funções formatar
 
     //função - formatar data
@@ -451,9 +511,9 @@ export default class RecruitmentManagementTab extends LightningElement {
     capitalizeWords(wordsString) {
         return wordsString
             .toLowerCase()
-            .split(' ')
+            .split(" ")
             .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
+            .join(" ");
     }
  
 }
