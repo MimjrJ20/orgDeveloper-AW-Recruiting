@@ -203,7 +203,7 @@
                         <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
 
                             <!-- Tabela -->
-                            <div class="slds-text-heading_medium slds-m-vertical_medium">Positions selected: </div>
+                            <div class="slds-text-heading_medium slds-m-vertical_medium">Positions selected: {selectedCount}</div>
 
                             <table class="slds-table slds-table_cell-buffer slds-table_bordered">
                                 <thead>
@@ -215,11 +215,13 @@
                                 </thead>
                                 <tbody>
                                     <template for:each={selectedCons} for:item="pos">
-                                        <tr key={pos.Id}>
-                                            <td>
-                                                <div>{pos.Name}</div>
-                                            </td>
-                                        </tr>
+                                        <template if:true={pos.Name}>
+                                            <tr key={pos.Id}>
+                                                <td>
+                                                    <div>{pos.Name}</div>
+                                                </td>
+                                            </tr>
+                                        </template>
                                     </template>
                                 </tbody>
                             </table>
