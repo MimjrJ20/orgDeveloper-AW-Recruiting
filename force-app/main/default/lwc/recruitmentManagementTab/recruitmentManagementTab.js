@@ -51,6 +51,7 @@ export default class RecruitmentManagementTab extends LightningElement {
     @track disableOptions = false;
     @track profileHumanResource = false;
     @track disableOwner = false;
+    @track selectAll = false;
 
     @track selectedCount = 0;
 
@@ -92,7 +93,7 @@ export default class RecruitmentManagementTab extends LightningElement {
             })
             .then(() => {
 
-                let hasOwner = this.ownerValue !== "" ? true : false;
+                const hasOwner = this.ownerValue !== "" ? true : false;
                 console.log("Success to update records selected.");
                 this.showToast("Success to update!", "Sucess to update records selected!", "success");
                 
@@ -155,7 +156,7 @@ export default class RecruitmentManagementTab extends LightningElement {
     
     //função - simplificar as chamadas de toast
     showToast(title, message, variant) {
-        let toastEvent = new ShowToastEvent({
+        const toastEvent = new ShowToastEvent({
             title: title,
             message: message,
             variant: variant,
@@ -176,7 +177,7 @@ export default class RecruitmentManagementTab extends LightningElement {
 
     //função - verifica se foi pressionada a tecla ENTER e chama a função que filtra a tabela
     handleKeyUp(event) {
-        let isEnterKey = event.keyCode === 13;
+        const isEnterKey = event.keyCode === 13;
 
         if (isEnterKey) {
             this.queryTerm = event.target.value;
@@ -216,29 +217,29 @@ export default class RecruitmentManagementTab extends LightningElement {
 
     //função - selecionar todas as linhas
     allSelected(event) {
+        this.selectAll = event.target.checked;
     
-        let selectedRows = this.template.querySelectorAll("lightning-input");
-        let isChecked = event.target.checked;
-        console.log("antes allSelected: ", this.selectedCount);
-
-        for (let i = 0; i < selectedRows.length; i++) {
-            if (selectedRows[i].type === "checkbox") {
-                selectedRows[i].checked = event.target.checked;
-            }
-        }
-        if(isChecked){
-            this.selectedCount = -1;
-            console.log("dentro if allSelected: ", this.selectedCount);
-
-        } else {
-            this.selectedCount = 0;
-            console.log("fora if allSelected: ", this.selectedCount);
-
-        }
-        console.log("depois allSelected: ", this.selectedCount);
-
+        //map percorre esse array e, para cada item (linha de dados)
+        this.data = this.data.map((item) => {
+            item.selected = this.selectAll;
+            return item;
+        });
     }
 
+    //função - para desmarcar as linhas
+    handleIndividualCheckboxChange(event) {
+        const itemId = event.target.dataset.id;
+    
+        this.data = this.data.map((item) => {
+            if (item.Id === itemId) {
+                item.selected = event.target.checked;
+            }
+            return item;
+        });
+    
+        this.selectAll = this.data.every((item) => item.selected);
+    }
+        
     //--------
     //funções carregar
 
@@ -289,7 +290,7 @@ export default class RecruitmentManagementTab extends LightningElement {
                                 this.data = result;
                                 
                                 //pegando os valores para Status__c no result e passando para uma lista Set para que sejam valores únicos
-                                let uniqueStatusValues = [...new Set(result.map((row) => row.Status__c))];
+                                const uniqueStatusValues = [...new Set(result.map((row) => row.Status__c))];
 
                                 this.statusOptionsTable = [
                                     { label: this.statusValueTable, value: this.statusValueTable },
@@ -304,7 +305,7 @@ export default class RecruitmentManagementTab extends LightningElement {
 
                                     this.nameUser = userName;
                                     this.ownerOptionsTable = [];
-                                    let currentUserOption = { label: this.nameUser, value: this.idUser };
+                                    const currentUserOption = { label: this.nameUser, value: this.idUser };
                                     this.ownerOptionsTable.push(currentUserOption);
                                     this.selectedOwner = this.idUser;
                                     this.ownerValueTable = this.idUser;
@@ -346,7 +347,7 @@ export default class RecruitmentManagementTab extends LightningElement {
                             this.data = result;
 
                             //pegando os valores para Status__c no result e passando para uma lista Set para que sejam valores únicos
-                            let uniqueStatusValues = [...new Set(result.map((row) => row.Status__c))];
+                            const uniqueStatusValues = [...new Set(result.map((row) => row.Status__c))];
 
                             this.statusOptionsTable = [
                                 { label: this.statusValueTable, value: this.statusValueTable },
@@ -357,8 +358,8 @@ export default class RecruitmentManagementTab extends LightningElement {
                             ];
 
                             //pegando os valores para Owner no result e passando para uma lista Set para que sejam valores únicos
-                            let uniqueOwnerValues = [...new Set(result.map((row) => row.OwnerId))];
-                            let ownerNamesMap = new Map();
+                            const uniqueOwnerValues = [...new Set(result.map((row) => row.OwnerId))];
+                            const ownerNamesMap = new Map();
                             
                             result.forEach((row) => {
                                 ownerNamesMap.set(row.OwnerId, row.Owner.Name);
@@ -395,9 +396,9 @@ export default class RecruitmentManagementTab extends LightningElement {
     showPositions() {
         this.rowNumber = 1;
 
-        let selectedRows = this.template.querySelectorAll("lightning-input");
-        let selectedCons = [];
-        let recordIds = [];
+        const selectedRows = this.template.querySelectorAll("lightning-input");
+        const selectedCons = [];
+        const recordIds = [];
         
         for (let i = 0; i < selectedRows.length; i++) {
             if (selectedRows[i].checked && selectedRows[i].type === "checkbox") {
@@ -413,7 +414,7 @@ export default class RecruitmentManagementTab extends LightningElement {
             }
         }
 
-        let selectedCount = selectedCons.length;
+        const selectedCount = selectedCons.length;
 
         this.selectedCount += selectedCount;
         console.log("no showpositions: ", this.selectedCount);
@@ -432,7 +433,7 @@ export default class RecruitmentManagementTab extends LightningElement {
         getUsers({})
         .then((result) => {
 
-            let options = [{ label: "None", value: "" }];
+            const options = [{ label: "None", value: "" }];
 
             result.forEach((row) => {
                 row.Name = this.capitalizeWords(row.Name);
@@ -451,7 +452,7 @@ export default class RecruitmentManagementTab extends LightningElement {
         getQueues({})
         .then((result) => {
 
-            let options = this.ownerOptions;
+            const options = this.ownerOptions;
 
             result.forEach((row) => {
                 row.Name = this.capitalizeWords(row.Name);
@@ -474,7 +475,7 @@ export default class RecruitmentManagementTab extends LightningElement {
         })
         .then((result) => {
 
-            let options = [{ label: "None", value: "" }];
+            const options = [{ label: "None", value: "" }];
 
             result.forEach((value) => {
                 options.push({ label: value, value });
@@ -497,12 +498,12 @@ export default class RecruitmentManagementTab extends LightningElement {
 
     //função - formatar data
     formatDate(dateString) {
-        let options = { day: "2-digit", month: "2-digit", year: "numeric" };
-        let [month, day, year] = new Date(dateString).toLocaleDateString(undefined, options).split("/");
+        const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+        const [month, day, year] = new Date(dateString).toLocaleDateString(undefined, options).split("/");
         return `${day}/${month}/${year}`
     }
 
-    //função - formatar primeira letra de cada palavra para maiuscula
+    //função - formatar primeira constra de cada palavra para maiuscula
     capitalizeWords(wordsString) {
         return wordsString
             .toLowerCase()

@@ -84,7 +84,11 @@
                     </th>
                     <th class="" scope="col">
                         <div class="slds-truncate">
-                            <lightning-input onchange={allSelected} type="checkbox"></lightning-input>
+                            <lightning-input 
+                                onchange={allSelected} 
+                                type="checkbox" 
+                                checked={selectAll}>
+                            </lightning-input>
                         </div>
                     </th>
                     <th class="" scope="col">
@@ -128,9 +132,11 @@
                         <th scope="col">
                             <div>
                                 <lightning-input
+                                    onchange={handleIndividualCheckboxChange}
                                     type="checkbox"
                                     value={pos.Name}
-                                    data-id={pos.Id}>
+                                    data-id={pos.Id}
+                                    checked={pos.selected}>
                                 </lightning-input>
                             </div>
                         </th>
