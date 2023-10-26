@@ -217,26 +217,32 @@ export default class RecruitmentManagementTab extends LightningElement {
 
     //função - selecionar todas as linhas
     allSelected(event) {
-        this.selectAll = event.target.checked;
+        this.selectAll = event.target.checked; //boolean
     
         //map percorre esse array e, para cada item (linha de dados)
         this.data = this.data.map((item) => {
-            item.selected = this.selectAll;
+
+            //se o checkbox para todos for selecionados então os individuais é marcado como true, o mesmo para false quando estiver desmarcado
+            item.selected = this.selectAll; //boolean
             return item;
         });
     }
 
     //função - para desmarcar as linhas
     handleIndividualCheckboxChange(event) {
+        //obter o id do item selecionando
         const itemId = event.target.dataset.id;
     
         this.data = this.data.map((item) => {
+            //verifica se o id do item da lista é igual ao id do item selecionado
             if (item.Id === itemId) {
-                item.selected = event.target.checked;
+                item.selected = event.target.checked; //boolean
             }
             return item;
         });
     
+        //se todos os itens tiverem a propriedade "selected" como true, a variável selectAll também é definida como true.
+        //every = verifica se TODOS os elementos de um array atendem a true e retorna true
         this.selectAll = this.data.every((item) => item.selected);
     }
         
