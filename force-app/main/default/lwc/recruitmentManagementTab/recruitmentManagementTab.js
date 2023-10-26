@@ -61,17 +61,12 @@ export default class RecruitmentManagementTab extends LightningElement {
     //--------
     //funções geral
 
-    //função - fechar modal
-    closeModal() {
-        this.bShowModal = false;
-        this.selectedCons = [];
-        this.recordIds = [];
-        this.approvalStatusValue = "";
-        this.statusValue = "";
-        this.ownerValue = "";
-        this.selectedCount = -1;
-        console.log("fechei closeModal: ", this.selectedCount);
-
+    //função - seja executado uma vez, para evitar que ele seja executado duas vezes
+    connectedCallback() { 
+        this.loadTable(); 
+        this.loadPicklistValues("Status__c");
+        this.loadPicklistValues("Approval_Status__c");
+        this.loadUsers();
     }
 
     //função - salvar os registros selecionados
@@ -153,7 +148,24 @@ export default class RecruitmentManagementTab extends LightningElement {
             console.error("Error get Id user: ", error);
         });
     }
-    
+
+    //função - fechar modal
+    closeModal() {
+
+        this.bShowModal = false;
+        this.selectedCons = [];
+        this.recordIds = [];
+        this.approvalStatusValue = "";
+        this.statusValue = "";
+        this.ownerValue = "";
+
+        if (this.selectAll) {
+            this.selectedCount = -1;
+        } else {
+            this.selectedCount = 0;
+        }
+    }  
+
     //função - simplificar as chamadas de toast
     showToast(title, message, variant) {
         const toastEvent = new ShowToastEvent({
@@ -162,14 +174,6 @@ export default class RecruitmentManagementTab extends LightningElement {
             variant: variant,
         });
         this.dispatchEvent(toastEvent);
-    }
-
-    //função - seja executado uma vez, para evitar que ele seja executado duas vezes
-    connectedCallback() { 
-        this.loadTable(); 
-        this.loadPicklistValues("Status__c");
-        this.loadPicklistValues("Approval_Status__c");
-        this.loadUsers();
     }
 
     //--------
@@ -217,6 +221,8 @@ export default class RecruitmentManagementTab extends LightningElement {
 
     //função - selecionar todas as linhas
     allSelected(event) {
+
+        this.selectedCount = -1;
         this.selectAll = event.target.checked; //boolean
     
         //map percorre esse array e, para cada item (linha de dados)
@@ -226,6 +232,7 @@ export default class RecruitmentManagementTab extends LightningElement {
             item.selected = this.selectAll; //boolean
             return item;
         });
+
     }
 
     //função - para desmarcar as linhas
@@ -240,10 +247,17 @@ export default class RecruitmentManagementTab extends LightningElement {
             }
             return item;
         });
-    
+
         //se todos os itens tiverem a propriedade "selected" como true, a variável selectAll também é definida como true.
         //every = verifica se TODOS os elementos de um array atendem a true e retorna true
         this.selectAll = this.data.every((item) => item.selected);
+
+        if (this.selectAll) {
+            this.selectedCount = -1;
+        } else {
+            this.selectedCount = 0;
+
+        }
     }
         
     //--------
@@ -400,6 +414,7 @@ export default class RecruitmentManagementTab extends LightningElement {
 
     //função - abrir modal e mostrar positions
     showPositions() {
+
         this.rowNumber = 1;
 
         const selectedRows = this.template.querySelectorAll("lightning-input");
@@ -420,17 +435,16 @@ export default class RecruitmentManagementTab extends LightningElement {
             }
         }
 
-        const selectedCount = selectedCons.length;
-
-        this.selectedCount += selectedCount;
-        console.log("no showpositions: ", this.selectedCount);
         if (selectedCons.length > 0) {
             this.bShowModal = true;
             this.selectedCons = selectedCons;
             this.recordIds = recordIds;
+            let selectedCount = selectedCons.length;
+            this.selectedCount += selectedCount;
         } else {
             this.showToast("None row selected!", "Please select at least one row to change the position(s)!!!", "error");
         }
+
     }
 
     //função - carregar os usuários disponiveis e colocar na lista de opções
