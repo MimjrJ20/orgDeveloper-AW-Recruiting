@@ -3,74 +3,132 @@
     <!-- Card -->
     <lightning-card title="Position's">
 
-        <div class="slds-grid slds-gutters" >
+        <!-- Filtros e botões -->
+        <div class="slds-grid slds-gutters slds-p-bottom_medium">
 
-            <!-- Filtro de pesquisa (Título ou Conta) -->
-            <div class="slds-col slds-size_4-of-8">
-                <div class="slds-p-around_large">
-                    <lightning-input
-                        name="enter-search"
-                        label="Search for Position Title or Account Name and when the user hits the 'enter' key."
-                        type="search"
-                        onkeyup={handleKeyUp}>
-                    </lightning-input>
+            <template if:false={hasRefresh}>
+                
+                <!-- Filtro de pesquisa (Título ou Conta) -->
+                <div class="slds-col slds-size_4-of-12">
+                    <div class="slds-p-around_large">
+                        <lightning-input
+                            name="enter-text"
+                            label="Search for Position Title or Account Name and when the user hits the 'ENTER' key."
+                            type="text"
+                            onkeyup={handleKeyUp}
+                            oninput={handleInput}
+                            disabled={hasRefresh}>
+                        </lightning-input>
+                    </div>
                 </div>
-            </div>
     
-            <!-- Filtro lista (Status) -->
-            <div class="slds-col slds-size_1-of-8">
-                <div class="slds-p-around_large">
-                    <lightning-combobox
-                        name="status"
-                        label="Status"
-                        value={statusValueTable}
-                        placeholder="..."
-                        options={statusOptionsTable}
-                        onchange={handleChangeStatusTable}>
-                    </lightning-combobox>
+                <!-- Filtro lista (Status) -->
+                <div class="slds-col slds-size_2-of-12">
+                    <div class="slds-p-around_large">
+                        <lightning-combobox
+                            name="status"
+                            label="Status"
+                            value={statusValueTable}
+                            placeholder="..."
+                            options={statusOptionsTable}
+                            onchange={handleChangeStatusTable}
+                            disabled={hasRefresh}>
+                        </lightning-combobox>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Filtro lista (Owner) -->
-            <div class="slds-col slds-size_1-of-8">
-                <div class="slds-p-around_large">
-                    <lightning-combobox
-                        name="owner"
-                        label="Owner"
-                        value={ownerValueTable}
-                        placeholder="..."
-                        options={ownerOptionsTable}
-                        onchange={handleChangeOwnerTable}
-                        disabled={disableOptions}
-                        title={titleOwner}>
-                    </lightning-combobox>
+                <!-- Filtro lista (Owner) -->
+                <div class="slds-col slds-size_2-of-12">
+                    <div class="slds-p-around_large">
+                        <lightning-combobox
+                            name="owner"
+                            label="Owner"
+                            value={ownerValueTable}
+                            placeholder="..."
+                            options={ownerOptionsTable}
+                            onchange={handleChangeOwnerTable}
+                            disabled={disableOptions}
+                            title={titleOwner}>
+                        </lightning-combobox>
+                    </div>
                 </div>
-            </div>
-              
 
-            <!-- Botão Modal -->
-            <div class="slds-col slds-size_1-of-8">
-                <div class="slds-m-top_xx-large slds-m-left_x-small">
+                <!-- Refresh -->
+                <div class="slds-col slds-size_1-of-12">
+                    <div class="slds-m-top_xx-large">
+                        <lightning-button-icon 
+                            icon-name="utility:refresh"  
+                            variant="brand" 
+                            alternative-text="Clear filter and load table"
+                            onclick={loadTableRefresh}>
+                        </lightning-button-icon>
+                    </div>
+                </div>
+
+            </template>
+
+            
+            <template if:true={hasRefresh}>
+
+                <!-- Search - Display desabilistado - exibir valor do filtro apór refresh  -->
+                <div class="slds-col slds-size_2-of-12">
+                    <div class="slds-p-around_large">
+                        <lightning-input 
+                            name="text"
+                            type="text"
+                            disabled value="No text or no value queried" 
+                            label="Search">
+                        </lightning-input>
+                    </div>
+                </div>
+
+                <!-- Status - Display desabilistado - exibir valor do filtro apór refresh  -->
+                <div class="slds-col slds-size_2-of-12">
+                    <div class="slds-p-around_large">
+                        <lightning-input 
+                            name="text-status"
+                            type="text"  
+                            disabled value="All" 
+                            label="Selected Status">
+                        </lightning-input>
+                    </div>
+                </div>
+
+                <!-- Owner - Display desabilistado - exibir valor do filtro apór refresh  -->
+                <div class="slds-col slds-size_2-of-12">
+                    <div class="slds-p-around_large">
+                        <lightning-input 
+                            name="text-owner"
+                            type="text"  
+                            disabled value="All" 
+                            label="Selected Owner">
+                        </lightning-input>
+                    </div>
+                </div>
+                
+                <!-- Botão Editar -->
+                <div class="slds-col slds-size_2-of-12">
+                    <div class="slds-m-top_xx-large">
+                        <lightning-button
+                            label="Edit Filters"
+                            onclick={editFilters}
+                            variant="destructive">
+                        </lightning-button>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Botão Exibir as Posições selecionadas -->
+            <div class="slds-col slds-size_4-of-12">
+                <div class="slds-m-top_xx-large">
                     <lightning-button
-                        label="Show Selected Positions"
+                        label="Display and Edit selected positions below"
                         onclick={showPositions}
                         variant="brand">
                     </lightning-button>
                 </div>
             </div>
 
-            <!-- Refresh -->
-            <div class="slds-col slds-size_1-of-8">
-                <div class="slds-m-top_xx-large">
-                    <lightning-button-icon 
-                        icon-name="utility:refresh"  
-                        variant="brand" 
-                        alternative-text="Clear filter and load table"
-                        onclick={loadTableRefresh}>
-                    </lightning-button-icon>
-                </div>
-            </div>
-            
         </div>
   
     
@@ -78,7 +136,6 @@
         <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-p-around_medium">
             <thead>
                 <tr class="slds-line-height_reset">
-
                     <th class="" scope="col">
                         <div class="slds-truncate" title="Number">#</div>
                     </th>
@@ -198,10 +255,9 @@
                                     size="small"
                                     variant="inverse">
                                 </lightning-icon>
-
                                 <span class="slds-assistive-text">Close</span>
-                            </button>
 
+                            </button>
                             <div class="slds-text-heading_large slds-m-vertical_medium">Positions to Changes</div>
                         </header>
             
@@ -210,7 +266,6 @@
 
                             <!-- Tabela -->
                             <div class="slds-text-heading_medium slds-m-vertical_medium">Positions selected: {selectedCount}</div>
-
                             <table class="slds-table slds-table_cell-buffer slds-table_bordered">
                                 <thead>
                                     <tr class="slds-line-height_reset">
@@ -232,12 +287,10 @@
                                 </tbody>
                             </table>
 
-                            
                             <!-- Inputs -->
                             <div class="slds-form-element slds-m-top_xx-large">
 
                                 <div class="slds-text-heading_medium slds-m-top_medium">Values to changes</div>
-
                                 <div class="slds-form-element__control slds-m-bottom_x-small slds-m-top_medium">
                                     <lightning-combobox
                                         id="approvalStatus" 
@@ -272,7 +325,6 @@
                                         </lightning-combobox>
                                     </div>
                                 </template>
-
 
                             </div>
                         </div>
