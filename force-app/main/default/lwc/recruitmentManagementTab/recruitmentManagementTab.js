@@ -52,6 +52,7 @@ export default class RecruitmentManagementTab extends LightningElement {
     @track profileHumanResource = false;
     @track disableOwner = false;
     @track selectAll = false;
+    @track hasRefresh = false;
 
     @track selectedCount = 0;
 
@@ -191,6 +192,12 @@ export default class RecruitmentManagementTab extends LightningElement {
             this.loadTable();
         }
     }
+    
+    //função - chama a função loadTable sempre que o campo de pesquisa é atualizado
+    handleInput(event) {
+        this.queryTerm = event.target.value;
+        this.loadTable();
+    }   
 
     //função - quando altera o valor do status chama a função que atualiza a tabela
     handleChangeStatusTable(event) { 
@@ -202,6 +209,10 @@ export default class RecruitmentManagementTab extends LightningElement {
     handleChangeOwnerTable(event) { 
         this.selectedOwner = event.detail.value; 
         this.loadTable();
+        console.log("this.ownerValueTable: ", this.ownerValueTable);
+        console.log("this.selectedOwner: ", this.selectedOwner);
+
+
     }
 
     //função - quando altera o valor
@@ -409,7 +420,12 @@ export default class RecruitmentManagementTab extends LightningElement {
         this.queryTerm = "";
         this.selectedStatus = "All";
         this.selectedOwner = "All";
+        this.hasRefresh = true;
         this.loadTable();
+    }
+
+    editFilters() {
+        this.hasRefresh = false;
     }
 
     //função - abrir modal e mostrar positions
