@@ -53,6 +53,7 @@ export default class RecruitmentManagementTab extends LightningElement {
     @track disableOwner = false;
     @track selectAll = false;
     @track hasRefresh = false;
+    @track disableSave = true;
 
     @track selectedCount = 0;
 
@@ -90,6 +91,7 @@ export default class RecruitmentManagementTab extends LightningElement {
             .then(() => {
 
                 const hasOwner = this.ownerValue !== "" ? true : false;
+
                 console.log("Success to update records selected.");
                 this.showToast("Success to update!", "Sucess to update records selected!", "success");
                 
@@ -154,6 +156,7 @@ export default class RecruitmentManagementTab extends LightningElement {
     closeModal() {
 
         this.bShowModal = false;
+        this.disableSave = true;
         this.selectedCons = [];
         this.recordIds = [];
         this.approvalStatusValue = "";
@@ -209,25 +212,33 @@ export default class RecruitmentManagementTab extends LightningElement {
     handleChangeOwnerTable(event) { 
         this.selectedOwner = event.detail.value; 
         this.loadTable();
-        console.log("this.ownerValueTable: ", this.ownerValueTable);
-        console.log("this.selectedOwner: ", this.selectedOwner);
-
-
     }
 
-    //função - quando altera o valor
+    //função - quando altera o valor do select Approval Status dentro do modal
     handleChangeApprovalStatus(event) {
         this.approvalStatusValue = event.target.value;
+        this.disableButtonSave();
     }
     
-    //função - quando altera o valor
+    //função - quando altera o valor do select Status dentro do modal
     handleChangeStatus(event) {
         this.statusValue = event.target.value;
+        this.disableButtonSave();
     }
 
-    //função - quando altera o valor
+    //função - quando altera o valor do select Owner dentro do modal
     handleChangeOwner(event) {
         this.ownerValue = event.target.value;
+        this.disableButtonSave();
+    }
+
+    //função - desabilitar o botão 'Save' 
+    disableButtonSave() {
+        if (this.approvalStatusValue === "" && this.statusValue === "" && this.ownerValue === "") {
+            this.disableSave = true;
+        } else {
+            this.disableSave = false;
+        }
     }
 
     //função - selecionar todas as linhas
@@ -460,7 +471,6 @@ export default class RecruitmentManagementTab extends LightningElement {
         } else {
             this.showToast("None row selected!", "Please select at least one row to change the position(s)!!!", "error");
         }
-
     }
 
     //função - carregar os usuários disponiveis e colocar na lista de opções

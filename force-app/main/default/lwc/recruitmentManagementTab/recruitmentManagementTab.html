@@ -331,8 +331,21 @@
             
                         <!-- Rodapé modal -->
                         <footer class="slds-modal__footer">
-                            <lightning-button label="Cancel" title="Cancel" onclick={closeModal} class="slds-m-left_x-small slds-float_left"></lightning-button>
-                            <lightning-button variant="brand" label="Save" title="Save" onclick={saveChanges} class="slds-m-left_x-small"></lightning-button>
+                            <lightning-button 
+                                label="Cancel" 
+                                title="Cancel" 
+                                onclick={closeModal} 
+                                class="slds-m-left_x-small slds-float_left">
+                            </lightning-button>
+
+                            <lightning-button 
+                                variant="brand" 
+                                label="Save" 
+                                title="Save" 
+                                onclick={saveChanges} 
+                                class="slds-m-left_x-small"
+                                disabled={disableSave}>
+                            </lightning-button>
                         </footer>
 
                     </div>

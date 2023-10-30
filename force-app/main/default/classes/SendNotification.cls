@@ -6,11 +6,11 @@ public with sharing class SendNotification {
         Messaging.reserveSingleEmailCapacity(1);
 
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+        List<String> toAddresses = new List<String>{};
+        String subject;
+        String textBody;
+        String messageBody;
 
-        User user = UserController.getUserById(ownerId);
-
-        List<String> toAddresses = new List<String>{user.Email};
-        
         List<String> lisTitles = new List<String>();
 
         for (String id : recordIds) {
@@ -19,23 +19,51 @@ public with sharing class SendNotification {
             lisTitles.add(pos.Name);
             System.debug('Email id: ' + id);
         }
-
+        
         System.debug('lisTitles: ' + lisTitles);
 
-        mail.setToAddresses(toAddresses);
-        mail.setReplyTo('support@acme.com');
-        mail.setSenderDisplayName('AW Computing - Recruiting');
-        mail.setSubject('New Positions assigned: ' + lisTitles.size() + ' record(s).');
-        mail.setBccSender(false);
-        mail.setUseSignature(false);
-        mail.setPlainTextBody('You have new position(s): ' + lisTitles +' has been assigned.');
-        mail.setHtmlBody('You have new position(s):<b> ' + lisTitles +' </b>has been assigned.<p>' +
-                        'To view your Position(s) <a href=https://hr-mjr-dev-ed.develop.lightning.force.com/lightning/n/Recruitment_Management>Click Here.</a><br><br>' +
-                        'Do not reply to this email.<br><br>' + 
-                        'Sincerely,<br>' +
-                        'AW');
+        if (String.isNotBlank(ownerId)) {
+            if (ownerId.startsWith('00G')) {
 
-        Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+                subject = 'New Positions assigned: ' + lisTitles.size() + ' record(s).';
+                textBody = 'You queue have new position(s): ' + lisTitles +' has been assigned.';
+                messageBody = 'You queue have new position(s):<b> ' + lisTitles +' </b>has been assigned.<p>' +
+                'To view the Position(s) <a href=https://hr-mjr-dev-ed.develop.lightning.force.com/lightning/n/Recruitment_Management>Click Here.</a><br><br>' +
+                'Do not reply to this email.<br><br>' + 
+                'Sincerely,<br>' +
+                'AW';
+                List<User> queueMembers = UserController.getUserByQueueId(ownerId);
+                for (User user : queueMembers) {
+                    toAddresses.add(user.Email);
+                }
+
+            } else {
+
+                subject = 'New Positions assigned: ' + lisTitles.size() + ' record(s).';
+                textBody = 'You have new position(s): ' + lisTitles +' has been assigned.';
+                messageBody = 'You have new position(s):<b> ' + lisTitles +' </b>has been assigned.<p>' +
+                'To view your Position(s) <a href=https://hr-mjr-dev-ed.develop.lightning.force.com/lightning/n/Recruitment_Management>Click Here.</a><br><br>' +
+                'Do not reply to this email.<br><br>' + 
+                'Sincerely,<br>' +
+                'AW';
+
+                User user = UserController.getUserById(ownerId);
+                if (user != null) {
+                    toAddresses.add(user.Email);
+                }
+            }
+            
+            mail.setToAddresses(toAddresses);
+            mail.setReplyTo('support@acme.com');
+            mail.setSenderDisplayName('AW Computing - Recruiting');
+            mail.setSubject(subject);
+            mail.setBccSender(false);
+            mail.setUseSignature(false);
+            mail.setPlainTextBody(textBody);
+            mail.setHtmlBody(messageBody);
+
+            Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+        }
     }
 
     @AuraEnabled
@@ -73,9 +101,5 @@ public with sharing class SendNotification {
                 System.debug('Problem sending notification: ' + e.getMessage() + 'recordId: ' + targetId);
             }
         }
-    
-
-    }
-    
-    
+    }  
 }

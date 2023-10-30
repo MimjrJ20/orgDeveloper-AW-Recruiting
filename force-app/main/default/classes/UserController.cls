@@ -1,6 +1,6 @@
 public with sharing class UserController {
-//o nome da classe era para ser UserDAO - depois ver isso
-
+    //o nome da classe era para ser UserDAO - depois ver isso
+    
     //pegar o NOME do usuário que está navegando na página
     @AuraEnabled
     public static String getCurrentUserName() {
@@ -45,7 +45,7 @@ public with sharing class UserController {
                 ORDER BY Name ASC];
     }
 
-    //pegar a lista dos filas e grupos 
+    //pegar a lista dos filas 
     @AuraEnabled
     public static List<Group> getQueues() {
         return [SELECT Id, Name 
@@ -85,5 +85,30 @@ public with sharing class UserController {
                 FROM User 
                 WHERE Id =:id];
     }
+
+    //buscar usuários por queueId
+    public static List<User> getUserByQueueId(String id){
+        List<User> userMembers = new List<User>();
     
+        Group queue = [SELECT Id FROM Group WHERE Type='Queue' AND Id = :id LIMIT 1];
+    
+        if (queue != null) {
+            List<GroupMember> groupMembers = [SELECT UserOrGroupId FROM GroupMember WHERE GroupId = :queue.Id];
+            
+            for (GroupMember member : groupMembers) {
+
+                String memberId = member.UserOrGroupId;
+
+                if (String.isNotBlank(memberId) && memberId.startsWith('005')) {
+                    
+                    User user = getUserById(memberId);
+                    if (user != null) {
+                        userMembers.add(user);
+                    }
+                }
+            }
+        }
+    
+        return userMembers;
+    }        
 }
