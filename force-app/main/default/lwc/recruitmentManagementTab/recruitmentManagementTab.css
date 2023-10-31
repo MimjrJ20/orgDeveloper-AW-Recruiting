@@ -1,0 +1,19 @@
+.custom-title {
+    color: #163F5E;
+    font-size: 30px;
+    padding: 10px;
+    font-weight: bold;
+}
+
+.custom-card{
+    --slds-c-card-radius-border: 1rem;
+    --slds-c-button-radius-border: 1rem;
+    --slds-c-input-radius-border: 1rem;
+    --slds-c-combobox-radius-border: 1rem;
+}
+
+.table-header {
+    background-color: #163F5E;
+    color: #FFFFFF; 
+}
+
