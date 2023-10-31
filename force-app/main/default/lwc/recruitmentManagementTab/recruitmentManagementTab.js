@@ -129,7 +129,7 @@ export default class RecruitmentManagementTab extends LightningElement {
                         this.showToast("Error to send e-mail!", errorMessage, "error");
                     })
                 }
-
+                this.selectAll = false; 
                 this.closeModal();
                 this.loadTable();
                 
@@ -432,6 +432,7 @@ export default class RecruitmentManagementTab extends LightningElement {
         this.selectedStatus = "All";
         this.selectedOwner = "All";
         this.hasRefresh = true;
+        this.selectAll = false; 
         this.loadTable();
     }
 
