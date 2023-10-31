@@ -1,10 +1,13 @@
 <template >
 
     <!-- Card -->
-    <lightning-card title="Position's">
+    <lightning-card class="custom-card">
+
+        <!-- Titulo Card -->
+        <div class="custom-title">Position Overview</div>
 
         <!-- Filtros e botões -->
-        <div class="slds-grid slds-gutters slds-p-bottom_medium">
+        <div class="slds-grid slds-gutters_x-small slds-p-bottom_medium slds-grid_align-spread">
 
             <template if:false={hasRefresh}>
                 
@@ -133,101 +136,109 @@
   
     
         <!-- Tabela -->
-        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-p-around_medium">
-            <thead>
-                <tr class="slds-line-height_reset">
-                    <th class="" scope="col">
-                        <div class="slds-truncate" title="Number">#</div>
-                    </th>
-                    <th class="" scope="col">
-                        <div class="slds-truncate">
-                            <lightning-input 
-                                onchange={allSelected} 
-                                type="checkbox" 
-                                checked={selectAll}>
-                            </lightning-input>
-                        </div>
-                    </th>
-                    <th class="" scope="col">
-                        <div class="slds-truncate" title="Title">Title</div>
-                    </th>
-                    <th class="" scope="col">
-                        <div class="slds-truncate" title="Account">Location</div>
-                    </th>
-                    <th class="" scope="col">
-                        <div class="slds-truncate" title="Account">Account</div>
-                    </th>
-                    <th class="" scope="col">
-                        <div class="slds-truncate" title="Status">Status</div>
-                    </th>
-                    <th class="" scope="col">
-                        <div class="slds-truncate" title="Approval Status">Approval Status</div>
-                    </th>
-                    <th class="" scope="col">
-                        <div class="slds-truncate" title="Owner">Owner</div>
-                    </th>
-                    <th class="" scope="col">
-                        <div class="slds-truncate" title="Hiring Manager">Hiring Manager</div>
-                    </th>
-                    <th class="" scope="col">
-                        <div class="slds-truncate" title="Created Date">Created Date</div>
-                    </th>
-                    <th class="" scope="col">
-                        <div class="slds-truncate" title="Last Modified Date">Last Modified Date</div>
-                    </th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <template for:each={data} for:item="pos" for:index="index">
-                    <tr key={pos.Id}>
-                        <th scope="col">
-                            <div>
-                                <span>{pos.rowNumber}</span>
-                            </div>
+        <div class="custom-card slds-m-horizontal_large">
+            <table 
+                class="slds-table 
+                    slds-table_cell-buffer 
+                    slds-table_bordered 
+                    slds-p-around_medium 
+                    slds-table_col-bordered">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th class="table-header" scope="col">
+                            <div class="slds-truncate" title="Number">#</div>
                         </th>
-                        <th scope="col">
-                            <div>
-                                <lightning-input
-                                    onchange={handleIndividualCheckboxChange}
-                                    type="checkbox"
-                                    value={pos.Name}
-                                    data-id={pos.Id}
-                                    checked={pos.selected}>
+                        <th class="table-header" scope="col">
+                            <div class="slds-truncate">
+                                <lightning-input 
+                                    onchange={allSelected} 
+                                    type="checkbox" 
+                                    checked={selectAll}>
                                 </lightning-input>
                             </div>
                         </th>
-                        <th scope="col">
-                            <div>{pos.Name}</div>
+                        <th class="table-header" scope="col">
+                            <div class="slds-truncate" title="Title">Title</div>
                         </th>
-                        <th scope="col">
-                            <div>{pos.Location__c}</div>
+                        <th class="table-header" scope="col">
+                            <div class="slds-truncate" title="Account">Location</div>
                         </th>
-                        <th scope="col">
-                            <div>{pos.Account__r.Name}</div>
+                        <th class="table-header" scope="col">
+                            <div class="slds-truncate" title="Account">Account</div>
                         </th>
-                        <th scope="col">
-                            <div>{pos.Status__c}</div>
+                        <th class="table-header" scope="col">
+                            <div class="slds-truncate" title="Status">Status</div>
                         </th>
-                        <th scope="col">
-                            <div>{pos.Approval_Status__c}</div>
+                        <th class="table-header" scope="col">
+                            <div class="slds-truncate" title="Approval Status">Approval Status</div>
                         </th>
-                        <th scope="col">
-                            <div>{pos.Owner.Name}</div>
+                        <th class="table-header" scope="col">
+                            <div class="slds-truncate" title="Owner">Owner</div>
                         </th>
-                        <th scope="col">
-                            <div>{pos.nameManager}</div>
+                        <th class="table-header" scope="col">
+                            <div class="slds-truncate" title="Hiring Manager">Hiring Manager</div>
                         </th>
-                        <th scope="col">
-                            <div>{pos.CreatedDate}</div>
+                        <th class="table-header" scope="col">
+                            <div class="slds-truncate" title="Created Date">Created Date</div>
                         </th>
-                        <th scope="col">
-                            <div>{pos.LastModifiedDate}</div>
+                        <th class="table-header" scope="col">
+                            <div class="slds-truncate" title="Last Modified Date">Last Modified Date</div>
                         </th>
                     </tr>
-                </template>
-            </tbody>
-        </table>
+                </thead>
+
+                <tbody>
+                    <template for:each={data} for:item="pos" for:index="index">
+                        <tr key={pos.Id}>
+                            <th scope="col">
+                                <div>
+                                    <span>{pos.rowNumber}</span>
+                                </div>
+                            </th>
+                            <th scope="col">
+                                <div>
+                                    <lightning-input
+                                        onchange={handleIndividualCheckboxChange}
+                                        type="checkbox"
+                                        value={pos.Name}
+                                        data-id={pos.Id}
+                                        checked={pos.selected}>
+                                    </lightning-input>
+                                </div>
+                            </th>
+                            <th scope="col">
+                                <div>{pos.Name}</div>
+                            </th>
+                            <th scope="col">
+                                <div>{pos.Location__c}</div>
+                            </th>
+                            <th scope="col">
+                                <div>{pos.Account__r.Name}</div>
+                            </th>
+                            <th scope="col">
+                                <div>{pos.Status__c}</div>
+                            </th>
+                            <th scope="col">
+                                <div>{pos.Approval_Status__c}</div>
+                            </th>
+                            <th scope="col">
+                                <div>{pos.Owner.Name}</div>
+                            </th>
+                            <th scope="col">
+                                <div>{pos.nameManager}</div>
+                            </th>
+                            <th scope="col">
+                                <div>{pos.CreatedDate}</div>
+                            </th>
+                            <th scope="col">
+                                <div>{pos.LastModifiedDate}</div>
+                            </th>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+
     
         <!-- Modal -->
         <div if:true={selectedCons}>
