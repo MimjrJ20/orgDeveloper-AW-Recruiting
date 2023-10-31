@@ -30,8 +30,8 @@
 - A quantidade de posições devem respeitar o que foi definido em contrato;
 - As posições que tiverem contas com contratos fechados serão canceladas.
 
-#### Tabela para Gerenciar as vagas
-![Tabela](https://github.com/MimjrJ20/orgDeveloper-AW-Recruiting/blob/main/img/img-aw-gif.gif)
+#### Tabela para Gerenciar as vagas (Visão Recrutadores)
+![Tabela](https://github.com/MimjrJ20/orgDeveloper-AW-Recruiting/blob/main/img/img-aw-gif-2.gif)
 
 ### Trello:
 
