@@ -1,19 +1,86 @@
 .custom-title {
     color: #163F5E;
+    font-size: 40px;
+    padding: 10px;
+    font-weight: bold;
+}
+
+.custom-subtitle {
+    color: #163F5E;
     font-size: 30px;
     padding: 10px;
     font-weight: bold;
 }
 
-.custom-card{
+.custom-paragraph {
+    color: #163F5E;
+    font-size: 20px;
+    padding: 10px;
+    font-weight: bold;
+}
+
+.custom-card {
     --slds-c-card-radius-border: 1rem;
     --slds-c-button-radius-border: 1rem;
     --slds-c-input-radius-border: 1rem;
     --slds-c-combobox-radius-border: 1rem;
+    --slds-c-button-brand-color-background: #2286d3;
+    /* --slds-c-button-line-height: 2rem; */
 }
 
 .table-header {
     background-color: #163F5E;
     color: #FFFFFF; 
+    font-size: 14px;
 }
+
+/* .custom-button {
+    --slds-c-button-brand-color-background: #163F5E;
+} */
+
+.custom-input {
+    /* height: 15rem; */
+    /* --slds-c-input-color-background: #163F5E; */
+    /* --slds-c-input-color-background: #6BABDC; */
+
+
+}
+
+.custom-modal {
+    /* border-radius: 2rem; */
+}
+
+.custom-subtitle-modal {
+    color: #5C70AC;
+    font-size: 30px;
+    padding: 10px;
+    font-weight: bold;
+    background-color: rgb(242 242 242);
+    border-radius: 0.75rem;
+}
+
+.table-header-modal {
+    background-color: #4281B5;
+    color: #FFFFFF; 
+    font-size: 14px;
+}
+
+.custom-paragraph-modal {
+    color: #4281B5;
+    border-radius: 0.75rem;
+    font-size: 20px;
+    padding: 10px;
+    font-weight: bold;
+}
+
+.custom-paragraph-modal-inverse {
+    background-color: #163F5E;
+}
+
+.custom-button-modal {
+    --slds-c-button-brand-color-background: #2286d3;
+}
+
+
+
 

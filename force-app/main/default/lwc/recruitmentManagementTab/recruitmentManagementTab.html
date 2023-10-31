@@ -4,20 +4,22 @@
     <lightning-card class="custom-card">
 
         <!-- Titulo Card -->
-        <div class="custom-title">Position Overview</div>
+        <div class="custom-title slds-m-left_medium">Position Overview</div>
 
         <!-- Filtros e botões -->
-        <div class="slds-grid slds-gutters_x-small slds-p-bottom_medium slds-grid_align-spread">
+        <div class="slds-grid slds-gutters_x-small slds-m-bottom_medium slds-m-left_small slds-grid_align-spread slds-grid_vertical-align-end">
 
             <template if:false={hasRefresh}>
                 
                 <!-- Filtro de pesquisa (Título ou Conta) -->
-                <div class="slds-col slds-size_4-of-12">
-                    <div class="slds-p-around_large">
+                <div class="slds-col slds-size_5-of-12">
+                    <div class="">
                         <lightning-input
-                            name="enter-text"
-                            label="Search for Position Title or Account Name and when the user hits the 'ENTER' key."
-                            type="text"
+                            class="custom-input"
+                            name="enter-input"
+                            label="'ENTER' to search for Position Title or Account Name"
+                            field-level-help="The event name must 40 characters or less."
+                            maxlength="40"
                             onkeyup={handleKeyUp}
                             oninput={handleInput}
                             disabled={hasRefresh}>
@@ -26,8 +28,8 @@
                 </div>
     
                 <!-- Filtro lista (Status) -->
-                <div class="slds-col slds-size_2-of-12">
-                    <div class="slds-p-around_large">
+                <div class="slds-col slds-size_1-of-12">
+                    <div class="">
                         <lightning-combobox
                             name="status"
                             label="Status"
@@ -42,7 +44,7 @@
 
                 <!-- Filtro lista (Owner) -->
                 <div class="slds-col slds-size_2-of-12">
-                    <div class="slds-p-around_large">
+                    <div class="">
                         <lightning-combobox
                             name="owner"
                             label="Owner"
@@ -58,10 +60,9 @@
 
                 <!-- Refresh -->
                 <div class="slds-col slds-size_1-of-12">
-                    <div class="slds-m-top_xx-large">
+                    <div class="slds-m-left_large">
                         <lightning-button-icon 
                             icon-name="utility:refresh"  
-                            variant="brand" 
                             alternative-text="Clear filter and load table"
                             onclick={loadTableRefresh}>
                         </lightning-button-icon>
@@ -74,8 +75,8 @@
             <template if:true={hasRefresh}>
 
                 <!-- Search - Display desabilistado - exibir valor do filtro apór refresh  -->
-                <div class="slds-col slds-size_2-of-12">
-                    <div class="slds-p-around_large">
+                <div class="slds-col slds-size_5-of-12">
+                    <div class="">
                         <lightning-input 
                             name="text"
                             type="text"
@@ -86,8 +87,8 @@
                 </div>
 
                 <!-- Status - Display desabilistado - exibir valor do filtro apór refresh  -->
-                <div class="slds-col slds-size_2-of-12">
-                    <div class="slds-p-around_large">
+                <div class="slds-col slds-size_1-of-12">
+                    <div class="">
                         <lightning-input 
                             name="text-status"
                             type="text"  
@@ -99,7 +100,7 @@
 
                 <!-- Owner - Display desabilistado - exibir valor do filtro apór refresh  -->
                 <div class="slds-col slds-size_2-of-12">
-                    <div class="slds-p-around_large">
+                    <div class="">
                         <lightning-input 
                             name="text-owner"
                             type="text"  
@@ -110,8 +111,8 @@
                 </div>
                 
                 <!-- Botão Editar -->
-                <div class="slds-col slds-size_2-of-12">
-                    <div class="slds-m-top_xx-large">
+                <div class="slds-col slds-size_1-of-12">
+                    <div class="slds-m-left_large">
                         <lightning-button
                             label="Edit Filters"
                             onclick={editFilters}
@@ -123,8 +124,9 @@
 
             <!-- Botão Exibir as Posições selecionadas -->
             <div class="slds-col slds-size_4-of-12">
-                <div class="slds-m-top_xx-large">
+                <div class="">
                     <lightning-button
+                        class=""
                         label="Display and Edit selected positions below"
                         onclick={showPositions}
                         variant="brand">
@@ -136,19 +138,20 @@
   
     
         <!-- Tabela -->
-        <div class="custom-card slds-m-horizontal_large">
+        <div class="custom-card slds-m-horizontal_large slds-m-vertical_x-large">
             <table 
                 class="slds-table 
                     slds-table_cell-buffer 
                     slds-table_bordered 
-                    slds-p-around_medium 
-                    slds-table_col-bordered">
+                    slds-table_col-bordered"
+                aria-multiselectable="true"
+                role="grid">
                 <thead>
                     <tr class="slds-line-height_reset">
-                        <th class="table-header" scope="col">
+                        <th class="table-header" scope="col" role="gridcell">
                             <div class="slds-truncate" title="Number">#</div>
                         </th>
-                        <th class="table-header" scope="col">
+                        <th class="table-header" scope="col" role="gridcell">
                             <div class="slds-truncate">
                                 <lightning-input 
                                     onchange={allSelected} 
@@ -157,31 +160,31 @@
                                 </lightning-input>
                             </div>
                         </th>
-                        <th class="table-header" scope="col">
+                        <th class="table-header" scope="col" role="gridcell">
                             <div class="slds-truncate" title="Title">Title</div>
                         </th>
-                        <th class="table-header" scope="col">
+                        <th class="table-header" scope="col" role="gridcell">
                             <div class="slds-truncate" title="Account">Location</div>
                         </th>
-                        <th class="table-header" scope="col">
+                        <th class="table-header" scope="col" role="gridcell">
                             <div class="slds-truncate" title="Account">Account</div>
                         </th>
-                        <th class="table-header" scope="col">
+                        <th class="table-header" scope="col" role="gridcell">
                             <div class="slds-truncate" title="Status">Status</div>
                         </th>
-                        <th class="table-header" scope="col">
+                        <th class="table-header" scope="col" role="gridcell">
                             <div class="slds-truncate" title="Approval Status">Approval Status</div>
                         </th>
-                        <th class="table-header" scope="col">
+                        <th class="table-header" scope="col" role="gridcell">
                             <div class="slds-truncate" title="Owner">Owner</div>
                         </th>
-                        <th class="table-header" scope="col">
+                        <th class="table-header" scope="col" role="gridcell">
                             <div class="slds-truncate" title="Hiring Manager">Hiring Manager</div>
                         </th>
-                        <th class="table-header" scope="col">
+                        <th class="table-header" scope="col" role="gridcell">
                             <div class="slds-truncate" title="Created Date">Created Date</div>
                         </th>
-                        <th class="table-header" scope="col">
+                        <th class="table-header" scope="col" role="gridcell">
                             <div class="slds-truncate" title="Last Modified Date">Last Modified Date</div>
                         </th>
                     </tr>
@@ -190,12 +193,12 @@
                 <tbody>
                     <template for:each={data} for:item="pos" for:index="index">
                         <tr key={pos.Id}>
-                            <th scope="col">
+                            <th scope="col" role="gridcell">
                                 <div>
                                     <span>{pos.rowNumber}</span>
                                 </div>
                             </th>
-                            <th scope="col">
+                            <th scope="col" role="gridcell">
                                 <div>
                                     <lightning-input
                                         onchange={handleIndividualCheckboxChange}
@@ -206,31 +209,31 @@
                                     </lightning-input>
                                 </div>
                             </th>
-                            <th scope="col">
+                            <th scope="col" role="gridcell">
                                 <div>{pos.Name}</div>
                             </th>
-                            <th scope="col">
+                            <th scope="col" role="gridcell">
                                 <div>{pos.Location__c}</div>
                             </th>
-                            <th scope="col">
+                            <th scope="col" role="gridcell">
                                 <div>{pos.Account__r.Name}</div>
                             </th>
-                            <th scope="col">
+                            <th scope="col" role="gridcell">
                                 <div>{pos.Status__c}</div>
                             </th>
-                            <th scope="col">
+                            <th scope="col" role="gridcell">
                                 <div>{pos.Approval_Status__c}</div>
                             </th>
-                            <th scope="col">
+                            <th scope="col" role="gridcell">
                                 <div>{pos.Owner.Name}</div>
                             </th>
-                            <th scope="col">
+                            <th scope="col" role="gridcell">
                                 <div>{pos.nameManager}</div>
                             </th>
-                            <th scope="col">
+                            <th scope="col" role="gridcell">
                                 <div>{pos.CreatedDate}</div>
                             </th>
-                            <th scope="col">
+                            <th scope="col" role="gridcell">
                                 <div>{pos.LastModifiedDate}</div>
                             </th>
                         </tr>
@@ -244,10 +247,10 @@
         <div if:true={selectedCons}>
             <template if:true={bShowModal}>
                 <section
+                    class="slds-modal slds-fade-in-open slds-modal_small"
                     aria-describedby="modal-content-id-1"
                     aria-labelledby="modal-heading-01"
                     aria-modal="true"
-                    class="slds-modal slds-fade-in-open slds-modal_medium"
                     role="dialog"
                     tabindex="-1">
 
@@ -259,7 +262,6 @@
                                 class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
                                 onclick={closeModal}
                                 title="Close">
-
                                 <lightning-icon
                                     alternative-text="close"
                                     icon-name="utility:close"
@@ -267,94 +269,114 @@
                                     variant="inverse">
                                 </lightning-icon>
                                 <span class="slds-assistive-text">Close</span>
-
                             </button>
-                            <div class="slds-text-heading_large slds-m-vertical_medium">Positions to Changes</div>
+
+                            <div class="
+                                custom-subtitle-modal 
+                                slds-text-heading_large 
+                                slds-m-vertical_medium">
+                                    Positions to Changes
+                            </div>
+
                         </header>
             
                         <!-- Corpo modal -->
                         <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
 
                             <!-- Tabela -->
-                            <div class="slds-text-heading_medium slds-m-vertical_medium">Positions selected: {selectedCount}</div>
-                            <table class="slds-table slds-table_cell-buffer slds-table_bordered">
-                                <thead>
-                                    <tr class="slds-line-height_reset">
-                                        <th class="" scope="col">
-                                            <div class="slds-truncate" title="Name">Position Title</div>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <template for:each={selectedCons} for:item="pos">
-                                        <template if:true={pos.Name}>
-                                            <tr key={pos.Id}>
-                                                <td>
-                                                    <div>{pos.Name}</div>
-                                                </td>
-                                            </tr>
+                            <div class="custom-paragraph-modal slds-text-heading_medium">Positions selected: {selectedCount}</div>
+                            
+                            <div class="slds-m-vertical_medium slds-m-horizontal_large">
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                    <thead>
+                                        <tr class="slds-line-height_reset">
+                                            <th class="table-header-modal" scope="col">
+                                                <div class="slds-truncate" title="Name">Position Title</div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={selectedCons} for:item="pos">
+                                            <template if:true={pos.Name}>
+                                                <tr key={pos.Id}>
+                                                    <td>
+                                                        <div>{pos.Name}</div>
+                                                    </td>
+                                                </tr>
+                                            </template>
                                         </template>
-                                    </template>
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
+                            </div>
 
                             <!-- Inputs -->
                             <div class="slds-form-element slds-m-top_xx-large">
 
-                                <div class="slds-text-heading_medium slds-m-top_medium">Values to changes</div>
-                                <div class="slds-form-element__control slds-m-bottom_x-small slds-m-top_medium">
-                                    <lightning-combobox
-                                        id="approvalStatus" 
-                                        name="approvalStatus"
-                                        label="Approval Status"
-                                        value={approvalStatusValue}
-                                        options={approvalStatusOptions}
-                                        onchange={handleChangeApprovalStatus}>
-                                    </lightning-combobox>
+                                <!-- <div class="custom-paragraph slds-text-heading_medium slds-m-top_medium">
+                                    Values to changes
+                                </div> -->
+
+                                <div class="slds-m-top_medium">
+                                    <div class="custom-paragraph-modal slds-p-around_medium">
+                                        Values to changes
+                                        <lightning-helptext content="Set new values and click Save."></lightning-helptext>
+                                    </div>
                                 </div>
 
-                                <div class="slds-form-element__control slds-m-bottom_x-small slds-m-top_medium">
-                                    <lightning-combobox
-                                        id="status" 
-                                        name="status"
-                                        label="Status"
-                                        value={statusValue}
-                                        options={statusOptions}
-                                        onchange={handleChangeStatus}>
-                                    </lightning-combobox>
-                                </div>
-
-                                <template if:true={disableOwner}>
-                                    <div class="slds-form-element__control slds-m-bottom_x-small slds-m-top_medium">
+                                <div class="slds-grid slds-gutters_x-small slds-m-horizontal_large">
+                                    <div class="slds-form-element__control slds-m-bottom_x-small slds-m-top_medium slds-col slds-size_1-of-4">
                                         <lightning-combobox
-                                            id="owner" 
-                                            name="owner"
-                                            label="Owner"
-                                            value={ownerValue}
-                                            options={ownerOptions}
-                                            onchange={handleChangeOwner}>
+                                            id="approvalStatus" 
+                                            name="approvalStatus"
+                                            label="Approval Status"
+                                            value={approvalStatusValue}
+                                            options={approvalStatusOptions}
+                                            onchange={handleChangeApprovalStatus}>
                                         </lightning-combobox>
                                     </div>
-                                </template>
 
+                                    <div class="slds-form-element__control slds-m-bottom_x-small slds-m-top_medium slds-col slds-size_1-of-4">
+                                        <lightning-combobox
+                                            id="status" 
+                                            name="status"
+                                            label="Status"
+                                            value={statusValue}
+                                            options={statusOptions}
+                                            onchange={handleChangeStatus}>
+                                        </lightning-combobox>
+                                    </div>
+
+                                    <template if:true={disableOwner}>
+                                        <div class="slds-form-element__control slds-m-bottom_x-small slds-m-top_medium slds-col slds-size_2-of-4">
+                                            <lightning-combobox
+                                                id="owner" 
+                                                name="owner"
+                                                label="Owner"
+                                                value={ownerValue}
+                                                options={ownerOptions}
+                                                onchange={handleChangeOwner}>
+                                            </lightning-combobox>
+                                        </div>
+                                    </template>
+                                </div>
                             </div>
                         </div>
             
                         <!-- Rodapé modal -->
                         <footer class="slds-modal__footer">
                             <lightning-button 
+                                class="slds-m-left_x-small slds-float_left"
                                 label="Cancel" 
                                 title="Cancel" 
-                                onclick={closeModal} 
-                                class="slds-m-left_x-small slds-float_left">
+                                onclick={closeModal}>
                             </lightning-button>
 
                             <lightning-button 
+                                class="custom-button-modal slds-m-left_x-small"
                                 variant="brand" 
                                 label="Save" 
                                 title="Save" 
                                 onclick={saveChanges} 
-                                class="slds-m-left_x-small"
                                 disabled={disableSave}>
                             </lightning-button>
                         </footer>
