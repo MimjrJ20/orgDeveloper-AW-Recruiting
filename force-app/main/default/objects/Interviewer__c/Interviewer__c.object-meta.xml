@@ -147,7 +147,7 @@
         <type>Default</type>
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
-    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <compactLayoutAssignment>Interviewer_Compact_Layout</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
@@ -161,7 +161,7 @@
     <externalSharingModel>Private</externalSharingModel>
     <label>Interviewer</label>
     <nameField>
-        <displayFormat>INT-{0000}</displayFormat>
+        <displayFormat>INT-{000000}</displayFormat>
         <label>Interviewer No.</label>
         <type>AutoNumber</type>
     </nameField>

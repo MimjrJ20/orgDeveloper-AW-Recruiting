@@ -64,28 +64,23 @@ public with sharing class JobApplicationTriggerHandler {
         }
     }
 
-
     //-----------------------------------------------------------------
+    public void jobNotDelete(List<Job_Application__c> listJobs){
 
-    public void jobNotDelete(List<Job_Application__c> jobsList){
-
-        for(Job_Application__c job : jobsList){
+        for(Job_Application__c job : listJobs){
             
-            if (!jobsList.isEmpty()) {
+            if (!listJobs.isEmpty()) {
                     job.addError('Por questão de compliance, após a vaga ser aplicada nestas condições o registro não pode ser deletado!');            
             }
         }
     }
 
-
     //-----------------------------------------------------------------
-    //-----------------------------------------------------------------
+    public void jobStartDateDays(List<Job_Application__c> listJobs){
 
-    public void jobStartDateDays(List<Job_Application__c> jobsList){
-
-        for(Job_Application__c job : jobsList){
+        for(Job_Application__c job : listJobs){
             
-            if (!jobsList.isEmpty()) {
+            if (!listJobs.isEmpty()) {
 
                 if (job.Expected_Start_Date__c != null) {
                     
@@ -96,10 +91,7 @@ public with sharing class JobApplicationTriggerHandler {
                         job.addError('Devido ao fluxo de contratação, a data de início deve ser MAIOR que 30 dias a partir de hoje!' + 
                                     + ' Diferença inserida: ' + days + ' dias.');
                     }
-                }
-
-                
-         
+                }                         
             }
         }
     }

@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Queue xmlns="http://soap.sforce.com/2006/04/metadata">
     <doesSendEmailToMembers>false</doesSendEmailToMembers>
-    <name>Recruiters</name>
-    <queueMembers>
-        <users>
-            <user>michele.j.rosa@hr.developer.org</user>
-            <user>paulinho.zr@hr.developer.org</user>
-        </users>
-    </queueMembers>
+    <name>RH</name>
     <queueSobject>
         <sobjectType>Candidate__c</sobjectType>
     </queueSobject>

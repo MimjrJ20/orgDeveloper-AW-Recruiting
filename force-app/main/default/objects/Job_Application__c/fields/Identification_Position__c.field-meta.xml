@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Identification_Position__c</fullName>
+    <externalId>false</externalId>
+    <formula>&quot;Position Name: &quot; &amp; 
+IF(Position__r.Name = &quot;&quot;, &quot;N/A&quot;, Position__r.Name  &amp; &quot; - &quot;) &amp; 
+&quot;Candidate Name: &quot; &amp; 
+IF(AND(Candidate__r.First_Name__c = &quot;&quot;,Candidate__r.Last_Name__c = &quot;&quot;), 
+&quot;N/A&quot;,Candidate__r.First_Name__c  &amp; &quot; &quot; &amp; Candidate__r.Last_Name__c)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Identification Position</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

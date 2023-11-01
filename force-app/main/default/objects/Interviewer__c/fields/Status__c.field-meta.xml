@@ -7,27 +7,33 @@
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
+        <restricted>true</restricted>
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Open</fullName>
-                <default>true</default>
-                <label>Open</label>
+                <fullName>On Hold</fullName>
+                <default>false</default>
+                <label>On Hold</label>
             </value>
             <value>
-                <fullName>Proposal</fullName>
+                <fullName>Scheduled</fullName>
                 <default>false</default>
-                <label>Proposal</label>
+                <label>Scheduled</label>
             </value>
             <value>
-                <fullName>Hold</fullName>
+                <fullName>In Progress</fullName>
                 <default>false</default>
-                <label>Hold</label>
+                <label>In Progress</label>
             </value>
             <value>
-                <fullName>Closed</fullName>
+                <fullName>Completed</fullName>
                 <default>false</default>
-                <label>Closed</label>
+                <label>Completed</label>
+            </value>
+            <value>
+                <fullName>Cancelled</fullName>
+                <default>false</default>
+                <label>Cancelled</label>
             </value>
         </valueSetDefinition>
     </valueSet>
