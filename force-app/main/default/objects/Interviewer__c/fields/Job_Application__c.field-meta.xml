@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Job_Application__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <externalId>false</externalId>
+    <label>Job Application</label>
+    <lookupFilter>
+        <active>true</active>
+        <filterItems>
+            <field>Job_Application__c.Stage__c</field>
+            <operation>notEqual</operation>
+            <value>New, Phone Screen, Schedule Interviews, Closed - Position Closed</value>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Job_Application__c</referenceTo>
+    <relationshipLabel>Interviewers</relationshipLabel>
+    <relationshipName>Interviewers</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

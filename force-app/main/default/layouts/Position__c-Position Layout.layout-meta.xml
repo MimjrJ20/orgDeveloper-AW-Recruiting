@@ -174,12 +174,6 @@
         <relatedList>Job_Application__c.Position__c</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>NAME</fields>
-        <fields>Employee__c</fields>
-        <fields>CREATED_DATE</fields>
-        <relatedList>Interviewer__c.Position__c</relatedList>
-    </relatedLists>
-    <relatedLists>
         <relatedList>RelatedFileList</relatedList>
     </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
