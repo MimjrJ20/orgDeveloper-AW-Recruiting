@@ -54,6 +54,7 @@ export default class RecruitmentManagementTab extends LightningElement {
     @track selectAll = false;
     @track hasRefresh = false;
     @track disableSave = true;
+    @track isLoaded = false;
 
     @track selectedCount = 0;
 
@@ -289,6 +290,7 @@ export default class RecruitmentManagementTab extends LightningElement {
     loadTable() {
 
         this.rowNumber = 1;
+        this.isLoaded = true;
 
         getCurrentUserProfileId({})
         .then((profileId) => {
@@ -350,8 +352,9 @@ export default class RecruitmentManagementTab extends LightningElement {
                                     const currentUserOption = { label: this.nameUser, value: this.idUser };
                                     this.ownerOptionsTable.push(currentUserOption);
                                     this.selectedOwner = this.idUser;
-                                    this.ownerValueTable = this.idUser;
-                            
+                                    this.ownerValueTable = this.idUser;                            
+                                    this.isLoaded = false;
+
                                 })
                                 .catch((error) => {
                                     console.error("Error loading user name: ", error);
@@ -361,6 +364,7 @@ export default class RecruitmentManagementTab extends LightningElement {
                     .catch((error) => {
                         console.error("Error loading positions: ", error);
                     });
+                
 
             } else {
                 this.titleOwner = "Please, select one owner or 'all'";
@@ -414,6 +418,9 @@ export default class RecruitmentManagementTab extends LightningElement {
                                     value: ownerId
                                 }))
                             ];
+
+                            this.isLoaded = false;
+
                         });
                 })
                 .catch((error) => {
@@ -428,6 +435,7 @@ export default class RecruitmentManagementTab extends LightningElement {
 
     //função - para refresh
     loadTableRefresh() {
+        this.isLoaded = true;
         this.queryTerm = "";
         this.selectedStatus = "All";
         this.selectedOwner = "All";

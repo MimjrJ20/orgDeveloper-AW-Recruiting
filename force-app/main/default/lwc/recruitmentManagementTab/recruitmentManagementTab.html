@@ -137,10 +137,16 @@
             </div>
 
         </div>
-  
-    
-        <!-- Tabela -->
-        <div class="custom-card slds-m-horizontal_large slds-m-vertical_x-large">
+
+        <!-- Body -->
+        <div class="custom-card slds-m-horizontal_large slds-m-vertical_x-large slds-is-relative">
+            
+            <!-- Spinner -->
+            <template if:true={isLoaded}>
+                    <lightning-spinner class="" alternative-text="Loading..." size="large" variant="brand"></lightning-spinner>
+            </template>
+
+            <!-- Tabela -->
             <table 
                 class="slds-table 
                     slds-table_cell-buffer 
@@ -279,7 +285,6 @@
                                 slds-m-vertical_medium">
                                     Positions to Changes
                             </div>
-
                         </header>
             
                         <!-- Corpo modal -->
@@ -314,13 +319,8 @@
                             <!-- Inputs -->
                             <div class="slds-form-element slds-m-top_xx-large">
 
-                                <!-- <div class="custom-paragraph slds-text-heading_medium slds-m-top_medium">
-                                    Values to changes
-                                </div> -->
-
                                 <div class="slds-m-top_medium">
-                                    <div class="custom-paragraph-modal slds-p-around_medium">
-                                        Values to changes
+                                    <div class="custom-paragraph-modal slds-p-around_medium">Values to changes
                                         <lightning-helptext content="Set new values and click Save."></lightning-helptext>
                                     </div>
                                 </div>
@@ -382,15 +382,11 @@
                                 disabled={disableSave}>
                             </lightning-button>
                         </footer>
-
-                    </div>
-                    
+                    </div>                    
                 </section>
-        
                 <div class="slds-backdrop slds-backdrop_open"></div>
             </template>
         </div>
-
     </lightning-card>
 </template>
   
