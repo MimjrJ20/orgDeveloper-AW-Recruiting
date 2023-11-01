@@ -34,22 +34,6 @@
     font-size: 14px;
 }
 
-/* .custom-button {
-    --slds-c-button-brand-color-background: #163F5E;
-} */
-
-.custom-input {
-    /* height: 15rem; */
-    /* --slds-c-input-color-background: #163F5E; */
-    /* --slds-c-input-color-background: #6BABDC; */
-
-
-}
-
-.custom-modal {
-    /* border-radius: 2rem; */
-}
-
 .custom-subtitle-modal {
     color: #5C70AC;
     font-size: 30px;
