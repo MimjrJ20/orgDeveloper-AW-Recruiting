@@ -17,7 +17,7 @@ import createNotifications from "@salesforce/apex/SendNotification.createNotific
 
 export default class RecruitmentManagementTab extends LightningElement {
 
-    //-----------------
+    //--------------------------------------------------------------
     //variáveis
     @track data = [];
     @track filteredData = [];
@@ -29,6 +29,8 @@ export default class RecruitmentManagementTab extends LightningElement {
     @track approvalStatusOptions = [];
     @track ownerOptions = [];
     @track emails = [];
+    @track pageSizeOptions = []; 
+    @track recordsToDisplay = []; 
 
     @track queryTerm = "";    
     @track approvalStatusValue = "";
@@ -38,6 +40,7 @@ export default class RecruitmentManagementTab extends LightningElement {
     @track selectedOwner = "All";
     @track statusValueTable = "All";
     @track ownerValueTable = "All";
+    @track headerPagination = "Showing ";
 
     @track rowNumber;
     @track idProfile;
@@ -46,6 +49,9 @@ export default class RecruitmentManagementTab extends LightningElement {
     @track nameUser;
     @track titleOwner;
     @track nameManager;
+    @track pageSize;
+    @track totalPages;
+    @track pageValueTable;
 
     @track bShowModal = false;
     @track disableOptions = false;
@@ -57,15 +63,19 @@ export default class RecruitmentManagementTab extends LightningElement {
     @track isLoaded = false;
 
     @track selectedCount = 0;
+    @track totalRecords = 0;
+    @track pageNumber = 1; 
 
-    //-----------------
+
+    //--------------------------------------------------------------
     //funções
 
-    //--------
+    //-----------------------------------------
     //funções geral
 
     //função - seja executado uma vez, para evitar que ele seja executado duas vezes
     connectedCallback() { 
+        this.loadPageOptions();
         this.loadTable(); 
         this.loadPicklistValues("Status__c");
         this.loadPicklistValues("Approval_Status__c");
@@ -171,6 +181,30 @@ export default class RecruitmentManagementTab extends LightningElement {
         }
     }  
 
+    //função - paginação voltar uma página
+    previousPage() {
+        this.pageNumber = this.pageNumber - 1;
+        this.paginationHelper();
+    }
+
+    //função - paginação avançar uma página
+    nextPage() {
+        this.pageNumber = this.pageNumber + 1;
+        this.paginationHelper();
+    }
+
+    //função - paginação ir para a primeira página    
+    firstPage() {
+        this.pageNumber = 1;
+        this.paginationHelper();
+    }
+
+    //função - paginação ir para a última página
+    lastPage() {
+        this.pageNumber = this.totalPages;
+        this.paginationHelper();
+    }
+
     //função - simplificar as chamadas de toast
     showToast(title, message, variant) {
         const toastEvent = new ShowToastEvent({
@@ -181,7 +215,7 @@ export default class RecruitmentManagementTab extends LightningElement {
         this.dispatchEvent(toastEvent);
     }
 
-    //--------
+    //-----------------------------------------
     //funções de evento
 
     //função - verifica se foi pressionada a tecla ENTER e chama a função que filtra a tabela
@@ -260,6 +294,7 @@ export default class RecruitmentManagementTab extends LightningElement {
 
     //função - para desmarcar as linhas
     handleIndividualCheckboxChange(event) {
+
         //obter o id do item selecionando
         const itemId = event.target.dataset.id;
     
@@ -282,8 +317,16 @@ export default class RecruitmentManagementTab extends LightningElement {
 
         }
     }
+
+    //função - para rastrear a alteração da paginação
+    handleRecordsPerPage(event) {
+        this.pageValueTable = parseInt(event.detail.value, 10);
+        this.pageSize = this.pageValueTable;
+        this.pageNumber = 1;
+        this.paginationHelper();
+    }
         
-    //--------
+    //-----------------------------------------
     //funções carregar
 
     //função - carregar a tabela e obter os dados
@@ -346,19 +389,24 @@ export default class RecruitmentManagementTab extends LightningElement {
 
                                 getCurrentUserName({})
                                 .then((userName) => {
-
                                     this.nameUser = userName;
                                     this.ownerOptionsTable = [];
                                     const currentUserOption = { label: this.nameUser, value: this.idUser };
                                     this.ownerOptionsTable.push(currentUserOption);
                                     this.selectedOwner = this.idUser;
                                     this.ownerValueTable = this.idUser;                            
-                                    this.isLoaded = false;
-
                                 })
                                 .catch((error) => {
                                     console.error("Error loading user name: ", error);
                                 });
+
+                                this.totalRecords = result.length;
+                                const firstPageSizeOption = this.pageSizeOptions[0].value;
+                                this.pageValueTable = firstPageSizeOption;
+                                this.pageSize = firstPageSizeOption; 
+                                this.pageNumber = 1;
+                                this.paginationHelper();  
+                                this.isLoaded = false;
                             });
                     })
                     .catch((error) => {
@@ -419,8 +467,13 @@ export default class RecruitmentManagementTab extends LightningElement {
                                 }))
                             ];
 
+                            this.totalRecords = result.length;
+                            const firstPageSizeOption = this.pageSizeOptions[0].value;
+                            this.pageValueTable = firstPageSizeOption;
+                            this.pageSize = firstPageSizeOption; 
+                            this.pageNumber = 1;
+                            this.paginationHelper();  
                             this.isLoaded = false;
-
                         });
                 })
                 .catch((error) => {
@@ -444,8 +497,34 @@ export default class RecruitmentManagementTab extends LightningElement {
         this.loadTable();
     }
 
+    //função - para destravar o filtro na tabela
     editFilters() {
         this.hasRefresh = false;
+    }
+
+    //função - calcula as paginações
+    paginationHelper() {
+        this.recordsToDisplay = [];
+        this.totalPages = Math.ceil(this.totalRecords / this.pageSize);
+
+        if (this.totalPages === 1) {
+            this.headerPagination = "Showing " + this.pageNumber + " of " + this.totalPages + " Page";
+        } else {
+            this.headerPagination = "Showing " + this.pageNumber + " of " + this.totalPages + " Page(s)";
+        }
+
+        if (this.pageNumber <= 1) {
+            this.pageNumber = 1;
+        } else if (this.pageNumber >= this.totalPages) {
+            this.pageNumber = this.totalPages;
+        }
+
+        for (let i = (this.pageNumber - 1) * this.pageSize; i < this.pageNumber * this.pageSize; i++) {
+            if (i === this.totalRecords) {
+                break;
+            }
+            this.recordsToDisplay.push(this.data[i]);
+        }
     }
 
     //função - abrir modal e mostrar positions
@@ -529,9 +608,7 @@ export default class RecruitmentManagementTab extends LightningElement {
             fieldApiName: fieldApiName
         })
         .then((result) => {
-
             const options = [{ label: "None", value: "" }];
-
             result.forEach((value) => {
                 options.push({ label: value, value });
             });
@@ -541,14 +618,18 @@ export default class RecruitmentManagementTab extends LightningElement {
             } else if (fieldApiName === "Approval_Status__c") {
                 this.approvalStatusOptions = options;
             }
-        
         })
         .catch((error) =>{
             console.error("Error get values picklist: ", error);
         });
     }
 
-    //--------
+    //função - carrega os valores para o tamanho de cada página da tabela
+    loadPageOptions(){
+        this.pageSizeOptions = [5, 10, 25, 50, 75, 100].map(option => ({ label: option.toString(), value: option }));
+    }
+
+    //-----------------------------------------
     //funções formatar
 
     //função - formatar data
@@ -565,6 +646,24 @@ export default class RecruitmentManagementTab extends LightningElement {
             .split(" ")
             .map(word => word.charAt(0).toUpperCase() + word.slice(1))
             .join(" ");
+    }
+
+    //--------------------------------------------------------------
+    //get e set
+
+    //get - desabilita o botão first da paginação
+    get bDisableFirst() {
+        return this.pageNumber === 1;
+    }
+
+    //get - desabilita o botão last da paginação
+    get bDisableLast() {
+        return this.pageNumber === this.totalPages;
+    }
+
+    //get - texto para total de registros na tabela
+    get totalRecordsBadgeLabel() {
+        return "Total Records: " + this.totalRecords;
     }
  
 }
