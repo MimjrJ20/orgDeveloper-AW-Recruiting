@@ -34,6 +34,10 @@
     font-size: 14px;
 }
 
+.pending-badge {
+    --slds-c-badge-color-background: #4281b518;
+}
+
 .custom-subtitle-modal {
     color: #5C70AC;
     font-size: 30px;
