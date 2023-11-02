@@ -31,6 +31,8 @@ export default class RecruitmentManagementTab extends LightningElement {
     @track emails = [];
     @track pageSizeOptions = []; 
     @track recordsToDisplay = []; 
+    @track pageSizeOptionsModal = []; 
+    @track recordsToDisplayModal = []; 
 
     @track queryTerm = "";    
     @track approvalStatusValue = "";
@@ -41,6 +43,7 @@ export default class RecruitmentManagementTab extends LightningElement {
     @track statusValueTable = "All";
     @track ownerValueTable = "All";
     @track headerPagination = "Showing ";
+    @track headerPaginationModal;
 
     @track rowNumber;
     @track idProfile;
@@ -52,6 +55,9 @@ export default class RecruitmentManagementTab extends LightningElement {
     @track pageSize;
     @track totalPages;
     @track pageValueTable;
+    @track pageSizeModal;
+    @track totalPagesModal;
+    @track pageValueTableModal;
 
     @track bShowModal = false;
     @track disableOptions = false;
@@ -65,6 +71,8 @@ export default class RecruitmentManagementTab extends LightningElement {
     @track selectedCount = 0;
     @track totalRecords = 0;
     @track pageNumber = 1; 
+    @track totalRecordsModal = 0;
+    @track pageNumberModal = 1; 
 
 
     //--------------------------------------------------------------
@@ -77,6 +85,7 @@ export default class RecruitmentManagementTab extends LightningElement {
     connectedCallback() { 
         this.loadPageOptions();
         this.loadTable(); 
+        this.loadPageOptionsModal();
         this.loadPicklistValues("Status__c");
         this.loadPicklistValues("Approval_Status__c");
         this.loadUsers();
@@ -205,6 +214,29 @@ export default class RecruitmentManagementTab extends LightningElement {
         this.paginationHelper();
     }
 
+    //função - paginação voltar uma página
+    previousPageModal() {
+        this.pageNumberModal = this.pageNumberModal - 1;
+        this.paginationHelperModal();
+    }
+
+    //função - paginação avançar uma página
+    nextPageModal() {
+        this.pageNumberModal = this.pageNumberModal + 1;
+        this.paginationHelperModal();
+    }
+
+    //função - paginação ir para a primeira página    
+    firstPageModal() {
+        this.pageNumberModal = 1;
+        this.paginationHelperModal();
+    }
+
+    //função - paginação ir para a última página
+    lastPageModal() {
+        this.pageNumberModal = this.totalPagesModal;
+        this.paginationHelperModal();
+    }
     //função - simplificar as chamadas de toast
     showToast(title, message, variant) {
         const toastEvent = new ShowToastEvent({
@@ -283,7 +315,7 @@ export default class RecruitmentManagementTab extends LightningElement {
         this.selectAll = event.target.checked; //boolean
     
         //map percorre esse array e, para cada item (linha de dados)
-        this.data = this.data.map((item) => {
+        this.recordsToDisplay = this.recordsToDisplay.map((item) => {
 
             //se o checkbox para todos for selecionados então os individuais é marcado como true, o mesmo para false quando estiver desmarcado
             item.selected = this.selectAll; //boolean
@@ -325,7 +357,15 @@ export default class RecruitmentManagementTab extends LightningElement {
         this.pageNumber = 1;
         this.paginationHelper();
     }
-        
+
+    //função - para rastrear a alteração da paginação
+    handleRecordsPerPageModal(event) {
+        this.pageValueTableModal = parseInt(event.detail.value, 10);
+        this.pageSizeModal = this.pageValueTableModal;
+        this.pageNumberModal = 1;
+        this.paginationHelperModal();
+    }
+
     //-----------------------------------------
     //funções carregar
 
@@ -510,7 +550,7 @@ export default class RecruitmentManagementTab extends LightningElement {
         if (this.totalPages === 1) {
             this.headerPagination = "Showing " + this.pageNumber + " of " + this.totalPages + " Page";
         } else {
-            this.headerPagination = "Showing " + this.pageNumber + " of " + this.totalPages + " Page(s)";
+            this.headerPagination = "Showing " + this.pageNumber + " of " + this.totalPages + " Pages";
         }
 
         if (this.pageNumber <= 1) {
@@ -524,6 +564,32 @@ export default class RecruitmentManagementTab extends LightningElement {
                 break;
             }
             this.recordsToDisplay.push(this.data[i]);
+        }
+    }
+
+    //função - calcula as paginações
+    paginationHelperModal() {
+        this.recordsToDisplayModal = [];
+        this.totalPagesModal = Math.ceil(this.totalRecordsModal / this.pageSizeModal);
+
+        if (this.totalPagesModal === 1) {
+            this.headerPaginationModal = this.pageNumberModal + " of " + this.totalPagesModal + " Page";
+        } else {
+            this.headerPaginationModal = this.pageNumberModal + " of " + this.totalPagesModal + " Pages";
+        }
+
+        if (this.pageNumberModal <= 1) {
+            this.pageNumberModal = 1;
+        } else if (this.pageNumberModal >= this.totalPagesModal) {
+            this.pageNumberModal = this.totalPagesModal;
+        }
+
+        for (let i = (this.pageNumberModal - 1) * this.pageSizeModal; i < this.pageNumberModal * this.pageSizeModal; i++) {
+            if (i === this.totalRecordsModal) {
+                break;
+            }
+            this.recordsToDisplayModal.push(this.selectedCons[i]);
+            console.log("this.recordsToDisplayModal: ", this.recordsToDisplayModal);
         }
     }
 
@@ -556,6 +622,12 @@ export default class RecruitmentManagementTab extends LightningElement {
             this.recordIds = recordIds;
             let selectedCount = selectedCons.length;
             this.selectedCount += selectedCount;
+            this.totalRecordsModal = selectedCons.length;
+            const firstPageSizeOption = this.pageSizeOptionsModal[0].value;
+            this.pageValueTableModal = firstPageSizeOption;
+            this.pageSizeModal = firstPageSizeOption; 
+            this.pageNumberModal = 1;
+            this.paginationHelperModal();  
         } else {
             this.showToast("None row selected!", "Please select at least one row to change the position(s)!!!", "error");
         }
@@ -629,6 +701,11 @@ export default class RecruitmentManagementTab extends LightningElement {
         this.pageSizeOptions = [5, 10, 25, 50, 75, 100].map(option => ({ label: option.toString(), value: option }));
     }
 
+    //função - carrega os valores para o tamanho de cada página da tabela
+    loadPageOptionsModal(){
+        this.pageSizeOptionsModal = [5, 10, 25, 50, 75, 100].map(option => ({ label: option.toString(), value: option }));
+    }
+    
     //-----------------------------------------
     //funções formatar
 
@@ -652,12 +729,12 @@ export default class RecruitmentManagementTab extends LightningElement {
     //get e set
 
     //get - desabilita o botão first da paginação
-    get bDisableFirst() {
+    get getDisableFirst() {
         return this.pageNumber === 1;
     }
 
     //get - desabilita o botão last da paginação
-    get bDisableLast() {
+    get getDisableLast() {
         return this.pageNumber === this.totalPages;
     }
 
@@ -665,5 +742,19 @@ export default class RecruitmentManagementTab extends LightningElement {
     get totalRecordsBadgeLabel() {
         return "Total Records: " + this.totalRecords;
     }
- 
+
+    //get - desabilita o botão first da paginação
+    get getDisableFirstModal() {
+        return this.pageNumberModal === 1;
+    }
+
+    //get - desabilita o botão last da paginação
+    get getDisableLastModal() {
+        return this.pageNumberModal === this.totalPagesModal;
+    }
+
+    //get - texto para total de registros na tabela
+    get totalRecordsBadgeLabelModal() {
+        return "Total Records: " + this.totalRecordsModal;
+    } 
 }
