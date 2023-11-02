@@ -1,8 +1,10 @@
 <!-- sldsValidatorIgnore -->
 <template >
-    <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
+
+    <!-- Responsive (mas não funcionou) -->
+    <!-- <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
         <lightning-layout multiple-rows>
-            <lightning-layout-item padding="around-small" size="12" small-device-size="12" medium-device-size="12" large-device-size="12">
+            <lightning-layout-item padding="around-small" size="12" small-device-size="12" medium-device-size="12" large-device-size="12"> -->
                 <!-- Card -->
                 <lightning-card class="custom-card">
                     <!-- Titulo Card -->
@@ -275,14 +277,14 @@
                         <div class="slds-col slds-size_6-of-12 slds-align_absolute-center">
                             <lightning-button 
                                 class="slds-m-right_x-small" 
-                                disabled={bDisableFirst} 
+                                disabled={getDisableFirst} 
                                 icon-name="utility:jump_to_left" 
                                 label="First" 
                                 alternative-text="first page" 
                                 onclick={firstPage}>
                             </lightning-button>
                             <lightning-button 
-                                disabled={bDisableFirst} 
+                                disabled={getDisableFirst} 
                                 icon-name="utility:chevronleft" 
                                 label="Previous" 
                                 alternative-text="Previous" 
@@ -293,7 +295,7 @@
                                 label={headerPagination}>
                             </lightning-badge>
                             <lightning-button 
-                                disabled={bDisableLast} 
+                                disabled={getDisableLast} 
                                 icon-name="utility:chevronright" 
                                 label="Next" 
                                 alternative-text="Next" 
@@ -302,7 +304,7 @@
                             </lightning-button>
                             <lightning-button 
                                 class="slds-m-left_x-small" 
-                                disabled={bDisableLast} 
+                                disabled={getDisableLast} 
                                 icon-name="utility:jump_to_right" 
                                 label="Last" 
                                 alternative-text="last page" 
@@ -363,7 +365,7 @@
                                         <!-- Tabela -->
                                         <div class="custom-paragraph-modal slds-text-heading_medium">Positions selected: {selectedCount}</div>
                                         
-                                        <div class="slds-m-vertical_medium slds-m-horizontal_large">
+                                        <div class="slds-m-vertical_medium slds-m-left_large slds-m-right_xx-large">
                                             <table class="slds-table slds-table_cell-buffer slds-table_bordered">
                                                 <thead>
                                                     <tr class="slds-line-height_reset">
@@ -373,7 +375,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <template for:each={selectedCons} for:item="pos">
+                                                    <template for:each={recordsToDisplayModal} for:item="pos">
                                                         <template if:true={pos.Name}>
                                                             <tr key={pos.Id}>
                                                                 <td>
@@ -390,7 +392,7 @@
                                         <div class="slds-grid slds-wrap slds-grid_vertical-align-center slds-m-horizontal_medium">
                                             
                                             <!-- Tamanho da página -->
-                                            <div class="slds-col slds-size_2-of-12">
+                                            <div class="slds-col slds-size_2-of-10">
                                                 <div class="slds-grid slds-wrap slds-grid_vertical-align-center">
                                                     <div class="slds-col slds-size_2-of-5">
                                                         <lightning-badge 
@@ -401,64 +403,55 @@
                                                     <div class="slds-col slds-size_2-of-5 slds-p-bottom_medium">
                                                         <lightning-combobox
                                                             name="page"
-                                                            value={pageValueTable}
-                                                            options={pageSizeOptions}
-                                                            onchange={handleRecordsPerPage}>
+                                                            value={pageValueTableModal}
+                                                            options={pageSizeOptionsModal}
+                                                            onchange={handleRecordsPerPageModal}>
                                                         </lightning-combobox>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <!-- Navegação das páginas -->
-                                            <div class="slds-col slds-size_6-of-12 slds-align_absolute-center">
+                                            <div class="slds-col slds-size_6-of-10 slds-align_absolute-center">
                                                 <lightning-button 
                                                     class="slds-m-right_x-small" 
-                                                    disabled={bDisableFirst} 
+                                                    disabled={getDisableFirstModal} 
                                                     icon-name="utility:jump_to_left" 
                                                     label="First" 
                                                     alternative-text="first page" 
-                                                    onclick={firstPage}>
+                                                    onclick={firstPageModal}>
                                                 </lightning-button>
                                                 <lightning-button 
-                                                    disabled={bDisableFirst} 
+                                                    disabled={getDisableFirstModal} 
                                                     icon-name="utility:chevronleft" 
                                                     label="Previous" 
                                                     alternative-text="Previous" 
-                                                    onclick={previousPage}>
+                                                    onclick={previousPageModal}>
                                                 </lightning-button>
                                                 <lightning-badge 
                                                     class="pending-badge slds-m-horizontal_x-small" 
-                                                    label={headerPagination}>
+                                                    label={headerPaginationModal}>
                                                 </lightning-badge>
                                                 <lightning-button 
-                                                    disabled={bDisableLast} 
+                                                    disabled={getDisableLastModal} 
                                                     icon-name="utility:chevronright" 
                                                     label="Next" 
                                                     alternative-text="Next" 
-                                                    onclick={nextPage} 
+                                                    onclick={nextPageModal} 
                                                     icon-position="right">
                                                 </lightning-button>
                                                 <lightning-button 
                                                     class="slds-m-left_x-small" 
-                                                    disabled={bDisableLast} 
+                                                    disabled={getDisableLastModal} 
                                                     icon-name="utility:jump_to_right" 
                                                     label="Last" 
                                                     alternative-text="last page" 
-                                                    onclick={lastPage} 
+                                                    onclick={lastPageModal} 
                                                     icon-position="right">
                                                 </lightning-button>
                                             </div>
-
-                                            <!-- Total de Registros -->
-                                            <div class="slds-col slds-size_1-of-12 slds-m-right_medium">
-                                                <lightning-badge 
-                                                    class="pending-badge"
-                                                    label={totalRecordsBadgeLabel} 
-                                                    icon-name="custom:custom11">
-                                                </lightning-badge>
-                                            </div>
                                         </div>
-                                        
+
                                         <!-- Inputs -->
                                         <div class="slds-form-element slds-m-top_xx-large">
 
@@ -468,7 +461,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="slds-grid slds-gutters_x-small slds-m-horizontal_large">
+                                            <div class="slds-grid slds-gutters_x-small slds-m-left_large slds-m-right_xx-large">
                                                 <div class="slds-form-element__control slds-m-bottom_x-small slds-m-top_medium slds-col slds-size_1-of-4">
                                                     <lightning-combobox
                                                         id="approvalStatus" 
@@ -531,9 +524,8 @@
                         </template>
                     </div>
                 </lightning-card>
-
-            </lightning-layout-item>
+            <!-- </lightning-layout-item>
         </lightning-layout>
-    </div>
+    </div> -->
 </template>
   
