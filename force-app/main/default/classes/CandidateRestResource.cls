@@ -29,7 +29,6 @@ global with sharing class CandidateRestResource {
                     (Current_Employer__c = :candidateInfo) OR
                     (Name = :candidateInfo) OR 
                     (City__c = :candidateInfo)
-
             ];
 
             // if (candidateList.isEmpty()) {
@@ -125,7 +124,8 @@ global with sharing class CandidateRestResource {
                     Years_of_Experience__c, Street_Address_1__c, Street_Address_2__c, City__c, State_Province__c,
                     Zip_Postal_Code__c, CPF__c, Country_List__c, Street_Address_3__c
             FROM Candidate__c 
-            WHERE Id = :candidateId];
+            WHERE Id = :candidateId
+        ];
 
         String msg;
         

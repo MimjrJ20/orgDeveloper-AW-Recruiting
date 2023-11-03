@@ -6,11 +6,8 @@ global with sharing class IntegrationViaCEPCallout {
     public static void getCEP(String endCEP, Id id){
 
         ViaCEP returnValue = sendRequest(endCEP);
-
         List<Candidate__c> candList = [SELECT Id, Zip_Postal_Code__c FROM Candidate__c WHERE Id = :id];
-
         List<Candidate__c> candToUpdate = new List<Candidate__c>();
-
         List<Candidate__c> candToUpdateEmpty = new List<Candidate__c>();
         
         //se retornar o endereço
@@ -41,7 +38,7 @@ global with sharing class IntegrationViaCEPCallout {
         } 
     } 
 
-    //Método http
+    //método http
     public static ViaCEP sendRequest(String cep){
 
         HttpRequest req = new HttpRequest();
@@ -62,6 +59,7 @@ global with sharing class IntegrationViaCEPCallout {
         return null;
     }
 
+    //
     global class ViaCEP {
     
         //atributos
