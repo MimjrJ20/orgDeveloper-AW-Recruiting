@@ -174,7 +174,6 @@ export default class RecruitmentManagementTab extends LightningElement {
 
     //função - fechar modal
     closeModal() {
-
         this.bShowModal = false;
         this.disableSave = true;
         this.selectedCons = [];
@@ -182,12 +181,7 @@ export default class RecruitmentManagementTab extends LightningElement {
         this.approvalStatusValue = "";
         this.statusValue = "";
         this.ownerValue = "";
-
-        if (this.selectAll) {
-            this.selectedCount = -1;
-        } else {
-            this.selectedCount = 0;
-        }
+        this.selectedCount = 0;
     }  
 
     //função - paginação voltar uma página
@@ -214,29 +208,30 @@ export default class RecruitmentManagementTab extends LightningElement {
         this.paginationHelper();
     }
 
-    //função - paginação voltar uma página
+    //função - paginação voltar uma página do modal
     previousPageModal() {
         this.pageNumberModal = this.pageNumberModal - 1;
         this.paginationHelperModal();
     }
 
-    //função - paginação avançar uma página
+    //função - paginação avançar uma página do modal
     nextPageModal() {
         this.pageNumberModal = this.pageNumberModal + 1;
         this.paginationHelperModal();
     }
 
-    //função - paginação ir para a primeira página    
+    //função - paginação ir para a primeira página do modal   
     firstPageModal() {
         this.pageNumberModal = 1;
         this.paginationHelperModal();
     }
 
-    //função - paginação ir para a última página
+    //função - paginação ir para a última página do modal 
     lastPageModal() {
         this.pageNumberModal = this.totalPagesModal;
         this.paginationHelperModal();
     }
+
     //função - simplificar as chamadas de toast
     showToast(title, message, variant) {
         const toastEvent = new ShowToastEvent({
@@ -311,7 +306,6 @@ export default class RecruitmentManagementTab extends LightningElement {
     //função - selecionar todas as linhas
     allSelected(event) {
 
-        this.selectedCount = -1;
         this.selectAll = event.target.checked; //boolean
     
         //map percorre esse array e, para cada item (linha de dados)
@@ -323,7 +317,7 @@ export default class RecruitmentManagementTab extends LightningElement {
         });
 
     }
-
+    
     //função - para desmarcar as linhas
     handleIndividualCheckboxChange(event) {
 
@@ -341,13 +335,7 @@ export default class RecruitmentManagementTab extends LightningElement {
         //se todos os itens tiverem a propriedade "selected" como true, a variável selectAll também é definida como true.
         //every = verifica se TODOS os elementos de um array atendem a true e retorna true
         this.selectAll = this.data.every((item) => item.selected);
-
-        if (this.selectAll) {
-            this.selectedCount = -1;
-        } else {
-            this.selectedCount = 0;
-
-        }
+        this.selectedCount = 0;
     }
 
     //função - para rastrear a alteração da paginação
@@ -358,7 +346,7 @@ export default class RecruitmentManagementTab extends LightningElement {
         this.paginationHelper();
     }
 
-    //função - para rastrear a alteração da paginação
+    //função - para rastrear a alteração da paginação do modal
     handleRecordsPerPageModal(event) {
         this.pageValueTableModal = parseInt(event.detail.value, 10);
         this.pageSizeModal = this.pageValueTableModal;
@@ -545,6 +533,7 @@ export default class RecruitmentManagementTab extends LightningElement {
     //função - calcula as paginações
     paginationHelper() {
         this.recordsToDisplay = [];
+        this.selectAll = false;
         this.totalPages = Math.ceil(this.totalRecords / this.pageSize);
 
         if (this.totalPages === 1) {
@@ -567,7 +556,7 @@ export default class RecruitmentManagementTab extends LightningElement {
         }
     }
 
-    //função - calcula as paginações
+    //função - calcula as paginações do modal
     paginationHelperModal() {
         this.recordsToDisplayModal = [];
         this.totalPagesModal = Math.ceil(this.totalRecordsModal / this.pageSizeModal);
@@ -585,11 +574,14 @@ export default class RecruitmentManagementTab extends LightningElement {
         }
 
         for (let i = (this.pageNumberModal - 1) * this.pageSizeModal; i < this.pageNumberModal * this.pageSizeModal; i++) {
+            
             if (i === this.totalRecordsModal) {
                 break;
             }
-            this.recordsToDisplayModal.push(this.selectedCons[i]);
-            console.log("this.recordsToDisplayModal: ", this.recordsToDisplayModal);
+            if (this.selectedCons[i].Name) {
+                this.recordsToDisplayModal.push(this.selectedCons[i]);
+            }
+            
         }
     }
 
@@ -604,11 +596,14 @@ export default class RecruitmentManagementTab extends LightningElement {
         
         for (let i = 0; i < selectedRows.length; i++) {
             if (selectedRows[i].checked && selectedRows[i].type === "checkbox") {
-                selectedCons.push({
-                    Name: selectedRows[i].value,
-                    Id: selectedRows[i].dataset.id,
-                });
 
+                if (selectedRows[i].value) {
+                    selectedCons.push({
+                        Name: selectedRows[i].value,
+                        Id: selectedRows[i].dataset.id,
+                    });
+                }
+               
                 const recordId = selectedRows[i].dataset.id;
                 if (recordId) {
                     recordIds.push(recordId);
@@ -617,17 +612,20 @@ export default class RecruitmentManagementTab extends LightningElement {
         }
 
         if (selectedCons.length > 0) {
+
+            const selectedCount = selectedCons.length;
+            const firstPageSizeOption = this.pageSizeOptionsModal[0].value;
+
             this.bShowModal = true;
             this.selectedCons = selectedCons;
             this.recordIds = recordIds;
-            let selectedCount = selectedCons.length;
             this.selectedCount += selectedCount;
             this.totalRecordsModal = selectedCons.length;
-            const firstPageSizeOption = this.pageSizeOptionsModal[0].value;
             this.pageValueTableModal = firstPageSizeOption;
             this.pageSizeModal = firstPageSizeOption; 
             this.pageNumberModal = 1;
             this.paginationHelperModal();  
+
         } else {
             this.showToast("None row selected!", "Please select at least one row to change the position(s)!!!", "error");
         }
@@ -701,9 +699,9 @@ export default class RecruitmentManagementTab extends LightningElement {
         this.pageSizeOptions = [5, 10, 25, 50, 75, 100].map(option => ({ label: option.toString(), value: option }));
     }
 
-    //função - carrega os valores para o tamanho de cada página da tabela
+    //função - carrega os valores para o tamanho de cada página da tabela do modal
     loadPageOptionsModal(){
-        this.pageSizeOptionsModal = [5, 10, 25, 50, 75, 100].map(option => ({ label: option.toString(), value: option }));
+        this.pageSizeOptionsModal = [5, 10].map(option => ({ label: option.toString(), value: option }));
     }
     
     //-----------------------------------------
@@ -743,17 +741,17 @@ export default class RecruitmentManagementTab extends LightningElement {
         return "Total Records: " + this.totalRecords;
     }
 
-    //get - desabilita o botão first da paginação
+    //get - desabilita o botão first da paginação do modal
     get getDisableFirstModal() {
         return this.pageNumberModal === 1;
     }
 
-    //get - desabilita o botão last da paginação
+    //get - desabilita o botão last da paginação do modal
     get getDisableLastModal() {
         return this.pageNumberModal === this.totalPagesModal;
     }
 
-    //get - texto para total de registros na tabela
+    //get - texto para total de registros na tabela do modal
     get totalRecordsBadgeLabelModal() {
         return "Total Records: " + this.totalRecordsModal;
     } 
