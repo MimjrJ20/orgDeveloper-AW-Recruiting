@@ -6,38 +6,121 @@ public with sharing class ContractTriggerHandler {
     }
 
     //--------------------------------------------------------------------------
+    //método para bloquear a criação de contrato com o mesmo range de data
+    // public void contractRepeat(List<Contract> lstContracts){
+    //     Set<Id> accountsIds = new Set<Id>(); 
+    //     for(Contract contract : lstContracts){
+    //         accountsIds.add(contract.AccountId); 
+    //     }
+    //     if (!accountsIds.isEmpty()) {
+    //         List<Contract> listContractExisting = [
+    //             SELECT Id
+    //             FROM Contract
+    //             WHERE 
+    //                 AccountId IN :accountsIds
+    //                 AND (
+    //                         (StartDate <= :lstContracts[0].StartDate AND EndDate >= :lstContracts[0].StartDate) OR 
+    //                         (StartDate <= :lstContracts[0].EndDate AND EndDate >= :lstContracts[0].EndDate) OR 
+    //                         (StartDate >= :lstContracts[0].StartDate AND EndDate <= :lstContracts[0].EndDate)
+    //                     )
+    //                 AND Id NOT IN :lstContracts
+    //         ];
+    //         for(Contract contract : lstContracts) {                
+    //             if (listContractExisting.size() > 0) {
+    //                 contract.addError('Já existe um contrato com a mesma Conta e com datas conflitantes!');    
+    //             }
+    //         }
+    //     }
+    // }
+
 
     //método para bloquear a criação de contrato com o mesmo range de data
-    public void contractRepeat(List<Contract> contractList){
-
-        // Conjunto para armazenar os Ids das contas
-        Set<Id> accountsIds = new Set<Id>(); 
-
-        for(Contract contract : contractList){
-
-            // Adiciona o Id da conta atual ao conjunto
-            accountsIds.add(contract.AccountId); 
+    public void contractRepeatAfter(List<Contract> lstContracts){
+        Set<Id> lstAccountsIds = new Set<Id>(); 
+        Set<Contract> lstContractsRepeat = new Set<Contract>();
+        
+        for(Contract contract : lstContracts){
+            lstAccountsIds.add(contract.AccountId); 
         }
-
-        if (!accountsIds.isEmpty()) {
-            
-            List<Contract> contractListExisting = [SELECT Id
-                                                    FROM Contract
-                                                    WHERE AccountId IN :accountsIds
-                                                        AND ((StartDate <= :contractList[0].StartDate AND EndDate >= :contractList[0].StartDate)
-                                                            OR (StartDate <= :contractList[0].EndDate AND EndDate >= :contractList[0].EndDate)
-                                                            OR (StartDate >= :contractList[0].StartDate AND EndDate <= :contractList[0].EndDate))
-                                                        AND Id NOT IN :contractList];
-            
-
-            for(Contract contract : contractList) {
-                
-                if (contractListExisting.size() > 0) {
-                    contract.addError('Já existe um contrato com a mesma Conta e com datas conflitantes!');    
+        System.debug('lstContracts.size(): ' + lstContracts.size());
+        
+        if (!lstAccountsIds.isEmpty()) {
+            List<Contract> lstContractsExisting = [
+                SELECT Id, StartDate, EndDate, AccountId
+                FROM Contract
+                WHERE AccountId IN :lstAccountsIds AND Id NOT IN :lstContracts
+            ];
+        
+            System.debug('lstContractsExisting.size(): ' + lstContractsExisting.size());
+        
+            if (!lstContractsExisting.isEmpty()) {
+                for (Contract contractExisting : lstContractsExisting) {
+                    for (Contract contract : lstContracts) { 
+                        if (contractExisting.AccountId == contract.AccountId) {
+                            if (
+                                (contractExisting.StartDate <= contract.StartDate && contractExisting.EndDate >= contract.StartDate) || 
+                                (contractExisting.StartDate <= contract.EndDate && contractExisting.EndDate >= contract.EndDate) || 
+                                (contractExisting.StartDate >= contract.StartDate && contractExisting.EndDate <= contract.EndDate)
+                            ) {
+                                lstContractsRepeat.add(contract);
+                            }  
+                        }
+                    }                      
                 }
             }
         }
+        System.debug('lstContractsRepeat.size(): ' + lstContractsRepeat.size());
+        
+        if (!lstContractsRepeat.isEmpty()) {
+            for (Contract contract : lstContractsRepeat) {
+                contract.addError('There is already a contract with the same Account and conflicting dates! ');
+            }
+        }
     }
-    //--------------------------------------------------------------------------
 
+
+    public void contractRepeatBefore(List<Contract> lstContracts) {
+        Set<Contract> lstContractsFirst = new Set<Contract>();
+        Set<Contract> lstContractsSecond = new Set<Contract>();
+        Set<Contract> lstContractsRepeat = new Set<Contract>();
+
+        for(Contract contract : lstContracts){
+            lstContractsFirst.add(contract);
+            lstContractsSecond.add(contract);
+        }
+   
+        for (Contract contractFst : lstContractsFirst) {
+            Boolean isDuplicate = false;
+            for (Contract contractScd : lstContractsSecond) {
+                if (contractFst != contractScd) {
+                    if (contractFst.AccountId == contractScd.AccountId &&
+                        contractFst.StartDate == contractScd.StartDate &&
+                        contractFst.ContractTerm == contractScd.ContractTerm) {
+                        isDuplicate = true;
+                        break;
+                    }
+                }
+            }
+            if (isDuplicate) {
+                lstContractsRepeat.add(contractFst);
+            }
+        }
+        
+        System.debug('lstContractsRepeat.size(): ' + lstContractsRepeat.size());
+    
+        if (!lstContractsRepeat.isEmpty()) {
+            for (Contract contract : lstContractsRepeat) {
+                contract.addError('There is already a contract with the same Account and conflicting dates! (records in bulk)');
+            }        
+        }
+    }
+
+    //--------------------------------------------------------------------------
+    //método que não deixa outro perfil a não ser "System Administrator" e "Human Resources Manager" ativar um contrato
+    //na verdade não pode mudar o status a não ser para Draft
+
+
+
+    //--------------------------------------------------------------------------
+    //método que verifica se o contrato tem mais de 7 dias criado e não foi ativado enviar para aprovação para que seja observado pelo gerente
 }
