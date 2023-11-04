@@ -36,23 +36,23 @@ public with sharing class ContractTriggerHandler {
     //--------------------------------------------------------------------------
     //método para bloquear a criação de contrato com o mesmo range de data
     public void contractRepeatAfter(List<Contract> lstContracts){
+
         Set<Id> lstAccountsIds = new Set<Id>(); 
-        Set<Contract> lstContractsRepeat = new Set<Contract>();
-        
+        List<Contract> lstContractsError = new List<Contract>();
+        List<Contract> lstContractsSame = new List<Contract>();
+        Map<String,String> mapContractsRepeatInfos = new Map<String,String>();
+
         for(Contract contract : lstContracts){
             lstAccountsIds.add(contract.AccountId); 
         }
-        System.debug('lstContracts.size(): ' + lstContracts.size());
         
         if (!lstAccountsIds.isEmpty()) {
             List<Contract> lstContractsExisting = [
-                SELECT Id, StartDate, EndDate, AccountId
+                SELECT Id,ContractNumber, StartDate, EndDate, AccountId
                 FROM Contract
                 WHERE AccountId IN :lstAccountsIds AND Id NOT IN :lstContracts
             ];
-        
-            System.debug('lstContractsExisting.size(): ' + lstContractsExisting.size());
-        
+                
             if (!lstContractsExisting.isEmpty()) {
                 for (Contract contractExisting : lstContractsExisting) {
                     for (Contract contract : lstContracts) { 
@@ -63,75 +63,77 @@ public with sharing class ContractTriggerHandler {
                                 (contractExisting.StartDate >= contract.StartDate && contractExisting.EndDate <= contract.EndDate)
                                 ) 
                             {
-                                lstContractsRepeat.add(contract);
+                                lstContractsError.add(contract);
+                                lstContractsSame.add(contractExisting);
                             }  
                         }
                     }                      
                 }
             }
         }
-        System.debug('lstContractsRepeat.size(): ' + lstContractsRepeat.size());
-        
-        if (!lstContractsRepeat.isEmpty()) {
-            for (Contract contract : lstContractsRepeat) {
-                contract.addError('There is already a contract with the same Account and conflicting dates!');
-            }
-        }
-    }
 
-    //método para bloquear a criação de contrato com o mesmo range de data
-    public void contractRepeatBefore(List<Contract> lstContracts) {
-        Set<Contract> lstContractsFirst = new Set<Contract>();
-        Set<Contract> lstContractsSecond = new Set<Contract>();
-        Set<Contract> lstContractsRepeat = new Set<Contract>();
+        System.debug('lstContractsError.size() : ' + lstContractsError.size() );
 
-        for(Contract contract : lstContracts){
-            lstContractsFirst.add(contract);
-            lstContractsSecond.add(contract);
-        }
-   
-        for (Contract contractFst : lstContractsFirst) {
-            for (Contract contractScd : lstContractsSecond) {
-                if (contractFst != contractScd) {
-                    if (
-                        contractFst.AccountId == contractScd.AccountId &&
-                        contractFst.StartDate == contractScd.StartDate &&
-                        contractFst.ContractTerm == contractScd.ContractTerm
-                        ) 
-                    {
-                        lstContractsRepeat.add(contractFst);
-                    }
+        if (!lstContractsError.isEmpty()) {
+
+            if (!lstContractsSame.isEmpty()) {
+                for (Contract contract : lstContractsSame) {
+                    mapContractsRepeatInfos.put(contract.ContractNumber, contract.Id);
                 }
             }
-        }
-        
-        System.debug('lstContractsRepeat.size(): ' + lstContractsRepeat.size());
-    
-        if (!lstContractsRepeat.isEmpty()) {
-            for (Contract contract : lstContractsRepeat) {
-                contract.addError('There is already a contract with the same Account and conflicting dates! (records in bulk)');
-            }        
+
+            for (Contract contract : lstContractsError) {
+                contract.addError('There is already a contract with the same Account and conflicting dates! Number/Id duplicate records: ' + mapContractsRepeatInfos);
+            }
         }
     }
+    
 
+    //método para bloquear a criação de contrato com o mesmo range de data (em massa)
+    public void contractRepeatBefore(List<Contract> lstContracts) {
+        Set<String> contractKeys = new Set<String>();
+        for (Contract contract : lstContracts) {
+            String contractKey = contract.AccountId + '_' + contract.StartDate + '_' + contract.ContractTerm;
+            if (contractKeys.contains(contractKey)) {
+                contract.addError('There is already a contract with the same Account and conflicting dates! (Records in bulk)');
+            } else {
+                contractKeys.add(contractKey);
+            }
+        }
+    }
+        
     //--------------------------------------------------------------------------
     //método que não deixa outro perfil a não ser "System Administrator" e "Human Resources Manager" ativar um contrato
-    //na verdade não pode mudar o status a não ser para Draft
+    //erro - está deixando eu alterar de In process para Draft
     public void contractChangeStatus(Map<Id, Contract> mapContractsNew, Map<Id, Contract> mapContractsOld) {
+
+        List<String> lstProfileNameAccept = new List<String>{'System Administrator','Human Resources Manager' };
+        Map<String, Set<String>> validStatusTransitions = new Map<String, Set<String>>{
+            'New' => new Set<String>{'Draft'},
+            'Draft' => new Set<String>{'New'}
+        };
 
         String idCurrentProfile = UserController.getCurrentUserProfileId();
         String nameCurrentProfile = UserController.getProfileName(idCurrentProfile);
-        System.debug('nameCurrentProfile: ' + nameCurrentProfile);
 
-        if (nameCurrentProfile != 'System Administrator' && nameCurrentProfile != 'Human Resources Manager') {            
+        if (!lstProfileNameAccept.contains(nameCurrentProfile)) { 
+
             for (Id id : mapContractsNew.keySet()) {
+
                 Contract contractNew = mapContractsNew.get(id);
+
                 if(mapContractsOld != null){
+
                     Contract contractOld = mapContractsOld.get(id);
+
                     if(contractOld != null){
-                        if((contractOld.Status == 'New' && contractNew.Status != 'Draft')||  (contractOld.Status == 'Draft' && contractNew.Status != 'New')){
+
+                        if (!validStatusTransitions.containsKey(contractOld.Status) || !validStatusTransitions.get(contractOld.Status).contains(contractNew.Status)) {
+
                             if (contractOld != null && contractNew != null) {
+
                                 if (contractOld.Status != contractNew.Status) {
+                                    
                                     contractNew.addError('You do not have the required profile to change the contract status, only from New to Draft or oposite.');
                                 }
                             }
