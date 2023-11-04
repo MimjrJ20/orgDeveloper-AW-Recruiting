@@ -70,7 +70,7 @@ public with sharing class PositionTriggerHandler {
             if (posNew.VagaContrato__c) {
 
                 if (contract == null) {
-                    posNew.Account__c.addError('Essa conta não possui contrato ativo!');  
+                    posNew.Account__c.addError('This account does not have an active contract!');
 
                 } else {
                     
@@ -78,7 +78,7 @@ public with sharing class PositionTriggerHandler {
                                             && System.today() <= contract.EndDate.toStartOfMonth().addMonths(1).addDays(-1);
                     
                     if (dateAvailable == false) {
-                        posNew.Account__c.addError('Essa conta não possui contrato ativo para este mês!');
+                        posNew.Account__c.addError('This account does not have an active contract for this month!');
                     }
     
                     if (dateAvailable) {
@@ -89,8 +89,8 @@ public with sharing class PositionTriggerHandler {
 
                             
                         if (posCount > contract.PositionMonth__c) {
-                            posNew.Account__c.addError('Essa conta não possui vagas disponíves em contrato! ' + 
-                                                        +'Vaga(s) utilizada(s): ' + (posCount - 1) + ' / Vaga(s) disponível(is): ' + contract.PositionMonth__c + '.');
+                            posNew.Account__c.addError('This account does not have available positions in the contract!' + ' Used position(s): ' + (posCount - 1) + ' / Available position(s): ' + contract.PositionMonth__c + '.');
+
                         }
                     }
                 }  

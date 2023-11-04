@@ -22,7 +22,6 @@
     <isNavTabPersistenceDisabled>false</isNavTabPersistenceDisabled>
     <label>Recruiting</label>
     <navType>Standard</navType>
-    <tabs>standard-home</tabs>
     <tabs>Recruitment_Management</tabs>
     <tabs>standard-Account</tabs>
     <tabs>standard-Opportunity</tabs>

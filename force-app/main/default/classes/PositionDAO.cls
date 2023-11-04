@@ -3,12 +3,14 @@ public with sharing class PositionDAO {
     //pegar position por id
     public static Position__c getPositionById(String id){
 
-        return [SELECT Id,  Name, OwnerId, Owner.Name, CreatedDate, CreatedById, CreatedBy.Name, LastModifiedDate, LastModifiedById, LastModifiedBy.Name, 
+        return [
+            SELECT Id,  Name, OwnerId, Owner.Name, CreatedDate, CreatedById, CreatedBy.Name, LastModifiedDate, LastModifiedById, LastModifiedBy.Name, 
                         Approval_Status__c, Department__c, Education__c, Hiring_Manager__c, Hiring_Manager__r.Name, Job_Description__c, 
                         Legacy_Position_Number__c, Location__c, Pay_Grade__c, Salary_Range__c, Skills_Required__c, Status__c, 
                         Account__c, Account__r.Name, VagaContrato__c 
-                FROM Position__c
-                WHERE Id = :id LIMIT 1];
+            FROM Position__c
+            WHERE Id = :id LIMIT 1
+        ];
     }
 
     //pegar lista de positions disponíveis com status igual a New ou Open
@@ -17,12 +19,14 @@ public with sharing class PositionDAO {
 
         Set<String> statusValues = new Set<String> {'New', 'Open'};
 
-        return [SELECT Id, Account__c, Account__r.Name, Approval_Status__c, Department__c, Education__c, 
+        return [
+            SELECT Id, Account__c, Account__r.Name, Approval_Status__c, Department__c, Education__c, 
                             Hiring_Manager__c, Job_Description__c, Legacy_Position_Number__c, Location__c, 
                             Name, OwnerId, Owner.Name, Pay_Grade__c, Salary_Range__c, Skills_Required__c, 
                             Status__c, VagaContrato__c 
-                FROM Position__c 
-                WHERE Status__c IN :statusValues];
+            FROM Position__c 
+            WHERE Status__c IN :statusValues
+        ];
     }
 
     //pegar lista de positions disponíveis com status igual a New ou Open

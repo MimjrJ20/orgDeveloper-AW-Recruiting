@@ -20,12 +20,12 @@ public with sharing class CandidateTriggerHandler {
             
                 //Se o CPF tiver caracteres diferente de numérico
                 if(!cand.CPF__c.isNumeric()){
-                    cand.CPF__c.addError('O CPF só pode haver números. Sem letras, pontos e traços!');
+                    cand.CPF__c.addError('The CPF can only contain numbers. No letters, periods, or hyphens allowed!');
                 } 
                 
                 //Se o CPF tiver menor que 11 números
                 if (cand.CPF__c.length() < numCPF && cand.CPF__c.isNumeric()) {
-                    cand.CPF__c.addError('O CPF precisa ter 11 números!');
+                    cand.CPF__c.addError('The CPF must have 11 digits!');
                 } 
 
                 //Validar se o CPF existe
@@ -78,7 +78,7 @@ public with sharing class CandidateTriggerHandler {
                     
                     //retorna msg
                     if(midPenul != resultFinal1 || midLast != resultFinal2){
-                        cand.CPF__c.addError('Este CPF não é válido!');
+                        cand.CPF__c.addError('This CPF is not valid!');
                     }
                 }
 
@@ -87,7 +87,7 @@ public with sharing class CandidateTriggerHandler {
                 Matcher validFieldCPF = numOnly.matcher(cand.CPF__c);
 
                 if(validFieldCPF.matches()){
-                    cand.CPF__c.addError('O CPF não pode ser composto por UM único número!');
+                    cand.CPF__c.addError('The CPF cannot consist of a single number!');
                 }
             }    
         }
@@ -147,11 +147,11 @@ public with sharing class CandidateTriggerHandler {
             if(cand.Zip_Postal_Code__c != null){
 
                 if(cand.Country_List__c == 'BR - Brazil' && cand.Zip_Postal_Code__c.length() != 8){
-                    cand.Zip_Postal_Code__c.addError('O CEP para o país Brasil deve conter 8 dígitos!');
+                    cand.Zip_Postal_Code__c.addError('The CEP for Brazil must contain 8 digits!');
                 }
 
                 if(!cand.Zip_Postal_Code__c.isNumeric()){
-                    cand.Zip_Postal_Code__c.addError('No CEP não pode ser inserido letra ou ponto!');
+                    cand.Zip_Postal_Code__c.addError('No letters or dots are allowed in the CEP!');
                 }
             }
         }
@@ -166,19 +166,19 @@ public with sharing class CandidateTriggerHandler {
 
             if(cand.Zip_Postal_Code__c == null && cand.Street_Address_1__c != null){
 
-                cand.Street_Address_1__c.addError('Só digite o \'Addres 1\' se houver CEP!');
+                cand.Street_Address_1__c.addError('Only enter \'Address 1\' if there is a CEP!');
 
             }
 
             if(cand.Zip_Postal_Code__c == null && cand.Street_Address_2__c != null){
 
-                cand.Street_Address_2__c.addError('Só digite o \'Addres 2\' se houver CEP!');
+                cand.Street_Address_2__c.addError('Only enter \'Address 2\' if there is a CEP!');
 
             }
 
             if(cand.Zip_Postal_Code__c == null && cand.Street_Address_3__c != null){
 
-                cand.Street_Address_3__c.addError('Só digite o \'Addres 3\' se houver CEP!');
+                cand.Street_Address_3__c.addError('Only enter \'Address 3\' if there is a CEP!');
 
             }
         }

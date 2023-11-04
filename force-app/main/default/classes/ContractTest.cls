@@ -1,6 +1,7 @@
 @isTest
 public with sharing class ContractTest {
 
+    //
     @isTest
     static void contractDuplicateMonthActual(){
 
@@ -32,6 +33,7 @@ public with sharing class ContractTest {
         }
     }
 
+    //
     @isTest
     static void contractDuplicateMonthRange(){
 
@@ -63,6 +65,7 @@ public with sharing class ContractTest {
         }
     }
 
+    //
     @isTest
     static void testBatchContractActive(){
 
@@ -116,6 +119,7 @@ public with sharing class ContractTest {
         }
     }
 
+    //
     @isTest
     static void testBatchContractClosed(){
 

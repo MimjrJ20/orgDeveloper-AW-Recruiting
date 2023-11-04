@@ -9,7 +9,6 @@ public with sharing class InterviewerTriggerHandler {
     public void updateInterviewerCandidate(List<Interviewer__c> lstInterviewrs) {
         
         Set<Id> jobApplicationIds = new Set<Id>();
-
         for (Interviewer__c interviewer : lstInterviewrs) {
             if (interviewer.Job_Application__c != null) {
                 jobApplicationIds.add(interviewer.Job_Application__c);
@@ -23,11 +22,8 @@ public with sharing class InterviewerTriggerHandler {
         );
 
         for (Interviewer__c interviewer : lstInterviewrs) {
-
             if (interviewer.Job_Application__c != null) {
-
                 Job_Application__c jobApplication = jobApplicationsMap.get(interviewer.Job_Application__c);
-
                 if (jobApplication != null) {
                     interviewer.Candidate__c = jobApplication.Candidate__c;
                 }
@@ -72,13 +68,9 @@ public with sharing class InterviewerTriggerHandler {
         );
 
         for (Interviewer__c interviewer : lstInterviewrs) {
-
             if (interviewer.Job_Application__c != null) {
-
-                if (interviewer.Status__c == 'Completed') {
-                    
+                if (interviewer.Status__c == 'Completed') {                    
                     Job_Application__c jobApplication = jobApplicationsMap.get(interviewer.Job_Application__c);
-
                     if (jobApplication != null) {
                         jobApplication.Status__c = 'Open';
                         jobApplication.Stage__c = 'Interviews Completed';
@@ -112,11 +104,8 @@ public with sharing class InterviewerTriggerHandler {
 
         //for para ver se o candidato é o mesmo
         if (lstInterviewrsSameDate != null && lstInterviewrsSameDate.size() > 0) {
-            
             for (Interviewer__c interviewr : lstInterviewrsSameDate) {
-            
                 for (Interviewer__c interviewrCurrent : lstInterviewrs) {
-                    
                     if (interviewr.Date_Time_Interview__c == interviewrCurrent.Date_Time_Interview__c) {
                         
                         if (interviewr.Candidate__c == interviewrCurrent.Candidate__c) {

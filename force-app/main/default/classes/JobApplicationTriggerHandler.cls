@@ -70,7 +70,7 @@ public with sharing class JobApplicationTriggerHandler {
         for(Job_Application__c job : listJobs){
             
             if (!listJobs.isEmpty()) {
-                    job.addError('Por questão de compliance, após a vaga ser aplicada nestas condições o registro não pode ser deletado!');            
+                job.addError('For compliance reasons, once the vacancy has been applied under these conditions, the record cannot be deleted!');
             }
         }
     }
@@ -88,8 +88,8 @@ public with sharing class JobApplicationTriggerHandler {
 
                     if (days <= 30) {
 
-                        job.addError('Devido ao fluxo de contratação, a data de início deve ser MAIOR que 30 dias a partir de hoje!' + 
-                                    + ' Diferença inserida: ' + days + ' dias.');
+                        job.addError('Due to the hiring process, the start date must be MORE than 30 days from today!' + ' Inserted difference: ' + days + ' days.');
+
                     }
                 }                         
             }

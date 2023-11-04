@@ -79,7 +79,7 @@ public with sharing class OpportunityTriggerHandler {
             if(opp.StageName == 'Closed Won' && opp.RecordTypeId == recordTypeContract.Id) {
 
                 if(opp.Term__c == null || opp.StartDate__c == null){
-                    opp.addError('Não é possível fechar a oportunidade com os campos: Prazo de Contrato e/ou Início do Contrato em branco!');
+                    opp.addError('You cannot close the opportunity with the Contract Term and/or Start Date fields blank!');
                 }
             }
         }
@@ -93,7 +93,7 @@ public with sharing class OpportunityTriggerHandler {
         for(Opportunity opp : oppList){
 
             if(opp.StartDate__c < System.today()){
-                opp.StartDate__c.addError('Não é possível salvar a oportunidade se a data de Início do Contrato estiver no passado!');
+                opp.StartDate__c.addError('You cannot save the opportunity if the Contract Start Date is in the past!');
             }
         }
     }
@@ -120,7 +120,7 @@ public with sharing class OpportunityTriggerHandler {
 
                         if(!oppListOld.equals(oppListNew)){
                             
-                            oppNew.addError('Não pode alterar a oportunidade depois de fechada!');
+                            oppNew.addError('You cannot modify the opportunity after it has been closed!');
                         }
                     }
                 }
