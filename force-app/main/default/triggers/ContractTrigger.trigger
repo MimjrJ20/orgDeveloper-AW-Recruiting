@@ -4,10 +4,13 @@ trigger ContractTrigger on Contract (before insert, before update, after insert,
 
     if (Trigger.isInsert || Trigger.isUpdate) {
         if (Trigger.isBefore) {
-            handlerContract.contractRepeatBefore(Trigger.new);        
+            handlerContract.contractRepeatBefore(Trigger.new);
+        
         }
         if (Trigger.isAfter) {
-            handlerContract.contractRepeatAfter(Trigger.new);        
+            handlerContract.contractRepeatAfter(Trigger.new);    
+            handlerContract.contractChangeStatus(Trigger.newMap,Trigger.oldMap);        
+    
         }
     }
 
