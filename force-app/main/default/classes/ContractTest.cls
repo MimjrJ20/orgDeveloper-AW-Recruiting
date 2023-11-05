@@ -110,11 +110,11 @@ public with sharing class ContractTest {
         Test.stopTest();
 
         //verifica se os contratos foram atualizados corretamente
-        List<Contract> contractListUpdate = [SELECT Id, Status, Description, StartDate FROM Contract WHERE Status = 'Activated'];
+        List<Contract> contractListUpdate = [SELECT Id, Status, Description__c, StartDate FROM Contract WHERE Status = 'Activated'];
         System.assertEquals(200, contractListUpdate.size());
 
         for(Contract contract : contractListUpdate) {
-            Boolean result = contract.Description.contains('Contrato ativado através de schedule.') ? true : false;
+            Boolean result = contract.Description__c.contains('Contrato ativado através de schedule.') ? true : false;
             System.assertEquals(true, result);
         }
     }
@@ -174,11 +174,11 @@ public with sharing class ContractTest {
         Test.stopTest();
 
         //verifica se os contratos foram atualizados corretamente
-        List<Contract> contractListUpdate = [SELECT Id, Status, Description, EndDate FROM Contract WHERE Status = 'Closed'];
+        List<Contract> contractListUpdate = [SELECT Id, Status, Description__c, EndDate FROM Contract WHERE Status = 'Closed'];
         System.assertEquals(200, contractListUpdate.size());
 
         for(Contract contract : contractListUpdate) {
-            Boolean result = contract.Description.contains('Contrato fechado através de schedule.') ? true : false;
+            Boolean result = contract.Description__c.contains('Contrato fechado através de schedule.') ? true : false;
             System.assertEquals(true, result);
         }
     }

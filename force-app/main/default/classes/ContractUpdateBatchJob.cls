@@ -2,7 +2,7 @@ global with sharing class ContractUpdateBatchJob implements Database.Batchable<S
 
     //você define a consulta que usará neste contexto de lote 'selecionar ID da conta'
     global Database.QueryLocator start(Database.BatchableContext bc){
-        String query = 'SELECT Id, StartDate, EndDate, Status, Description FROM Contract';
+        String query = 'SELECT Id, StartDate, EndDate, Status, Description__c FROM Contract';
         return Database.getQueryLocator(query);
     }
 
@@ -13,11 +13,11 @@ global with sharing class ContractUpdateBatchJob implements Database.Batchable<S
 
         for(Contract contrUp : contractList){
 
-            if (contrUp.Status == 'New' || contrUp.Status == 'Draft' || contrUp.Status == 'In Approval Process') {
+            if (contrUp.Status == 'Approved') {
 
                 if (contrUp.StartDate <= System.TODAY()) {
                     contrUp.Status = 'Activated';
-                    contrUp.Description = 'Contrato ativado através de schedule.';
+                    contrUp.Description__c = 'Contrato ativado através de schedule.';
                     contractUpdate.add(contrUp);
                 }  
 
@@ -25,7 +25,7 @@ global with sharing class ContractUpdateBatchJob implements Database.Batchable<S
                 
                 if (contrUp.EndDate < System.TODAY()) {
                     contrUp.Status = 'Closed';
-                    contrUp.Description = 'Contrato fechado através de schedule.';
+                    contrUp.Description__c = 'Contrato fechado através de schedule.';
                     contractUpdate.add(contrUp);
                 }  
             }

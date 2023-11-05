@@ -30,24 +30,25 @@
         <label>Send Record for Approvals</label>
         <name>Send_Record_for_Approvals</name>
     </approvalStep>
+    <emailTemplate>unfiled$public/Template_Email_Contract_Approved</emailTemplate>
     <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
     <entryCriteria>
         <criteriaItems>
             <field>Contract.Status</field>
             <operation>equals</operation>
-            <value>New,Draft</value>
+            <value>Draft,Review</value>
         </criteriaItems>
     </entryCriteria>
     <finalApprovalActions>
         <action>
-            <name>Update_Status_Active</name>
+            <name>Update_Status_Approved</name>
             <type>FieldUpdate</type>
         </action>
     </finalApprovalActions>
     <finalApprovalRecordLock>true</finalApprovalRecordLock>
     <finalRejectionActions>
         <action>
-            <name>Update_Status_Draft</name>
+            <name>Update_Status_Review</name>
             <type>FieldUpdate</type>
         </action>
     </finalRejectionActions>
@@ -58,7 +59,7 @@
             <type>FieldUpdate</type>
         </action>
     </initialSubmissionActions>
-    <label>Approval Process Contract Actived</label>
+    <label>Approval Process Contract Approved</label>
     <processOrder>1</processOrder>
     <recordEditability>AdminOrCurrentApprover</recordEditability>
     <showApprovalHistory>false</showApprovalHistory>
