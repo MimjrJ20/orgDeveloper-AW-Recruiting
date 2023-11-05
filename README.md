@@ -31,7 +31,7 @@
 - As posições que tiverem contas com contratos fechados serão canceladas.
 
 #### Tabela para Gerenciar as vagas (Visão Recrutadores)
-![Tabela](https://github.com/MimjrJ20/orgDeveloper-AW-Recruiting/blob/main/img/img-aw-gif-2.gif)
+![Tabela](https://github.com/MimjrJ20/orgDeveloper-AW-Recruiting/blob/main/img/img-aw-gif-3.gif)
 
 ### Trello:
 
