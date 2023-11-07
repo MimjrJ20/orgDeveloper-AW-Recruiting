@@ -15,7 +15,7 @@ public with sharing class CandidateTest {
             Test.stopTest();
 
         } catch (Exception error){
-            Boolean result = error.getMessage().contains('O CPF só pode haver números. Sem letras, pontos e traços!') ? true : false;
+            Boolean result = error.getMessage().contains('The CPF can only contain numbers. No letters, periods, or hyphens allowed!') ? true : false;
             System.assertEquals(true, result);
         }
     }
@@ -38,7 +38,7 @@ public with sharing class CandidateTest {
             Test.stopTest();
 
         } catch (Exception error){
-            Boolean result = error.getMessage().contains('O CPF só pode haver números. Sem letras, pontos e traços!') ? true : false;
+            Boolean result = error.getMessage().contains('The CPF can only contain numbers. No letters, periods, or hyphens allowed!') ? true : false;
             System.assertEquals(true, result);
         }
     }
@@ -57,7 +57,7 @@ public with sharing class CandidateTest {
             Test.stopTest();
 
         } catch (Exception error){
-            Boolean result = error.getMessage().contains('O CPF precisa ter 11 números!') ? true : false;
+            Boolean result = error.getMessage().contains('The CPF must have 11 digits!') ? true : false;
             System.assertEquals(true, result);
         }
     }
@@ -80,7 +80,7 @@ public with sharing class CandidateTest {
             Test.stopTest();
 
         } catch (Exception error){
-            Boolean result = error.getMessage().contains('O CPF precisa ter 11 números!') ? true : false;
+            Boolean result = error.getMessage().contains('The CPF must have 11 digits!') ? true : false;
             System.assertEquals(true, result);
         }
     }
@@ -100,7 +100,7 @@ public with sharing class CandidateTest {
             Test.stopTest();
 
         } catch (Exception error){
-            Boolean result = error.getMessage().contains('Este CPF não é válido!') ? true : false;
+            Boolean result = error.getMessage().contains('This CPF is not valid!') ? true : false;
             System.assertEquals(true, result);
         }
     }
@@ -123,7 +123,7 @@ public with sharing class CandidateTest {
             Test.stopTest();
 
         } catch(Exception error) {
-            Boolean result = error.getMessage().contains('Este CPF não é válido!') ? true : false;
+            Boolean result = error.getMessage().contains('This CPF is not valid!') ? true : false;
             System.assertEquals(true, result);
         }
     }
@@ -142,7 +142,7 @@ public with sharing class CandidateTest {
             Test.stopTest();
 
         } catch (Exception error) {
-            Boolean result = error.getMessage().contains('O CPF não pode ser composto por UM único número!') ? true : false;
+            Boolean result = error.getMessage().contains('The CPF cannot consist of a single number!') ? true : false;
             System.assertEquals(true, result);
         }
         
@@ -166,7 +166,7 @@ public with sharing class CandidateTest {
             Test.stopTest();
 
         } catch (Exception error) {
-            Boolean result = error.getMessage().contains('O CPF não pode ser composto por UM único número!') ? true : false;
+            Boolean result = error.getMessage().contains('The CPF cannot consist of a single number!') ? true : false;
             System.assertEquals(true, result);
         }
         
@@ -187,7 +187,7 @@ public with sharing class CandidateTest {
             Test.stopTest();
 
         } catch (Exception error) {
-            Boolean result = error.getMessage().contains('O CEP para o país Brasil deve conter 8 dígitos!') ? true : false;
+            Boolean result = error.getMessage().contains('The CEP for Brazil must contain 8 digits!') ? true : false;
             System.assertEquals(true, result);
         }
     }
@@ -211,7 +211,7 @@ public with sharing class CandidateTest {
             Test.stopTest();
 
         } catch (Exception error) {
-            Boolean result = error.getMessage().contains('O CEP para o país Brasil deve conter 8 dígitos!') ? true : false;
+            Boolean result = error.getMessage().contains('The CEP for Brazil must contain 8 digits!') ? true : false;
             System.assertEquals(true, result);
             
         }
@@ -231,7 +231,7 @@ public with sharing class CandidateTest {
             Test.stopTest();
 
         } catch (Exception error) {
-            Boolean result = error.getMessage().contains('No CEP não pode ser inserido letra ou ponto!') ? true : false;
+            Boolean result = error.getMessage().contains('No letters or dots are allowed in the CEP!') ? true : false;
             System.assertEquals(true, result);
         }
     }
@@ -254,7 +254,7 @@ public with sharing class CandidateTest {
             Test.stopTest();
 
         } catch (Exception error) {
-            Boolean result = error.getMessage().contains('No CEP não pode ser inserido letra ou ponto!') ? true : false;
+            Boolean result = error.getMessage().contains('No letters or dots are allowed in the CEP!') ? true : false;
             System.assertEquals(true, result);
         }
     }
@@ -385,7 +385,7 @@ public with sharing class CandidateTest {
             Test.stopTest();
 
         } catch (Exception error) {
-            Boolean result = error.getMessage().contains('Só digite o \'Addres 1\' se houver CEP!') ? true : false;
+            Boolean result = error.getMessage().contains('Only enter \'Address 1\' if there is a CEP!') ? true : false;
             System.assertEquals(true, result);
         }
     }
@@ -405,7 +405,7 @@ public with sharing class CandidateTest {
             Test.stopTest();
 
         } catch (Exception error) {
-            Boolean result = error.getMessage().contains('Só digite o \'Addres 2\' se houver CEP!') ? true : false;
+            Boolean result = error.getMessage().contains('Only enter \'Address 2\' if there is a CEP!') ? true : false;
             System.assertEquals(true, result);
         }
     }
@@ -425,7 +425,7 @@ public with sharing class CandidateTest {
             Test.stopTest();
 
         } catch (Exception error) {
-            Boolean result = error.getMessage().contains('Só digite o \'Addres 3\' se houver CEP!') ? true : false;
+            Boolean result = error.getMessage().contains('Only enter \'Address 3\' if there is a CEP!') ? true : false;
             System.assertEquals(true, result);
         }
     }

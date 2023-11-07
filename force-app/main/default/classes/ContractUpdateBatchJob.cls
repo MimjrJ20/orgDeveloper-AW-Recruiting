@@ -1,43 +1,42 @@
 global with sharing class ContractUpdateBatchJob implements Database.Batchable<SObject>{
 
-    //você define a consulta que usará neste contexto de lote 'selecionar ID da conta'
+    //você define a consulta que usará neste contexto de lote 
     global Database.QueryLocator start(Database.BatchableContext bc){
-        String query = 'SELECT Id, StartDate, EndDate, Status, Description__c FROM Contract';
+        String query = 'SELECT Id, StartDate, EndDate, Status, Description__c FROM Contract LIMIT 200';
         return Database.getQueryLocator(query);
     }
 
-    //mas recebe apenas uma lista relativamente curta de registros (padrão 200)
-    global void execute (Database.BatchableContext bc, List<Contract> contractList){
+    //recebe apenas uma lista
+    global void execute (Database.BatchableContext bc, List<Contract> lstContracts){
 
-        List<Contract> contractUpdate = new List<Contract>();
+        List<Contract> lstContractsToUpdate = new List<Contract>();
 
-        for(Contract contrUp : contractList){
+        for(Contract contract : lstContracts){
 
-            if (contrUp.Status == 'Approved') {
+            if (contract.Status == 'Approved') {
 
-                if (contrUp.StartDate <= System.TODAY()) {
-                    contrUp.Status = 'Activated';
-                    contrUp.Description__c = 'Contrato ativado através de schedule.';
-                    contractUpdate.add(contrUp);
+                if (contract.StartDate < Date.today()) {
+                    contract.Status = 'Activated';
+                    contract.Description__c = 'Contract activated through a schedule.';
+                    lstContractsToUpdate.add(contract);
                 }  
 
-            } else if (contrUp.Status == 'Activated') {
+            } else if (contract.Status == 'Activated') {
                 
-                if (contrUp.EndDate < System.TODAY()) {
-                    contrUp.Status = 'Closed';
-                    contrUp.Description__c = 'Contrato fechado através de schedule.';
-                    contractUpdate.add(contrUp);
+                if (contract.EndDate < Date.today()) {
+                    contract.Status = 'Closed';
+                    contract.Description__c = 'Contract closed through a schedule.';
+                    lstContractsToUpdate.add(contract);
                 }  
             }
         }
 
-        update contractUpdate;
+        update lstContractsToUpdate;
     }
 
-    // encerra todas as pontas soltas conforme necessário
+    //encerra todas as pontas soltas conforme necessário
     global void finish(Database.BatchableContext bc){
         System.debug('Batch contract processed!');
-
     }
 
 }

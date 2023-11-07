@@ -1,310 +1,131 @@
 @isTest
 public with sharing class OpportunityTest {
 
+    //criação de registros 
+    @TestSetup
+    static void createTestData() {
+        Account acc = AccountTestDataFactory.createAccountSample(true);
+        Opportunity oppContract = OpportunityTestDataFactory.createOpportunitySample(true, 'Contract', Date.today() + 30, acc.Id, 'Prospecting');
+        Opportunity oppPosition = OpportunityTestDataFactory.createOpportunitySample(true, 'Position', Date.today() + 30, acc.Id, 'Prospecting');
+        Opportunity oppContractDate = OpportunityTestDataFactory.createOpportunitySampleContract(true, Date.today() + 30, Date.today(), acc.Id, 'Prospecting');
+    }
+
     @isTest
-    static void testOppInfoWitohut(){
-        
-        RecordType recordTypeContract = [SELECT Id FROM RecordType WHERE Name = 'Contract' LIMIT 1];
+    static void testOppInfoWithout(){
 
-        Account accNew = new Account();
-        accNew.Name = 'Teste Conta Opp Contract Without';
-        insert accNew;
-
-        Opportunity oppNew = new Opportunity();
-        oppNew.RecordTypeId = recordTypeContract.Id;
-        oppNew.Name = 'Teste Opp Contract Without';
-        oppNew.CloseDate = System.today() + 30 ;
-        oppNew.AccountId = accNew.Id;
-        oppNew.StageName = 'Prospecting';
-        insert oppNew;
-
-        oppNew.StageName = 'Closed Won';
+        Opportunity opp = [SELECT Id, StageName FROM Opportunity LIMIT 1];
 
         try {
             Test.startTest();
-            update oppNew;
+            Opportunity oppUpdate = OpportunityTestDataFactory.updateOpportunityStatus(true, opp, 'Closed Won');
             Test.stopTest();
             
         } catch (Exception error) {
-            Boolean result = error.getMessage().contains('Não é possível fechar a oportunidade com os campos: Prazo de Contrato e/ou Início do Contrato em branco!') ? true : false;
-            System.assertEquals(true, result);
+            Boolean result = error.getMessage().contains('You cannot close the opportunity with the Contract Term and/or Start Date fields blank!') ? true : false;
+            Assert.areEqual(true, result);
         }
     }
-
 
     @isTest
     static void testOppNewDate(){
         
-        RecordType recordTypeContract = [SELECT Id FROM RecordType WHERE Name = 'Contract' LIMIT 1];
-
-        Account accNew = new Account();
-        accNew.Name = 'Teste Conta Opp New Date Past';
-        insert accNew;
-
-        Opportunity oppNew = new Opportunity();
-        oppNew.RecordTypeId = recordTypeContract.Id;
-        oppNew.Name = 'Teste Opp New Date Past';
-        oppNew.CloseDate = System.today() + 30 ;
-        oppNew.StartDate__c = System.today() - 1 ;
-        oppNew.AccountId = accNew.Id;
-        oppNew.StageName = 'Prospecting';
+        Id accId = [SELECT Id FROM Account LIMIT 1].Id;
 
         try {
             Test.startTest();
-            insert oppNew;
+            Opportunity opp = OpportunityTestDataFactory.createOpportunitySampleContract(true, Date.today() + 30, Date.today() -1, accId, 'Prospecting');
             Test.stopTest();
             
         } catch (Exception error) {
-            Boolean result = error.getMessage().contains('Não é possível salvar a oportunidade se a data de Início do Contrato estiver no passado!') ? true : false;
-            System.assertEquals(true, result);
+            Boolean result = error.getMessage().contains('You cannot save the opportunity if the Contract Start Date is in the past!') ? true : false;
+            Assert.areEqual(true, result);
         }
     }
 
     @isTest
-    static void testOppUpDate(){
+    static void testOppUpdateDate(){
         
-        RecordType recordTypePosition = [SELECT Id FROM RecordType WHERE Name = 'Contract' LIMIT 1];
+        Opportunity opp = [SELECT Id FROM Opportunity WHERE StartDate__c != null LIMIT 1];
 
-        Account accNew = new Account();
-        accNew.Name = 'Teste Conta Opp Up Date Past';
-        insert accNew;
-
-        Opportunity oppNew = new Opportunity();
-        oppNew.RecordTypeId = recordTypePosition.Id;
-        oppNew.Name = 'Teste Opp Up Date Past';
-        oppNew.CloseDate = System.today() + 30 ;
-        oppNew.StartDate__c = System.today() + 1;
-        oppNew.AccountId = accNew.Id;
-        oppNew.StageName = 'Prospecting';
-        insert oppNew;
-
-        oppNew.StartDate__c = System.today() - 1;
-        
         try {
             Test.startTest();
-            update oppNew;
+            Opportunity oppUpdate = OpportunityTestDataFactory.updateOpportunityDate(true, opp, Date.today() -1);
             Test.stopTest();
             
         } catch (Exception error) {
-            Boolean result = error.getMessage().contains('Não é possível salvar a oportunidade se a data de Início do Contrato estiver no passado!') ? true : false;
-            System.assertEquals(true, result);
+            Boolean result = error.getMessage().contains('You cannot save the opportunity if the Contract Start Date is in the past!') ? true : false;
+            Assert.areEqual(true, result);
         }
     }
 
     @isTest
     static void testOppEditWin(){
-        
-        RecordType recordTypePosition = [SELECT Id FROM RecordType WHERE Name = 'Position' LIMIT 1];
 
-        Account accNew = new Account();
-        accNew.Name = 'Teste Conta Opp Edit Win';
-        insert accNew;
-
-        Opportunity oppNew = new Opportunity();
-        oppNew.RecordTypeId = recordTypePosition.Id;
-        oppNew.Name = 'Teste Opp Opp Edit Win';
-        oppNew.CloseDate = System.today() + 30 ;
-        oppNew.AccountId = accNew.Id;
-        oppNew.StageName = 'Prospecting';
-        insert oppNew;
-
-        oppNew.StageName = 'Closed Won';
-        update oppNew;
-
-        oppNew.StageName = 'Qualification';
+        Opportunity opp = [SELECT Id FROM Opportunity WHERE RecordType.Name = 'Position' LIMIT 1];
+        Opportunity oppWon = OpportunityTestDataFactory.updateOpportunityStatus(true, opp, 'Closed Won');
 
         try {
             Test.startTest();
-            update oppNew;
+            Opportunity oppUpdate = OpportunityTestDataFactory.updateOpportunityStatus(true, oppWon, 'Qualification');
             Test.stopTest();
             
         } catch (Exception error) {
-            Boolean result = error.getMessage().contains('Não pode alterar a oportunidade depois de fechada!') ? true : false;
-            System.assertEquals(true, result);
+            Boolean result = error.getMessage().contains('You cannot modify the opportunity after it has been closed!') ? true : false;
+            Assert.areEqual(true, result);
         }
     }
 
     @isTest
     static void testOppEditLost(){
         
-        RecordType recordTypePosition = [SELECT Id FROM RecordType WHERE Name = 'Position' LIMIT 1];
-
-        Account accNew = new Account();
-        accNew.Name = 'Teste Conta Opp Edit Lost';
-        insert accNew;
-
-        Opportunity oppNew = new Opportunity();
-        oppNew.RecordTypeId = recordTypePosition.Id;
-        oppNew.Name = 'Teste Opp Opp Edit Lost';
-        oppNew.CloseDate = System.today() + 30 ;
-        oppNew.AccountId = accNew.Id;
-        oppNew.StageName = 'Prospecting';
-        insert oppNew;
-
-        oppNew.StageName = 'Closed Lost';
-        update oppNew;
-
-        oppNew.StageName = 'Qualification';
+        Opportunity opp = [SELECT Id FROM Opportunity WHERE RecordType.Name = 'Position' LIMIT 1];
+        Opportunity oppLost = OpportunityTestDataFactory.updateOpportunityStatus(true, opp, 'Closed Lost');
 
         try {
             Test.startTest();
-            update oppNew;
+            Opportunity oppUpdate = OpportunityTestDataFactory.updateOpportunityStatus(true, oppLost, 'Qualification');
             Test.stopTest();
             
         } catch (Exception error) {
-            Boolean result = error.getMessage().contains('Não pode alterar a oportunidade depois de fechada!') ? true : false;
-            System.assertEquals(true, result);
-        }
-    }
-
-    @isTest
-    static void testOppEditWinMore(){
-        
-        RecordType recordTypePosition = [SELECT Id FROM RecordType WHERE Name = 'Position' LIMIT 1];
-
-        Account accNew = new Account();
-        accNew.Name = 'Teste Conta Opp Edit Win';
-        insert accNew;
-
-        Opportunity oppNew = new Opportunity();
-        oppNew.RecordTypeId = recordTypePosition.Id;
-        oppNew.Name = 'Teste Opp Opp Edit Win';
-        oppNew.CloseDate = System.today() + 30 ;
-        oppNew.AccountId = accNew.Id;
-        oppNew.StageName = 'Prospecting';
-        insert oppNew;
-
-        oppNew.StageName = 'Closed Won';
-        update oppNew;
-
-        oppNew.StageName = 'Qualification';
-        oppNew.Description = 'Teste descrição';
-
-        try {
-            Test.startTest();
-            update oppNew;
-            Test.stopTest();
-            
-        } catch (Exception error) {
-            Boolean result = error.getMessage().contains('Não pode alterar a oportunidade depois de fechada!') ? true : false;
-            System.assertEquals(true, result);
-        }
-    }
-
-    @isTest
-    static void testOppEditLostMore(){
-        
-        RecordType recordTypePosition = [SELECT Id FROM RecordType WHERE Name = 'Position' LIMIT 1];
-
-        Account accNew = new Account();
-        accNew.Name = 'Teste Conta Opp Edit Lost';
-        insert accNew;
-
-        Opportunity oppNew = new Opportunity();
-        oppNew.RecordTypeId = recordTypePosition.Id;
-        oppNew.Name = 'Teste Opp Opp Edit Lost';
-        oppNew.CloseDate = System.today() + 30 ;
-        oppNew.AccountId = accNew.Id;
-        oppNew.StageName = 'Prospecting';
-        insert oppNew;
-
-        oppNew.StageName = 'Closed Lost';
-        update oppNew;
-
-        oppNew.StageName = 'Qualification';
-        oppNew.Description = 'Teste descrição';
-
-        try {
-            Test.startTest();
-            update oppNew;
-            Test.stopTest();
-            
-        } catch (Exception error) {
-            Boolean result = error.getMessage().contains('Não pode alterar a oportunidade depois de fechada!') ? true : false;
-            System.assertEquals(true, result);
+            Boolean result = error.getMessage().contains('You cannot modify the opportunity after it has been closed!') ? true : false;
+            Assert.areEqual(true, result);
         }
     }
 
     @isTest
     static void testOppCreatePosition(){
         
-        List<Opportunity> oppList = new List<Opportunity>();
-
-        RecordType recordTypePosition = [SELECT Id FROM RecordType WHERE Name = 'Position' LIMIT 1];
-
-        Account accNew = new Account();
-        accNew.Name = 'Teste Conta Opp Win Position';
-        insert accNew;
-
-        Opportunity oppNew = new Opportunity();
-        oppNew.RecordTypeId = recordTypePosition.Id;
-        oppNew.Name = 'Teste Opp Opp Win Position';
-        oppNew.CloseDate = System.today() + 30 ;
-        oppNew.AccountId = accNew.Id;
-        oppNew.StageName = 'Prospecting';
-        insert oppNew;
-
-        oppNew.StageName = 'Closed Won';
-        
-        oppList.add(oppNew);
+        Opportunity opp = [SELECT Id, Name, StageName, AccountId, RecordTypeId FROM Opportunity WHERE RecordType.Name = 'Position' LIMIT 1];
 
         Test.startTest();
-
-        OpportunityTriggerHandler handler = new OpportunityTriggerHandler();
-
-        handler.oppWinCreatePosition(oppList);
-
+        Opportunity oppUpdate = OpportunityTestDataFactory.updateOpportunityStatus(true, opp, 'Closed Won');
         Test.stopTest();
 
-        // Consultar a posição criada a partir do update da oportunidade
-        Position__c[] posCreate = [SELECT Id, OwnerId FROM Position__c WHERE Name = :oppNew.Name];
-
-        Boolean result = posCreate != null;
-     
-        System.assertEquals(true, result);
-        System.assertEquals(1, posCreate.size());
+        Position__c[] posCreated = [SELECT Id, OwnerId FROM Position__c WHERE Name = :oppUpdate.Name];
+        Boolean result = posCreated != null;
+        Assert.areEqual(true, result);
+        Assert.areEqual(1, posCreated.size());
     }
 
     @isTest
     static void testOppCreateContract(){
         
-        List<Opportunity> oppList = new List<Opportunity>();
-
-        RecordType recordTypePosition = [SELECT Id FROM RecordType WHERE Name = 'Contract' LIMIT 1];
-
-        Account accNew = new Account();
-        accNew.Name = 'Teste Conta Opp Win Contract';
-        insert accNew;
-
-        Opportunity oppNew = new Opportunity();
-        oppNew.RecordTypeId = recordTypePosition.Id;
-        oppNew.Name = 'Teste Opp Opp Win Contract';
-        oppNew.CloseDate = System.today() + 30 ;
-        oppNew.AccountId = accNew.Id;
-        oppNew.StageName = 'Prospecting';
-        insert oppNew;
-
-        oppNew.PositionMonth__c = 1 ;
-        oppNew.StartDate__c = System.today() + 30;
-        oppNew.Term__c = 3;
-        oppNew.StageName = 'Closed Won';
-
-        oppList.add(oppNew);
+        Opportunity opp = [SELECT Id, ContractId, Name, StageName, AccountId, RecordTypeId FROM Opportunity WHERE RecordType.Name = 'Contract' LIMIT 1];
 
         Test.startTest();
-        update oppList;
+        Opportunity oppUpdate = OpportunityTestDataFactory.updateOpportunityContract(true, opp, 'Closed Won', Date.today()+30, 1,3);
         Test.stopTest();
 
-        // Consultar o contrato vinculado à oportunidade após o update
-        Opportunity oppAfterUpdate = [SELECT ContractId FROM Opportunity WHERE Id = :oppNew.Id];
+        Opportunity oppAfterUpdate = [SELECT Id, ContractId FROM Opportunity WHERE Id = :oppUpdate.Id];
 
-        Contract[] contractCreate = [SELECT Id
-                                    FROM Contract  
-                                    WHERE Id = :oppAfterUpdate.ContractId];
+        Contract[] contractCreated = [
+            SELECT Id
+            FROM Contract  
+            WHERE Id = :oppAfterUpdate.ContractId
+        ];
        
-        Boolean resultContract = contractCreate != null;
-
-        System.assertEquals(true, resultContract);
-        System.assertEquals(1, contractCreate.size());
+        Boolean result = contractCreated != null;
+        Assert.areEqual(true, result);
+        Assert.areEqual(1, contractCreated.size());
     }
 }

@@ -5,34 +5,6 @@ public with sharing class ContractTriggerHandler {
 
     }
 
-    //!--------------------------------------------------------------------------
-    //!método para bloquear a criação de contrato com o mesmo range de data
-    //! public void contractRepeat(List<Contract> lstContracts){
-    //!     Set<Id> accountsIds = new Set<Id>(); 
-    //!     for(Contract contract : lstContracts){
-    //!          accountsIds.add(contract.AccountId); 
-    //!      }
-    //!      if (!accountsIds.isEmpty()) {
-    //!          List<Contract> listContractExisting = [
-    //!              SELECT Id
-    //!              FROM Contract
-    //!              WHERE 
-    //!                 AccountId IN :accountsIds
-    //!                 AND (
-    //!                         (StartDate <= :lstContracts[0].StartDate AND EndDate >= :lstContracts[0].StartDate) OR 
-    //!                         (StartDate <= :lstContracts[0].EndDate AND EndDate >= :lstContracts[0].EndDate) OR 
-    //!                         (StartDate >= :lstContracts[0].StartDate AND EndDate <= :lstContracts[0].EndDate)
-    //!                     )
-    //!                 AND Id NOT IN :lstContracts
-    //!         ];
-    //!         for(Contract contract : lstContracts) {                
-    //!             if (listContractExisting.size() > 0) {
-    //!                 contract.addError('Já existe um contrato com a mesma Conta e com datas conflitantes!');    
-    //!             }
-    //!         }
-    //!     }
-    //!}
-
     //--------------------------------------------------------------------------
     //método para bloquear a criação de contrato com o mesmo range de data
     public void contractDuplicate(List<Contract> lstContracts){
@@ -72,8 +44,6 @@ public with sharing class ContractTriggerHandler {
             }
         }
 
-        System.debug('lstContractsError.size() : ' + lstContractsError.size() );
-
         if (!lstContractsError.isEmpty()) {
 
             if (!lstContractsSame.isEmpty()) {
@@ -104,49 +74,45 @@ public with sharing class ContractTriggerHandler {
 
     //--------------------------------------------------------------------------
     //método que não deixa outro perfil a não ser "System Administrator" e "Human Resources Manager" ativar um contrato
-
+    @TestVisible
     public static Boolean isVerifyStatus = true;
+
+    @TestVisible
+    public static void setIsVerifyStatus(Boolean value) {
+        isVerifyStatus = value;
+    }
 
     public void contractChangeStatus(Map<Id, Contract> mapContractsNew, Map<Id, Contract> mapContractsOld) {
 
-        System.debug('aqui na validação do status');
-        List<String> lstProfileNameAccept = new List<String>{'System Administrator','Human Resources Manager' };
-        Map<String, Set<String>> validStatusTransitions = new Map<String, Set<String>>{
-            'New' => new Set<String>{'Draft'},
-            'Draft' => new Set<String>{'New'}
-        };
-
-        String idCurrentProfile = UserController.getCurrentUserProfileId();
-        String nameCurrentProfile = UserController.getProfileName(idCurrentProfile);
-
+        if (ContractTriggerHandler.isVerifyStatus) {
+            List<String> lstProfileNameAccept = new List<String>{'System Administrator','Human Resources Manager' };
+            Map<String, Set<String>> validStatusTransitions = new Map<String, Set<String>>{
+                'New' => new Set<String>{'Draft'},
+                'Draft' => new Set<String>{'New'}
+            };
+    
+            String idCurrentProfile = UserController.getCurrentUserProfileId();
+            String nameCurrentProfile = UserController.getProfileName(idCurrentProfile);
+    
             if (!lstProfileNameAccept.contains(nameCurrentProfile)) { 
-
                 for (Id id : mapContractsNew.keySet()) {
-
                     Contract contractNew = mapContractsNew.get(id);
-
                     if(mapContractsOld != null){
-
                         Contract contractOld = mapContractsOld.get(id);
-
                         if(contractOld != null){
-
                             if (!validStatusTransitions.containsKey(contractOld.Status) || !validStatusTransitions.get(contractOld.Status).contains(contractNew.Status)) {
-
                                 if (contractOld != null && contractNew != null) {
-
                                     if (contractOld.Status != contractNew.Status) {
-
                                         contractNew.addError('You do not have the required profile to change the contract status, only from New to Draft or oposite.');
                                     }
                                 }
-                                
                             }
                         }
                     }
                 }
             }
-        
+        }
+
     }
 
 
@@ -158,8 +124,6 @@ public with sharing class ContractTriggerHandler {
         String userId = UserController.getCurrentUserId();
         
         for (Contract contract : lstContracts) {
-
-            System.debug('aqui SubmitAutomaticApprovals__c: ' + contract.SubmitAutomaticApprovals__c);
 
             if (contract.SubmitAutomaticApprovals__c) {
                 isVerifyStatus = false;
@@ -176,14 +140,27 @@ public with sharing class ContractTriggerHandler {
 
     //-----------------------------------------------------------------
     //método que verifica a data de inicio do contrato
+    @TestVisible
+    public static Boolean isVerifyDate = true;
+
+    @TestVisible
+    public static void setIsVerifyDate(Boolean value) {
+        isVerifyDate = value;
+    }
     public void verifyContractDate(List<Contract> lstContracts) {
         
-        for (Contract contract : lstContracts) {
-            Integer betweenData = System.today().daysBetween(contract.StartDate);
-            if (betweenData < 0) {
-                contract.StartDate.addError('The contract start date cannot be earlier than today. Difference: ' + betweenData + ' days.');
-            }
-        }   
+        if (ContractTriggerHandler.isVerifyDate) {
+            for (Contract contract : lstContracts) {
+
+                if (contract.StartDate != null) {
+                    Integer betweenDate = Date.today().daysBetween(contract.StartDate);
+                    if (betweenDate < 0) {
+                        contract.StartDate.addError('The contract start date cannot be earlier than today. Difference: ' + betweenDate + ' days.');
+                    }
+                }
+
+            }  
+        } 
     }
 
 }

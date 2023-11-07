@@ -1,6 +1,6 @@
 Hi,
 
-The contract number {!Contract.ContractNumber} has approved!!
+The contract number {!Contract.ContractNumber} was submited for to approve!!
 
 For more details: 
 {!Contract.Link}
