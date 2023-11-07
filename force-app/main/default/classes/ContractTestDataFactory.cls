@@ -35,12 +35,12 @@ public with sharing class ContractTestDataFactory {
     }
 
     //massa para atualizar UM contrato Status
-    public static Contract updateContractStatus(Boolean isVerifyStatus, Boolean doUpdate, Contract contract, String value){
+    public static Contract updateContractStatus(Boolean isVerifyStatus, Boolean doUpdate, Contract contract, String status){
         
         ContractTriggerHandler.setIsVerifyStatus(isVerifyStatus);
 
         Contract contractUpdate = contract;
-        contractUpdate.Status = value;
+        contractUpdate.Status = status;
         
         if(doUpdate){
             update contractUpdate;
@@ -49,12 +49,12 @@ public with sharing class ContractTestDataFactory {
     }
     
     //massa para atualizar UM contrato com todos campos preenchidos
-    public static Contract updateContractStatusFull(Boolean isVerifyStatus, Boolean doUpdate, Contract contract, String value){
+    public static Contract updateContractStatusFull(Boolean isVerifyStatus, Boolean doUpdate, Contract contract, String status){
     
         ContractTriggerHandler.setIsVerifyStatus(isVerifyStatus);
 
         Contract contractUpdate = contract;
-        contractUpdate.Status = value;
+        contractUpdate.Status = status;
         contractUpdate.PositionMonth__c = 1;
         contractUpdate.SpecialTerms = 'SpecialTerms';           
         contractUpdate.Description__c = 'Description';
@@ -80,14 +80,14 @@ public with sharing class ContractTestDataFactory {
     }
     
     //massa para atualizar VÁRIOS contratos
-    public static List<Contract> updateContractListStatus(Boolean isVerifyStatus, Boolean doUpdate, List<Contract> lstContracts, String value){
+    public static List<Contract> updateContractListStatus(Boolean isVerifyStatus, Boolean doUpdate, List<Contract> lstContracts, String status){
         
         ContractTriggerHandler.setIsVerifyStatus(isVerifyStatus);
 
         List<Contract> lstContractUpdated = new List<Contract>();
 
         for(Contract contract : lstContracts) {
-            contract.Status = value;
+            contract.Status = status;
             lstContractUpdated.add(contract);
         }
 

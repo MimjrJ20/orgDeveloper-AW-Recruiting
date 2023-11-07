@@ -74,7 +74,6 @@ public with sharing class ContractTriggerHandler {
 
     //--------------------------------------------------------------------------
     //método que não deixa outro perfil a não ser "System Administrator" e "Human Resources Manager" ativar um contrato
-    
     @TestVisible
     public static Boolean isVerifyStatus = true;
 
@@ -141,7 +140,6 @@ public with sharing class ContractTriggerHandler {
 
     //-----------------------------------------------------------------
     //método que verifica a data de inicio do contrato
-
     @TestVisible
     public static Boolean isVerifyDate = true;
 
@@ -153,10 +151,14 @@ public with sharing class ContractTriggerHandler {
         
         if (ContractTriggerHandler.isVerifyDate) {
             for (Contract contract : lstContracts) {
-                Integer betweenDate = Date.today().daysBetween(contract.StartDate);
-                if (betweenDate < 0) {
-                    contract.StartDate.addError('The contract start date cannot be earlier than today. Difference: ' + betweenDate + ' days.');
+
+                if (contract.StartDate != null) {
+                    Integer betweenDate = Date.today().daysBetween(contract.StartDate);
+                    if (betweenDate < 0) {
+                        contract.StartDate.addError('The contract start date cannot be earlier than today. Difference: ' + betweenDate + ' days.');
+                    }
                 }
+
             }  
         } 
     }

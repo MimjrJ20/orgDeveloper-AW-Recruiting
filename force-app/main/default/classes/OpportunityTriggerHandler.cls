@@ -6,78 +6,55 @@ public with sharing class OpportunityTriggerHandler {
     }
 
     //--------------------------------------------------------------------------
-
     //método para criar contrato
     public void oppWinCreateContract(List<Opportunity> oppList, Map<Id, Opportunity> oppMap) {
 
-        //lista para inserir os novos contratos, atualizar as oporunidades 
         List<Contract> contractNewList = new List<Contract>();
         List<Opportunity> oppUpdateList = new List<Opportunity>();
 
-        //uma lista com chave e objeto do contrato
         Map<Id, Contract> contractMap = new Map<Id, Contract>(); 
 
-        //busca do id do RecordType igual a Contrato
         RecordType recordTypeContract = [SELECT Id FROM RecordType WHERE Name = 'Contract' LIMIT 1];
 
-        //percorrer a lista de oportunidade para criar o novo contrato
         for(Opportunity opp : oppList) {
 
-            //condição se Closede Won E do tipo Contrato
             if (opp.StageName == 'Closed Won' && opp.RecordTypeId == recordTypeContract.Id) {
 
-                //instanciando o objeto Contrato e definindo os valores dos campos
                 Contract contractNew = new Contract();
                 contractNew.Status = 'New';
                 contractNew.AccountId = opp.AccountId;
                 contractNew.StartDate = opp.StartDate__c;
                 contractNew.PositionMonth__c = opp.PositionMonth__c;
                 contractNew.ContractTerm = Integer.valueOf(opp.Term__c);
-                contractNew.Description = 'Contrato criado a partir de uma oportunidade.'+ '\n' +
-                                            + 'Oportunidade: ' + opp.Name;
+                contractNew.Description = 'Contract created from an opportunity.'+ '\n' +
+                                            + 'Opportunity: ' + opp.Name;
 
-                //adiciona o registro para lista de novos contratos
                 contractNewList.add(contractNew);
-
-                //adiciona como chave do map do contrato o Id da oportunidade e contrato
                 contractMap.put(opp.Id, contractNew);            
             }
         }
 
-        //cria os contratos da lista
         if (!contractNewList.isEmpty()) {
             insert contractNewList;
         }
 
-        //percorrer a lista de oportuidade para atualizar o campo com o contrato criado
         for(Opportunity opp : oppList) {
 
-            //condição se o map do Contrato contem o Id da oportunidade da lista percorrida
             if (contractMap.containsKey(opp.Id)) {
-
-                //passando como ojeto o contrato relacionado a chave da oportunidade buscada
                 Contract contractOpp = contractMap.get(opp.Id);
-
-                //atualizando o contrato da oportunidade
                 opp.ContractId = contractOpp.Id; 
-
-                //adiciona a oportunidade atualiza a uma lista
                 oppUpdateList.add(opp);
             }
         }
     }
     
     //--------------------------------------------------------------------------
-
     //método para impedir que fecha a oportunidade
     public void oppWinContractWithout(List<Opportunity> oppList){
 
         RecordType recordTypeContract = [SELECT Id FROM RecordType WHERE Name = 'Contract' LIMIT 1];
-
         for(Opportunity opp : oppList){
-
             if(opp.StageName == 'Closed Won' && opp.RecordTypeId == recordTypeContract.Id) {
-
                 if(opp.Term__c == null || opp.StartDate__c == null){
                     opp.addError('You cannot close the opportunity with the Contract Term and/or Start Date fields blank!');
                 }
@@ -86,12 +63,9 @@ public with sharing class OpportunityTriggerHandler {
     }
 
     //--------------------------------------------------------------------------
-
     //método para impedir que a data seja data passada
     public void oppDatePast(List<Opportunity> oppList){
-
         for(Opportunity opp : oppList){
-
             if(opp.StartDate__c < System.today()){
                 opp.StartDate__c.addError('You cannot save the opportunity if the Contract Start Date is in the past!');
             }
@@ -99,7 +73,6 @@ public with sharing class OpportunityTriggerHandler {
     }
 
     //--------------------------------------------------------------------------
-
     //método para barrar alteração quando a oportunidade estiver fechada
     public void oppClosedNotEdit(Map<Id, Opportunity> oppListOld, Map<Id, Opportunity> oppListNew){
 
@@ -133,44 +106,34 @@ public with sharing class OpportunityTriggerHandler {
     //método para criar vaga
     public void oppWinCreatePosition(List<Opportunity> oppList) {
 
-        //lista para inserir os novos contratos, atualizar as oporunidades
         List<Position__c> posNewList = new List<Position__c>();
         List<Position__c> posUpList = new List<Position__c>();
 
-        //busca do id do RecordType igual a Position
         RecordType recordTypePosition = [SELECT Id FROM RecordType WHERE Name = 'Position' LIMIT 1];
 
-        //percorrer a lista de oportunidade para criar a posição
         for(Opportunity opp : oppList) {
 
-            //condição se Closede Won E do tipo Position
             if (opp.StageName == 'Closed Won' && opp.RecordTypeId == recordTypePosition.Id) {
 
-                //instanciando o objeto Position__c e definindo os valores dos campos
                 Position__c posNew = new Position__c();
                 posNew.Name = opp.Name;
                 posNew.Status__c = 'New';
                 posNew.Account__c = opp.AccountId;
                 posNew.VagaContrato__c = false;
-                posNew.Job_Description__c = 'Vaga criada a partir de oportunidade que foi fechada. Por favor, preencher o restante das informações.';
+                posNew.Job_Description__c = 'Position created from a closed opportunity. Please fill in the remaining details.';
 
-
-                //adiciona o registro para lista de novos posições
                 posNewList.add(posNew);    
             }
         }
 
-        //cria as vagas da lista
         if (!posNewList.isEmpty()) {
             insert posNewList;
         }
 
-        //se a lista NÃO estiver vazia 
         if (!posNewList.isEmpty()) {
             
             QueueSobject[] queueRecruiters = [SELECT Id, Queue.Id, Queue.Name, Queue.Type, SobjectType FROM QueueSobject WHERE Queue.Name = 'Recruiters' AND SobjectType = 'Position__c' LIMIT 1];
 
-            //percorrer o registros o que foi criado para atualizar o owner
             for(Position__c posUp : posNewList){
 
                 posUp.OwnerId = queueRecruiters[0].Queue.Id;
