@@ -5,7 +5,7 @@
     <encodingKey>UTF-8</encodingKey>
     <name>Template Email Contract Approved</name>
     <style>none</style>
-    <subject>Contract {!Contract.ContractNumber} Approved</subject>
+    <subject>Contract {!Contract.ContractNumber} Submit to Approval</subject>
     <type>text</type>
     <uiType>Aloha</uiType>
 </EmailTemplate>

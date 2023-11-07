@@ -1,185 +1,179 @@
 @isTest
 public with sharing class ContractTest {
 
-    //
+    //criação de registros 
+    @TestSetup
+    static void createTestData() {
+        List<Account> lstAcc = AccountTestDataFactory.createAccountSampleList(true,10);
+        List<Contract> lstContract = ContractTestDataFactory.createContractList(true,lstAcc,3,Date.today(),'New');
+    }
+
+    //teste para método contractDuplicate mesmo mês
     @isTest
-    static void contractDuplicateMonthActual(){
+    static void testContractDuplicateSameMonth(){
 
-        Account accNew = new Account();
-        accNew.Name = 'Teste Conta Opp Contract Without';
-        insert accNew;
-
-        Contract contrNew1 = new Contract();
-        contrNew1.AccountId = accNew.Id;
-        contrNew1.Status = 'New';
-        contrNew1.ContractTerm = 1;
-        contrNew1.StartDate = System.today();
-        insert contrNew1;
-
-        Contract contrNew2 = new Contract();
-        contrNew2.AccountId = accNew.Id;
-        contrNew2.Status = 'New';
-        contrNew2.ContractTerm = 1;
-        contrNew2.StartDate = System.today();
+        Id accId = [SELECT Id FROM Account LIMIT 1].Id;
 
         try {
             Test.startTest();
-            insert contrNew2;
+            Contract contract = ContractTestDataFactory.createContract(true,accId,3,Date.today(),'New');
             Test.stopTest();
-            
         } catch (Exception error) {
-            Boolean result = error.getMessage().contains('Já existe um contrato com a mesma Conta e com datas conflitantes!');
-            System.assertEquals(true, result);
+            Boolean result = error.getMessage().contains('There is already a contract with the same Account and conflicting dates!');
+            Assert.areEqual(true, result);
         }
     }
 
-    //
+    //teste para método contractDuplicate por intervalo
     @isTest
-    static void contractDuplicateMonthRange(){
+    static void testContractDuplicateRangeFirst(){
 
-        Account accNew = new Account();
-        accNew.Name = 'Teste Conta Opp Contract Without';
-        insert accNew;
-
-        Contract contrNew1 = new Contract();
-        contrNew1.AccountId = accNew.Id;
-        contrNew1.Status = 'New';
-        contrNew1.ContractTerm = 2;
-        contrNew1.StartDate = System.today();
-        insert contrNew1;
-
-        Contract contrNew2 = new Contract();
-        contrNew2.AccountId = accNew.Id;
-        contrNew2.Status = 'New';
-        contrNew2.ContractTerm = 1;
-        contrNew2.StartDate = System.today().addMonths(1);
+        Id accId = [SELECT Id FROM Account LIMIT 1].Id;
 
         try {
             Test.startTest();
-            insert contrNew2;
+            Contract contract = ContractTestDataFactory.createContract(true,accId,1,Date.today().addDays(1), 'New');
             Test.stopTest();
-            
         } catch (Exception error) {
-            Boolean result = error.getMessage().contains('Já existe um contrato com a mesma Conta e com datas conflitantes!');
-            System.assertEquals(true, result);
+            Boolean result = error.getMessage().contains('There is already a contract with the same Account and conflicting dates!');
+            Assert.areEqual(true, result);
+        }
+
+    }
+
+    //teste para método contractDuplicate por intervalo 
+    @isTest
+    static void testContractDuplicateRangeSecond(){
+
+        Id accId = [SELECT Id FROM Account LIMIT 1].Id;
+
+        try {
+            Test.startTest();
+            Contract contract = ContractTestDataFactory.createContract(true,accId,1,Date.today().addMonths(1), 'New');
+            Test.stopTest();
+        } catch (Exception error) {
+            Boolean result = error.getMessage().contains('There is already a contract with the same Account and conflicting dates!');
+            Assert.areEqual(true, result);
+        }
+    }
+    
+    //teste para alterar o Status
+    @isTest
+    static void testContractChangeStatusFirst(){
+
+        Contract contract = [SELECT Id, Status FROM Contract LIMIT 1];
+        Id profileId = [SELECT Id FROM Profile WHERE Name = 'Human Resources' LIMIT 1].Id;
+        User user = UserTestDataFactory.userByProfileId(profileId);
+
+        try {
+            Test.startTest();
+            System.runAs(user) {
+                Contract contractUpdate = ContractTestDataFactory.updateContractStatus(true, true, contract, 'Review');
+            }            
+            Test.stopTest();
+        } catch (Exception error) {
+            Boolean result = error.getMessage().contains('You do not have the required profile to change the contract status, only from New to Draft or oposite.');
+            Assert.areEqual(true, result);
         }
     }
 
-    //
+    //teste para enviar o registro para aprovação
+    @isTest
+    static void testContractSubmitApprovals(){
+
+        Contract contract = [SELECT Id, Status FROM Contract LIMIT 1];
+        Id profileId = [SELECT Id FROM Profile WHERE Name = 'Human Resources' LIMIT 1].Id;
+        User user = UserTestDataFactory.userByProfileId(profileId);
+
+        try {
+            Test.startTest();
+            System.runAs(user) {
+                contract = ContractTestDataFactory.updateContractStatusFull(false, true, contract, 'Draft');
+            }            
+            Test.stopTest();
+        } catch (Exception error) {
+            String result = error.getMessage();
+            System.debug('Error testContractSubmitApprovals: ' + result);
+        }
+
+        Contract contractSubmited = [SELECT Id, Status FROM Contract WHERE Id = :contract.Id];
+        Assert.areEqual('In Approval Process', contractSubmited.Status);
+    }
+
+    //teste para StartDate inferior
+    @isTest
+    static void testContractStartDate(){
+
+        Contract contract = [SELECT Id, Status FROM Contract LIMIT 1];
+
+        try {
+            Test.startTest();
+            Contract contractUpdate = ContractTestDataFactory.updateContractStartDate(true, true, contract, Date.today().addDays(-1));
+            Test.stopTest();
+        } catch (Exception error) {
+            Boolean result = error.getMessage().contains('The contract start date cannot be earlier than today. Difference:');
+            Assert.areEqual(true, result);
+        }
+    }
+
+    //teste para ContractUpdateBatchJob Activated
     @isTest
     static void testBatchContractActive(){
 
-        //criação de contas de teste
-        List<Account> accList = new List<Account>();
-            
-        for(Integer i = 0; i<200; i++){
-            
-            Account accNew = new Account();
-            accNew.Name = 'Teste conta ' + i;
-            accList.add(accNew);
+        List<Contract>lstContracts = [SELECT Id, Description__c FROM Contract LIMIT 200];
+        List<Contract>lstContractsToUpdateDate = ContractTestDataFactory.updateContractListStartDate(false, true, lstContracts, Date.today().addDays(-1));
+        List<Contract>lstContractsToUpdateStatus = ContractTestDataFactory.updateContractListStatus(false, true, lstContractsToUpdateDate, 'Approved');
+
+        try {
+            Test.startTest();
+            ContractSchedulerHandler contractScheduler = new ContractSchedulerHandler();
+            contractScheduler.execute(null);//null pois será simulado a execução do agendador sem fornecer um contexto real de agendamento. ----> objetivo principal é verificar o comportamento e os resultados do agendador
+            Test.stopTest();
+        } catch (Exception error) {
+            String result = error.getMessage();
+            System.debug('Error testBatchContractActive: ' + result);
         }
-        
-        insert accList;
+       
+        List<Contract> lstContractsUpdated = [SELECT Id, Description__c, Status FROM Contract WHERE Status = 'Activated'];
+        Assert.areEqual(10, lstContractsUpdated.size());
 
-        //criação de contratos para cada conta
-        List<Contract> contractList = new List<Contract>();
-
-        for(Account acc : accList) {
-
-            Contract contrNew = new Contract();
-            contrNew.AccountId = acc.Id;
-            contrNew.Status = 'New';
-            contrNew.ContractTerm = 1;
-            contrNew.StartDate = System.today();
-            contrNew.PositionMonth__c = 1;
-            
-            contractList.add(contrNew);
+        if (!lstContractsUpdated.isEmpty()) {
+            for(Contract contract : lstContractsUpdated) {
+                Boolean result = contract.Description__c.contains('Contract activated through a schedule.');
+                Assert.areEqual(true, result);
+            }
         }
 
-        insert contractList;
-
-        Test.startTest();
-
-        //executa o agendador
-        ContractSchedulerHandler contractScheduler = new ContractSchedulerHandler();
-
-        //null pois será simulado a execução do agendador sem fornecer um contexto real de agendamento. 
-        //o objetivo principal é verificar o comportamento e os resultados do agendador
-        contractScheduler.execute(null);
-        
-        Test.stopTest();
-
-        //verifica se os contratos foram atualizados corretamente
-        List<Contract> contractListUpdate = [SELECT Id, Status, Description__c, StartDate FROM Contract WHERE Status = 'Activated'];
-        System.assertEquals(200, contractListUpdate.size());
-
-        for(Contract contract : contractListUpdate) {
-            Boolean result = contract.Description__c.contains('Contrato ativado através de schedule.') ? true : false;
-            System.assertEquals(true, result);
-        }
     }
 
-    //
+    // teste para ContractUpdateBatchJob Closed
     @isTest
     static void testBatchContractClosed(){
 
-        //criação de contas de teste
-        List<Account> accList = new List<Account>();
-            
-        for(Integer i = 0; i<200; i++){
-            
-            Account accNew = new Account();
-            accNew.Name = 'Teste conta ' + i;
-            accList.add(accNew);
+        List<Contract>lstContracts = [SELECT Id, Description__c, Status, StartDate FROM Contract LIMIT 200];
+        List<Contract>lstContractsToUpdateDate = ContractTestDataFactory.updateContractListStartDate(false, true, lstContracts, Date.today().addMonths(-3));
+        List<Contract>lstContractsToUpdateStatus = ContractTestDataFactory.updateContractListStatus(false, true, lstContractsToUpdateDate, 'Activated');
+
+        try {
+            Test.startTest();
+            ContractSchedulerHandler contractScheduler = new ContractSchedulerHandler();
+            contractScheduler.execute(null);//null pois será simulado a execução do agendador sem fornecer um contexto real de agendamento. ----> objetivo principal é verificar o comportamento e os resultados do agendador
+            Test.stopTest();
+        } catch (Exception error) {
+            String result = error.getMessage();
+            System.debug('Error testBatchContractClosed: ' + result);
         }
-        
-        insert accList;
+       
+        List<Contract> lstContractsUpdated = [SELECT Id, Description__c, Status, StartDate FROM Contract WHERE Status = 'Closed'];
+        Assert.areEqual(10, lstContractsUpdated.size());
 
-        //criação de contratos para cada conta
-        List<Contract> contractList = new List<Contract>();
-
-        for(Account acc : accList) {
-
-            Contract contrNew = new Contract();
-            contrNew.AccountId = acc.Id;
-            contrNew.Status = 'New';
-            contrNew.ContractTerm = 1;
-            contrNew.StartDate = System.today() - 60;
-            contrNew.PositionMonth__c = 1;
-            
-            contractList.add(contrNew);
-        }
-
-        insert contractList;
-
-        List<Contract> contractListUp = new List<Contract>();
-
-        for(Contract contrUp : contractList){
-            
-            contrUp.Status = 'Activated';
-            contractListUp.add(contrUp);
-        }
-
-        update contractListUp;
-
-        Test.startTest();
-
-        //executa o agendador
-        ContractSchedulerHandler contractScheduler = new ContractSchedulerHandler();
-
-        //null pois será simulado a execução do agendador sem fornecer um contexto real de agendamento. 
-        //o objetivo principal é verificar o comportamento e os resultados do agendador
-        contractScheduler.execute(null);
-
-        Test.stopTest();
-
-        //verifica se os contratos foram atualizados corretamente
-        List<Contract> contractListUpdate = [SELECT Id, Status, Description__c, EndDate FROM Contract WHERE Status = 'Closed'];
-        System.assertEquals(200, contractListUpdate.size());
-
-        for(Contract contract : contractListUpdate) {
-            Boolean result = contract.Description__c.contains('Contrato fechado através de schedule.') ? true : false;
-            System.assertEquals(true, result);
+        if (!lstContractsUpdated.isEmpty()) {
+            for(Contract contract : lstContractsUpdated) {
+                Boolean result = contract.Description__c.contains('Contract closed through a schedule.');
+                Assert.areEqual(true, result);
+            }
         }
     }
+
+
 }
