@@ -1,157 +1,94 @@
 @isTest
 public with sharing class JobApplicationTest {
 
+    //criação de registros 
+    @TestSetup
+    static void createTestData() {
+        Account acc = AccountTestDataFactory.createAccountSample(true);
+        Contract contract = ContractTestDataFactory.createContract(true, acc.Id, 1, Date.today(),'New');
+        Candidate__c candidate = CandidateTestDataFactory.createCandidateSample(true);
+    }
+
+    //
     @isTest
-    static void testNewJobPost(){
+    static void testJobPostNew(){
 
-        Account accNew = new Account();
-        accNew.Name = 'Teste Conta Post New';
-        insert accNew;
-
-        Contract contractNew = new Contract();
-        contractNew.AccountId = accNew.Id;
-        contractNew.Status = 'New';
-        contractNew.ContractTerm = 1;
-        contractNew.StartDate = System.today();
-        contractNew.PositionMonth__c = 1;
-        insert contractNew;
-
-        contractNew.Status = 'Activated';
-        update contractNew;
-
-        Candidate__c candNew = new Candidate__c();
-        candNew.First_Name__c = 'Teste Candidate Post New';
-        insert candNew;
-
-        Position__c posNew = new Position__c();
-        posNew.Name = 'Teste Position Post New';
-        posNew.Approval_Status__c = 'Pending';
-        posNew.Status__c = 'New';
-        posNew.Account__c = accNew.Id;
-        insert posNew;
-
-        Job_Application__c jobNew = new Job_Application__c();
-        jobNew.Candidate__c = candNew.Id;
-        jobNew.Position__c = posNew.Id;
-        jobNew.Status__c = 'Open';
-        jobNew.Stage__c = 'New';
+        Id accId = [SELECT Id FROM Account LIMIT 1].Id;
+        Contract contract = [SELECT Id FROM Contract LIMIT 1];
+        Contract contractUpdated = ContractTestDataFactory.updateContractStatusFull(true, true, contract, 'Activated');
+        Candidate__c candidate = [SELECT Id FROM Candidate__c LIMIT 1];
+        Position__c position = PositionTestDataFactory.createPosition(true,accId,'New','Pending');
 
         Test.startTest();
-        insert jobNew;
-        new JobApplicationTriggerHandler().postChatterJob(new Map<Id, Job_Application__c>(), new Map<Id, Job_Application__c>{jobNew.Id => jobNew});
+        Job_Application__c job = JobApplicationTestDataFactory.createJobApplication(true,candidate.Id,position.Id,'Open','New');
+        new JobApplicationTriggerHandler().postChatterJob(new Map<Id, Job_Application__c>(), new Map<Id, Job_Application__c>{job.Id => job});
         Test.stopTest();
 
-        // Recupera o post do Chatter
-        List<FeedItem> chatterPostsTest = [SELECT Id, Body 
-                                            FROM FeedItem 
-                                            LIMIT 1];
+        List<FeedItem> chatterPostsTest = [SELECT Id, Body FROM FeedItem LIMIT 1 ];
         Boolean result = chatterPostsTest[0].Body.contains('Nova Aplicação a vaga') ? true : false;
-        
-        // Compara o body do post do Chatter
-        System.assertEquals(true, result);    
+        Assert.areEqual(true, result);    
     }
 
+    //
     @isTest
-    static void testUpJobPost(){
+    static void testJobPostUpdate(){
 
-        Account accNew = new Account();
-        accNew.Name = 'Teste Conta Post Up';
-        insert accNew;
-
-        Contract contractNew = new Contract();
-        contractNew.AccountId = accNew.Id;
-        contractNew.Status = 'New';
-        contractNew.ContractTerm = 1;
-        contractNew.StartDate = System.today();
-        contractNew.PositionMonth__c = 1;
-        insert contractNew;
-
-        contractNew.Status = 'Activated';
-        update contractNew;
-
-        
-        Candidate__c candNew = new Candidate__c();
-        candNew.First_Name__c = 'Teste Candidate Post Up';
-        insert candNew;
-
-        Position__c posNew = new Position__c();
-        posNew.Name = 'Teste Position Up';
-        posNew.Approval_Status__c = 'Pending';
-        posNew.Status__c = 'New';
-        posNew.Account__c = accNew.Id;
-        insert posNew;
-
-        Job_Application__c jobNew = new Job_Application__c();
-        jobNew.Candidate__c = candNew.Id;
-        jobNew.Position__c = posNew.Id;
-        jobNew.Status__c = 'Open';
-        jobNew.Stage__c = 'New';
-        insert jobNew;
-
-        jobNew.Status__c = 'Hold';
-        jobNew.Stage__c = 'Offer Extended';
-        update jobNew;
+        Id accId = [SELECT Id FROM Account LIMIT 1].Id;
+        Contract contract = [SELECT Id FROM Contract LIMIT 1];
+        Contract contractUpdated = ContractTestDataFactory.updateContractStatusFull(true, true, contract, 'Activated');
+        Candidate__c candidate = [SELECT Id FROM Candidate__c LIMIT 1];
+        Position__c position = PositionTestDataFactory.createPosition(true,accId,'New','Pending');
+        Job_Application__c job = JobApplicationTestDataFactory.createJobApplication(true,candidate.Id,position.Id,'Open','New');
 
         Test.startTest();
-        new JobApplicationTriggerHandler().postChatterJob(new Map<Id, Job_Application__c>{jobNew.Id => jobNew}, new Map<Id, Job_Application__c>{jobNew.Id => jobNew});
+        Job_Application__c jobUpdated = JobApplicationTestDataFactory.updateJobApplication(true,job,'Hold','Offer Extended');
+        new JobApplicationTriggerHandler().postChatterJob(new Map<Id, Job_Application__c>{jobUpdated.Id => jobUpdated}, new Map<Id, Job_Application__c>{jobUpdated.Id => jobUpdated});
         Test.stopTest();
 
-        // Recupera o post do Chatter
-        List<FeedItem> chatterPostsTest = [SELECT Id, Body, CreatedDate
-                                            FROM FeedItem];
+        List<FeedItem> chatterPostsTest = [SELECT Id, Body, CreatedDate FROM FeedItem];
         Boolean result = chatterPostsTest[1].Body.contains('Atualização da vaga aplicada') ? true : false;
-        
-        // Compara o body do post do Chatter
-        System.assertEquals(true, result);    
+        Assert.areEqual(true, result);    
     }
 
+    //
     @isTest
-    static void testDeleteJob(){
+    static void testJobStartDate(){
 
-        Account accNew = new Account();
-        accNew.Name = 'Teste Conta Deletar';
-        insert accNew;
-
-        Contract contractNew = new Contract();
-        contractNew.AccountId = accNew.Id;
-        contractNew.Status = 'New';
-        contractNew.ContractTerm = 1;
-        contractNew.StartDate = System.today();
-        contractNew.PositionMonth__c = 1;
-        insert contractNew;
-
-        contractNew.Status = 'Activated';
-        update contractNew;
-
-        Candidate__c candNew = new Candidate__c();
-        candNew.First_Name__c = 'Teste Candidate Delete';
-        insert candNew;
-
-        Position__c posNew = new Position__c();
-        posNew.Name = 'Teste Position Delete';
-        posNew.Approval_Status__c = 'Pending';
-        posNew.Status__c = 'New';
-        posNew.Account__c = accNew.Id;
-        insert posNew;
-
-        Job_Application__c jobNew = new Job_Application__c();
-        jobNew.Candidate__c = candNew.Id;
-        jobNew.Position__c = posNew.Id;
-        jobNew.Status__c = 'Open';
-        jobNew.Stage__c = 'New';
-        insert jobNew;
+        Id accId = [SELECT Id FROM Account LIMIT 1].Id;
+        Contract contract = [SELECT Id FROM Contract LIMIT 1];
+        Contract contractUpdated = ContractTestDataFactory.updateContractStatusFull(true, true, contract, 'Activated');
+        Candidate__c candidate = [SELECT Id FROM Candidate__c LIMIT 1];
+        Position__c position = PositionTestDataFactory.createPosition(true,accId,'New','Pending');
+        Job_Application__c job = JobApplicationTestDataFactory.createJobApplication(true,candidate.Id,position.Id,'Open','New');
 
         try {
             Test.startTest();
-            delete jobNew;
-            Test.stopTest();
-            
+            Job_Application__c jobUpdated = JobApplicationTestDataFactory.updateJobApplicationDate(true,job,Date.today() + 20);
+            Test.stopTest();  
         } catch (Exception error){
-            Boolean result = error.getMessage().contains('Por questão de compliance, após a vaga ser aplicada' +
-                                                        + ' nestas condições o registro não pode ser deletado!') ? true : false;
-            System.assertEquals(true, result);
+            Boolean result = error.getMessage().contains('Due to the hiring process, the start date must be MORE than 30 days from today! Inserted difference:') ? true : false;
+            Assert.areEqual(true, result);
         }
     }
 
+    //
+    @isTest
+    static void testJobDelete(){
 
+        Id accId = [SELECT Id FROM Account LIMIT 1].Id;
+        Contract contract = [SELECT Id FROM Contract LIMIT 1];
+        Contract contractUpdated = ContractTestDataFactory.updateContractStatusFull(true, true, contract, 'Activated');
+        Candidate__c candidate = [SELECT Id FROM Candidate__c LIMIT 1];
+        Position__c position = PositionTestDataFactory.createPosition(true,accId,'New','Pending');
+        Job_Application__c job = JobApplicationTestDataFactory.createJobApplication(true,candidate.Id,position.Id,'Open','New');
+
+        try {
+            Test.startTest();
+            JobApplicationTestDataFactory.deleteJobApplication(true, job);
+            Test.stopTest();
+        } catch (Exception error){
+            Boolean result = error.getMessage().contains('For compliance reasons, once the vacancy has been applied under these conditions, the record cannot be deleted!') ? true : false;
+            Assert.areEqual(true, result);
+        }
+    }
 }

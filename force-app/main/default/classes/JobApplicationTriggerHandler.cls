@@ -6,7 +6,6 @@ public with sharing class JobApplicationTriggerHandler {
     }
 
     //-----------------------------------------------------------------
-
     // Postar no chatter se for aplicada a vaga quando novo registro
     public void postChatterJob(Map<Id, Job_Application__c> jobsOldMap, Map<Id, Job_Application__c> jobsNewMap) {
 
@@ -88,7 +87,7 @@ public with sharing class JobApplicationTriggerHandler {
 
                     if (days <= 30) {
 
-                        job.addError('Due to the hiring process, the start date must be MORE than 30 days from today!' + ' Inserted difference: ' + days + ' days.');
+                        job.addError('Due to the hiring process, the start date must be MORE than 30 days from today! Inserted difference: ' + days + ' days.');
 
                     }
                 }                         
