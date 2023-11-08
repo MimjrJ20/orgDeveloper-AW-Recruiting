@@ -88,7 +88,7 @@ public with sharing class ContractTest {
         try {
             Test.startTest();
             System.runAs(user) {
-                contract = ContractTestDataFactory.updateContractStatusFull(false, true, contract, 'Draft');
+                Contract contractUpdated = ContractTestDataFactory.updateContractStatusFull(false, true, contract, 'Draft',1);
             }            
             Test.stopTest();
         } catch (Exception error) {

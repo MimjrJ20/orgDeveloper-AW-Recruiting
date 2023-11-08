@@ -17,7 +17,7 @@ public with sharing class ContractTestDataFactory {
     //massa para criar uma LISTA contratos como 'New'
     public static List<Contract> createContractList(Boolean doInsert, List<Account> lstAcc, Integer months, Date startDate, String status){
         
-        List<Contract> lstContract = new List<Contract>();
+        List<Contract> lstContracts = new List<Contract>();
 
         for(Account acc : lstAcc) {
             Contract contract = new Contract();
@@ -25,13 +25,13 @@ public with sharing class ContractTestDataFactory {
             contract.Status = status;
             contract.ContractTerm = months;
             contract.StartDate = startDate;
-            lstContract.add(contract);
+            lstContracts.add(contract);
         }
 
         if(doInsert){
-            insert lstContract;
+            insert lstContracts;
         }
-        return lstContract;
+        return lstContracts;
     }
 
     //massa para atualizar UM contrato Status
@@ -49,13 +49,13 @@ public with sharing class ContractTestDataFactory {
     }
     
     //massa para atualizar UM contrato com todos campos preenchidos
-    public static Contract updateContractStatusFull(Boolean isVerifyStatus, Boolean doUpdate, Contract contract, String status){
+    public static Contract updateContractStatusFull(Boolean isVerifyStatus, Boolean doUpdate, Contract contract, String status, Integer posMonth){
     
         ContractTriggerHandler.setIsVerifyStatus(isVerifyStatus);
 
         Contract contractUpdate = contract;
         contractUpdate.Status = status;
-        contractUpdate.PositionMonth__c = 1;
+        contractUpdate.PositionMonth__c = posMonth;
         contractUpdate.SpecialTerms = 'SpecialTerms';           
         contractUpdate.Description__c = 'Description';
         
@@ -66,12 +66,12 @@ public with sharing class ContractTestDataFactory {
     }
 
     //massa para atualizar UM contrato StartDate
-    public static Contract updateContractStartDate(Boolean isVerifyDate, Boolean doUpdate, Contract contract, Date value){
+    public static Contract updateContractStartDate(Boolean isVerifyDate, Boolean doUpdate, Contract contract, Date startDate){
     
         ContractTriggerHandler.setIsVerifyDate(isVerifyDate);
 
         Contract contractUpdate = contract;
-        contractUpdate.StartDate = value;
+        contractUpdate.StartDate = startDate;
         
         if(doUpdate){
             update contractUpdate;
