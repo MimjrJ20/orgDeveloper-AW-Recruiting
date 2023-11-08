@@ -15,7 +15,7 @@ public with sharing class JobApplicationTest {
 
         Id accId = [SELECT Id FROM Account LIMIT 1].Id;
         Contract contract = [SELECT Id FROM Contract LIMIT 1];
-        Contract contractUpdated = ContractTestDataFactory.updateContractStatusFull(true, true, contract, 'Activated');
+        Contract contractUpdated = ContractTestDataFactory.updateContractStatusFull(true, true, contract, 'Activated',1);
         Candidate__c candidate = [SELECT Id FROM Candidate__c LIMIT 1];
         Position__c position = PositionTestDataFactory.createPosition(true,accId,'New','Pending');
 
@@ -35,7 +35,7 @@ public with sharing class JobApplicationTest {
 
         Id accId = [SELECT Id FROM Account LIMIT 1].Id;
         Contract contract = [SELECT Id FROM Contract LIMIT 1];
-        Contract contractUpdated = ContractTestDataFactory.updateContractStatusFull(true, true, contract, 'Activated');
+        Contract contractUpdated = ContractTestDataFactory.updateContractStatusFull(true, true, contract, 'Activated',1);
         Candidate__c candidate = [SELECT Id FROM Candidate__c LIMIT 1];
         Position__c position = PositionTestDataFactory.createPosition(true,accId,'New','Pending');
         Job_Application__c job = JobApplicationTestDataFactory.createJobApplication(true,candidate.Id,position.Id,'Open','New');
@@ -56,7 +56,7 @@ public with sharing class JobApplicationTest {
 
         Id accId = [SELECT Id FROM Account LIMIT 1].Id;
         Contract contract = [SELECT Id FROM Contract LIMIT 1];
-        Contract contractUpdated = ContractTestDataFactory.updateContractStatusFull(true, true, contract, 'Activated');
+        Contract contractUpdated = ContractTestDataFactory.updateContractStatusFull(true, true, contract, 'Activated',1);
         Candidate__c candidate = [SELECT Id FROM Candidate__c LIMIT 1];
         Position__c position = PositionTestDataFactory.createPosition(true,accId,'New','Pending');
         Job_Application__c job = JobApplicationTestDataFactory.createJobApplication(true,candidate.Id,position.Id,'Open','New');
@@ -77,7 +77,7 @@ public with sharing class JobApplicationTest {
 
         Id accId = [SELECT Id FROM Account LIMIT 1].Id;
         Contract contract = [SELECT Id FROM Contract LIMIT 1];
-        Contract contractUpdated = ContractTestDataFactory.updateContractStatusFull(true, true, contract, 'Activated');
+        Contract contractUpdated = ContractTestDataFactory.updateContractStatusFull(true, true, contract, 'Activated',1);
         Candidate__c candidate = [SELECT Id FROM Candidate__c LIMIT 1];
         Position__c position = PositionTestDataFactory.createPosition(true,accId,'New','Pending');
         Job_Application__c job = JobApplicationTestDataFactory.createJobApplication(true,candidate.Id,position.Id,'Open','New');
