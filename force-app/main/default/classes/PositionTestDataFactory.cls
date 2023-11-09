@@ -22,10 +22,11 @@ public with sharing class PositionTestDataFactory {
         
         List<Position__c> lstPositions = new List<Position__c>();
 
-        for(Account acc : lstAcc) {
+        for (Integer i = 0; i < lstAcc.size(); i++) {
+            
             Position__c position = new Position__c();
-            position.Name = 'Test Position';
-            position.Account__c = acc.Id;
+            position.Name = 'Test Position List ' + i;
+            position.Account__c = lstAcc[i].Id;
             position.Status__c = status;
             position.Approval_Status__c = approval;
             lstPositions.add(position);
@@ -35,5 +36,7 @@ public with sharing class PositionTestDataFactory {
             insert lstPositions;
         }
         return lstPositions;
-    }    
+    }  
+    
+
 }
