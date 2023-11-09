@@ -2,7 +2,7 @@
 public with sharing class UserTestDataFactory {
 
     //massa para usuário
-    public static User createUser(){
+    public static User createUser(Boolean doInsert){
 
         Profile adminProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'];
         String uniqueUserName = 'testuser' + DateTime.now().getTime() + '@testorg.com';
@@ -19,11 +19,14 @@ public with sharing class UserTestDataFactory {
         user.TimeZoneSidKey ='America/Los_Angeles';
         user.UserName = uniqueUserName;
 
-        insert user;
+        if (doInsert) {
+            insert user;
+        }
+
 
         return user;
     }
-    
+
     //massa para usuário a partir do perfil
     public static User userByProfileId(Id profileId){
 
@@ -45,26 +48,31 @@ public with sharing class UserTestDataFactory {
     }
 
     //
-    public static Group createQueue() {
+    public static Group createQueue(Boolean doInsert) {
 
         Group queue = new Group();
         queue.Type = 'Queue'; 
         queue.Name = 'My Queue Name';
         queue.DeveloperName = 'My_Queue_Developer_Name';
         queue.Email = 'queueemail@testorg.com';
-    
-        insert queue;
+        
+        if (doInsert) {
+            insert queue;
+        }
     
         return queue;
     }
 
     //
-    public static GroupMember createGroupMember(Id queueId, Id userId) {
+    public static GroupMember createGroupMember(Boolean doInsert, Id queueId, Id userId) {
 
         GroupMember userMember = new GroupMember();
         userMember.GroupId = queueId;
         userMember.UserOrGroupId  = userId;
-        insert userMember;
+
+        if (doInsert) {
+            insert userMember;
+        }
     
         return userMember;
     }

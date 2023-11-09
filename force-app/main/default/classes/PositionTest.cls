@@ -38,7 +38,7 @@ public with sharing class PositionTest {
             Test.stopTest();
         } catch (Exception error) {
             Boolean result = error.getMessage().contains('This account does not have an active contract for this month!') ? true : false;
-            System.assertEquals(true, result);
+            Assert.areEqual(true, result);
         }
     }
 
@@ -108,7 +108,7 @@ public with sharing class PositionTest {
         List<Contract> lstContractsActived = ContractTestDataFactory.updateContractListStatus(false, true, lstContracts, 'Activated');
         List<Position__c> lstPosition = PositionTestDataFactory.createPositionList(true, lstAcc, 'New', 'Approved');
 
-        User user = UserTestDataFactory.createUser();
+        User user = UserTestDataFactory.createUser(true);
 
         List<Id> lstIds = new List<Id>();
         for (Position__c position : lstPosition) {

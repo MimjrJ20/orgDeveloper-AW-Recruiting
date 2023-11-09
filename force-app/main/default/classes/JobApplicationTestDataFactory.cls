@@ -14,7 +14,28 @@ public with sharing class JobApplicationTestDataFactory {
             insert job;
         }
         return job;
-    }    
+    }
+
+    //massa para criar LISTA 
+    public static List<Job_Application__c> createJobApplicationList(Boolean doInsert, List<Candidate__c> lstCandidates, Id posId, String status, String stage){
+        
+        List<Job_Application__c> lstJobs = new List<Job_Application__c>();
+
+        for (Candidate__c candidate : lstCandidates) {
+
+            Job_Application__c job = new Job_Application__c();
+            job.Candidate__c = candidate.Id;
+            job.Position__c = posId;
+            job.Status__c = status;
+            job.Stage__c = stage;
+            lstJobs.add(job);
+        }
+
+        if(doInsert){
+            insert lstJobs;
+        }
+        return lstJobs;
+    }
 
     //massa para atualizar UM único 
     public static Job_Application__c updateJobApplication(Boolean doUpdate, Job_Application__c job, String status, String stage){
