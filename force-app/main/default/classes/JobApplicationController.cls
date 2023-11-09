@@ -44,11 +44,13 @@ public with sharing class JobApplicationController {
             throw new AuraHandledException('Error updating job application: ' + e.getMessage());
         }
     }
-
+    
+    @TestVisible
     private static String setDefaultValue(String value) {
         return String.isNotBlank(value) ? value : 'TBD';
     }
 
+    @TestVisible
     private static String formatDate(Date inputDate) {
         if (inputDate != null) {
             String day = String.valueOf(inputDate.day());
