@@ -8,32 +8,32 @@ public with sharing class InterviewerTriggerHandler {
     //método para incluir o Candidato no registro Interview (assim aparece a lista relacionada de entrevista mas não precisa preencher pois no Job Application já tem essa informação)
     public void updateInterviewerCandidate(List<Interviewer__c> lstInterviewrs) {
         
-        Set<Id> jobApplicationIds = new Set<Id>();
+        Set<Id> lstJobIds = new Set<Id>();
         for (Interviewer__c interviewer : lstInterviewrs) {
             if (interviewer.Job_Application__c != null) {
-                jobApplicationIds.add(interviewer.Job_Application__c);
+                lstJobIds.add(interviewer.Job_Application__c);
             }
         }
 
-        Map<Id, Job_Application__c> jobApplicationsMap = new Map<Id, Job_Application__c>(
+        Map<Id, Job_Application__c> mapJobs = new Map<Id, Job_Application__c>(
             [SELECT Id, Candidate__c 
             FROM Job_Application__c 
-            WHERE Id IN :jobApplicationIds]
+            WHERE Id IN :lstJobIds]
         );
 
         for (Interviewer__c interviewer : lstInterviewrs) {
             if (interviewer.Job_Application__c != null) {
-                Job_Application__c jobApplication = jobApplicationsMap.get(interviewer.Job_Application__c);
-                if (jobApplication != null) {
-                    interviewer.Candidate__c = jobApplication.Candidate__c;
+                Job_Application__c job = mapJobs.get(interviewer.Job_Application__c);
+                if (job != null) {
+                    interviewer.Candidate__c = job.Candidate__c;
                 }
             }
         }
     }
 
-     //-----------------------------------------------------------------
-     //método que verifica a data e hora de agora
-     public void verifyInterviewerDate(List<Interviewer__c> lstInterviewrs) {
+    //-----------------------------------------------------------------
+    //método que verifica a data e hora de agora
+    public void verifyInterviewerDate(List<Interviewer__c> lstInterviewrs) {
         
         for (Interviewer__c interviewer : lstInterviewrs) {
             
@@ -51,30 +51,29 @@ public with sharing class InterviewerTriggerHandler {
     //método para atualizar o registro de Job Application para entrevista completada
     public void updateInterviewerJob(List<Interviewer__c> lstInterviewrs) {
         
-        Set<Id> jobApplicationIds = new Set<Id>();
-
+        Set<Id> lstJobIds = new Set<Id>();
         List<Job_Application__c> lstJobsToUpdate = new  List<Job_Application__c>();
 
         for (Interviewer__c interviewer : lstInterviewrs) {
             if (interviewer.Job_Application__c != null) {
-                jobApplicationIds.add(interviewer.Job_Application__c);
+                lstJobIds.add(interviewer.Job_Application__c);
             }
         }
 
-        Map<Id, Job_Application__c> jobApplicationsMap = new Map<Id, Job_Application__c>(
+        Map<Id, Job_Application__c> mapJobs = new Map<Id, Job_Application__c>(
             [SELECT Id, Candidate__c 
             FROM Job_Application__c 
-            WHERE Id IN :jobApplicationIds]
+            WHERE Id IN :lstJobIds]
         );
 
         for (Interviewer__c interviewer : lstInterviewrs) {
             if (interviewer.Job_Application__c != null) {
                 if (interviewer.Status__c == 'Completed') {                    
-                    Job_Application__c jobApplication = jobApplicationsMap.get(interviewer.Job_Application__c);
-                    if (jobApplication != null) {
-                        jobApplication.Status__c = 'Open';
-                        jobApplication.Stage__c = 'Interviews Completed';
-                        lstJobsToUpdate.add(jobApplication);
+                    Job_Application__c job = mapJobs.get(interviewer.Job_Application__c);
+                    if (job != null) {
+                        job.Status__c = 'Open';
+                        job.Stage__c = 'Interviews Completed';
+                        lstJobsToUpdate.add(job);
                     }
                 }                
             }
@@ -99,7 +98,7 @@ public with sharing class InterviewerTriggerHandler {
         List<Interviewer__c> lstInterviewrsSameDate = [
             SELECT Id, Date_Time_Interview__c, Candidate__c
             FROM Interviewer__c
-            WHERE Date_Time_Interview__c IN :lstInterviewrsDate
+            WHERE Date_Time_Interview__c IN :lstInterviewrsDate AND Id NOT IN :lstInterviewrs
         ];
 
         //for para ver se o candidato é o mesmo

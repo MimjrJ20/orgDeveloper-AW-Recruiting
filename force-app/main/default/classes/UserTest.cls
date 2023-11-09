@@ -4,9 +4,9 @@ public with sharing class UserTest {
     //criação de registros 
     @TestSetup
     static void createTestData() {
-        User user = UserTestDataFactory.createUser();
-        Group queue = UserTestDataFactory.createQueue();
-        GroupMember userMember = UserTestDataFactory.createGroupMember(queue.Id, user.Id);
+        User user = UserTestDataFactory.createUser(true);
+        Group queue = UserTestDataFactory.createQueue(true);
+        GroupMember userMember = UserTestDataFactory.createGroupMember(true,queue.Id, user.Id);
     }
 
     //
