@@ -28,6 +28,7 @@ public with sharing class CandidatePDFController {
                                             String positionName, String accountName, String description, String skills, String department, String salary, 
                                             String manager, String startDate, String deadline, String userName) {
 
+        Blob bdata;
         PageReference pref = Page.CandidatePDF; 
         pref.getParameters().put('id', idCandidate);
         pref.getParameters().put('city', city);
@@ -46,13 +47,15 @@ public with sharing class CandidatePDFController {
         pref.getParameters().put('deadline', deadline);
         pref.getParameters().put('userName', userName);
         pref.setRedirect(true);
-        Blob bdata = pref.getContentAsPDF();
+
+        if(Test.isRunningTest()){
+            bdata = blob.valueOf('Unit.Test');
+        }else{
+            bdata = pref.getContentAsPDF();
+        }
     
         String pdfContentBase64 = EncodingUtil.base64Encode(bdata);
 
         return pdfContentBase64;
     }
-    
-
-
 }
