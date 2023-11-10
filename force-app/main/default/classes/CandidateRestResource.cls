@@ -1,34 +1,13 @@
 @RestResource(urlMapping='/Candidate/*')
 global with sharing class CandidateRestResource {
 
-
-    private static final Map<String, String> ACENTOS = new Map<String, String>{
-        'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u',
-        'Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U',
-        'â' => 'a', 'ê' => 'e', 'î' => 'i', 'ô' => 'o', 'û' => 'u',
-        'Â' => 'A', 'Ê' => 'E', 'Î' => 'I', 'Ô' => 'O', 'Û' => 'U',
-        'ã' => 'a', 'õ' => 'o', 'Ã' => 'A', 'Õ' => 'O',
-        'à' => 'a', 'è' => 'e', 'ì' => 'i', 'ò' => 'o', 'ù' => 'u',
-        'À' => 'A', 'È' => 'E', 'Ì' => 'I', 'Ò' => 'O', 'Ù' => 'U',
-        'ç' => 'c', 'Ç' => 'C', 'ñ' => 'n', 'Ñ' => 'N'
-    };
- 
-    public static String removerAcentos(String str) {
-        for (String chave : ACENTOS.keySet()) {
-            str = str.replace(chave, ACENTOS.get(chave));
-        }
-        return str;
-    }
-
     //método para obter o Candidato
-    //Para listar os candidatos, deve ser possível mostrar todos ou filtrar por um desses campos:
-    //Email, Candidate Number, Currently Employed ou City (troquei Currently Employed por Current_Employer__c e adicionei por CPF)
     @HttpGet
     global static List<Candidate__c> doGet() {
           
         RestRequest req = RestContext.request;
         RestResponse res = RestContext.response;
-        String candidateInfo = removerAcentos(req.requestURI.substring(req.requestURI.lastIndexOf('/')+1));
+        String candidateInfo = req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
 
         List<Candidate__c> candidateList = new List<Candidate__c>();
 
