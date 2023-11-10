@@ -66,6 +66,8 @@ public with sharing class SendNotification {
         }
     }
 
+    public static Boolean isNotificationSent = false;
+
     @AuraEnabled
     public static void createNotifications(String ownerId, List<String> targetIds) {
 
@@ -96,9 +98,9 @@ public with sharing class SendNotification {
             try {
                 notification.send(lstIds);
                 System.debug('Send notification recordId: ' + targetId);
-
-            } catch (Exception e) {
-                System.debug('Problem sending notification: ' + e.getMessage() + 'recordId: ' + targetId);
+                isNotificationSent = true;
+            } catch (Exception error) {
+                System.debug('Problem sending notification: ' + error.getMessage() + 'recordId: ' + targetId);
             }
         }
     }  

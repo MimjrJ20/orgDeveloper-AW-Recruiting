@@ -1,6 +1,25 @@
 @RestResource(urlMapping='/Candidate/*')
 global with sharing class CandidateRestResource {
 
+
+    private static final Map<String, String> ACENTOS = new Map<String, String>{
+        'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u',
+        'Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U',
+        'â' => 'a', 'ê' => 'e', 'î' => 'i', 'ô' => 'o', 'û' => 'u',
+        'Â' => 'A', 'Ê' => 'E', 'Î' => 'I', 'Ô' => 'O', 'Û' => 'U',
+        'ã' => 'a', 'õ' => 'o', 'Ã' => 'A', 'Õ' => 'O',
+        'à' => 'a', 'è' => 'e', 'ì' => 'i', 'ò' => 'o', 'ù' => 'u',
+        'À' => 'A', 'È' => 'E', 'Ì' => 'I', 'Ò' => 'O', 'Ù' => 'U',
+        'ç' => 'c', 'Ç' => 'C', 'ñ' => 'n', 'Ñ' => 'N'
+    };
+ 
+    public static String removerAcentos(String str) {
+        for (String chave : ACENTOS.keySet()) {
+            str = str.replace(chave, ACENTOS.get(chave));
+        }
+        return str;
+    }
+
     //método para obter o Candidato
     //Para listar os candidatos, deve ser possível mostrar todos ou filtrar por um desses campos:
     //Email, Candidate Number, Currently Employed ou City (troquei Currently Employed por Current_Employer__c e adicionei por CPF)
@@ -9,9 +28,11 @@ global with sharing class CandidateRestResource {
           
         RestRequest req = RestContext.request;
         RestResponse res = RestContext.response;
-        String candidateInfo = req.requestURI.substring(req.requestURI.lastIndexOf('/')+1);
+        String candidateInfo = removerAcentos(req.requestURI.substring(req.requestURI.lastIndexOf('/')+1));
 
         List<Candidate__c> candidateList = new List<Candidate__c>();
+
+        System.debug('candidateInfo: '+candidateInfo);
 
         if (!String.isEmpty(candidateInfo)) {
 
@@ -31,20 +52,6 @@ global with sharing class CandidateRestResource {
                     (City__c = :candidateInfo)
             ];
 
-            // if (candidateList.isEmpty()) {
-                
-            //     String searchParam = '\'%' + candidateInfo.replace(' ', '%') + '%\'';
-
-            //     candidateList = [
-            //         SELECT Id, Name, City__c, Country__c, Current_Employer__c, Currently_Employed__c,
-            //             Education__c, Email__c, First_Name__c, Last_Name__c, Legacy_Candidate_Number__c,
-            //             Mobile__c, Phone__c, State_Province__c, Street_Address_1__c, Street_Address_2__c,
-            //             Years_of_Experience__c, Zip_Postal_Code__c, CPF__c, Country_List__c,
-            //             Street_Address_3__c, Should_Redirect__c 
-            //         FROM Candidate__c 
-            //         WHERE (City__c LIKE :searchParam)
-            //     ];
-            // }
 
         } else {
             
@@ -111,9 +118,8 @@ global with sharing class CandidateRestResource {
     //método para atualizar um candidato
     @HttpPut
     global static String doPut(String candidateId, String firstName, String lastName, String email, String mobile, String education,
-                               String currentEmployer, Integer yearsExperience, String streetAddress1, String streetAddress2, String streetAddress3,
+                               String currentEmployer, String yearsExperience, String streetAddress1, String streetAddress2, String streetAddress3,
                                String city, String stateProvince, String zipPostalCode, String country, String cpf) {
-
                                 
         RestRequest req = RestContext.request;
         RestResponse res = RestContext.response;
@@ -148,8 +154,8 @@ global with sharing class CandidateRestResource {
         if (!String.isBlank(currentEmployer)) {
             candidate.Current_Employer__c = currentEmployer;
         }
-        if (!String.isBlank(String.valueOf(yearsExperience))) {
-            candidate.Years_of_Experience__c = yearsExperience;
+        if (!String.isBlank(yearsExperience) && yearsExperience.isNumeric()) {
+            candidate.Years_of_Experience__c = Integer.valueOf(yearsExperience);
         }
         if (!String.isBlank(streetAddress1)) {
             candidate.Street_Address_1__c = streetAddress1;
@@ -206,11 +212,11 @@ global with sharing class CandidateRestResource {
 
         msg = 'Candidate '+ candidate.Name + ' deleted. Id: ' + candidate.Id;
 
-        //Candidate__c candidate = new Candidate__c();
-        //candidate.Id = candidateId;
         delete candidate;
 
         return msg;
 
     }
+
+
 }
