@@ -1,0 +1,540 @@
+<!-- sldsValidatorIgnore -->
+<!-- sldsValidatorIgnore -->
+<template>
+  <div class="slds-grid slds-grid_align-end slds-p-vertical_large">
+    <!-- Conteúdo do Card -->
+    <lightning-button
+      class="custom-button slds-p-right_small"
+      variant="brand"
+      label="Apply"
+      title="Click here to apply"
+      onclick={clickApply}
+    >
+    </lightning-button>
+  </div>
+
+  <!-- Spinner -->
+  <!-- <template if:true={isLoadedContinue}>
+        <lightning-spinner class="" alternative-text="Loading..." size="large" variant="brand"></lightning-spinner>
+    </template> -->
+
+  <!-- Modal Apply-->
+  <template if:true={bShowModalApply}>
+    <section
+      class="slds-modal slds-fade-in-open slds-modal_small"
+      aria-describedby="modal-content-id-1"
+      aria-labelledby="modal-heading-01"
+      aria-modal="true"
+      role="dialog"
+      tabindex="-1"
+    >
+      <div class="slds-modal__container">
+        <!-- Cabeçalho modal -->
+        <header class="slds-modal__header">
+          <button
+            class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+            onclick={closeModal}
+            title="Close"
+          >
+            <lightning-icon
+              alternative-text="close"
+              icon-name="utility:close"
+              size="small"
+              variant="inverse"
+            >
+            </lightning-icon>
+            <span class="slds-assistive-text">Close</span>
+          </button>
+          <div class="slds-text-heading_large slds-m-vertical_medium">
+            Position to Apply
+          </div>
+        </header>
+        <!-- Corpo modal -->
+        <div
+          class="slds-modal__content slds-p-around_medium"
+          id="modal-content-id-1"
+        >
+          <!-- Barra de progresso -->
+          <lightning-progress-indicator
+            current-step={progressCurrentStep}
+            has-error={progressHasError}
+          >
+            <lightning-progress-step
+              label="Step 1"
+              value="1"
+            ></lightning-progress-step>
+            <lightning-progress-step
+              label="Step 2"
+              value="2"
+            ></lightning-progress-step>
+            <lightning-progress-step
+              label="Step 3"
+              value="3"
+            ></lightning-progress-step>
+          </lightning-progress-indicator>
+          <!-- Inputs -->
+          <div class="slds-form-element slds-m-top_large">
+            <div class="">
+              <div class="custom-title slds-m-top_x-large">
+                More information the position
+              </div>
+              <div class="custom-paragraph slds-m-top_medium">
+                {namePosition}
+              </div>
+              <div class="custom-paragraph slds-m-top_xxx-small">
+                {informationPosition}
+              </div>
+              <div class="custom-title slds-m-top_x-large">
+                Please provide your CPF and click 'Continue':
+              </div>
+            </div>
+            <div class="slds-form-element slds-m-top_x-small">
+              <div class="slds-grid slds-gutters_x-small">
+                <div
+                  class="custom-input slds-form-element__control slds-m-bottom_x-small slds-m-top_medium slds-col slds-size_2-of-5"
+                >
+                  <lightning-input
+                    class=""
+                    type="text"
+                    min-length="14"
+                    max-length="14"
+                    value={cpfValue}
+                    onkeydown={handleKeyDown}
+                    onchange={handleChangeCPF}
+                    label="CPF"
+                  >
+                  </lightning-input>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Rodapé modal -->
+        <footer class="slds-modal__footer">
+          <lightning-button
+            class="custom-button slds-m-left_x-small slds-float_left"
+            label="Cancel"
+            title="Cancel"
+            onclick={closeModal}
+          >
+          </lightning-button>
+          <lightning-button
+            class="custom-button slds-m-left_x-small"
+            variant="brand"
+            label="Continue"
+            title="Continue"
+            onclick={continueChanges}
+          >
+          </lightning-button>
+        </footer>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+
+  <!-- Modal Candidato já aplicado -->
+  <template if:true={bShowModalCandidateApply}>
+    <section
+      class="slds-modal slds-fade-in-open slds-modal_small"
+      aria-describedby="modal-content-id-2"
+      aria-labelledby="modal-heading-01"
+      aria-modal="true"
+      role="dialog"
+      tabindex="-1"
+    >
+      <div class="slds-modal__container">
+        <!-- Cabeçalho modal -->
+        <header class="slds-modal__header">
+          <button
+            class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+            onclick={closeModal}
+            title="Close"
+          >
+            <lightning-icon
+              alternative-text="close"
+              icon-name="utility:close"
+              size="small"
+              variant="inverse"
+            >
+            </lightning-icon>
+            <span class="slds-assistive-text">Close</span>
+          </button>
+          <div class="slds-text-heading_large slds-m-vertical_medium">
+            Position to Apply
+          </div>
+        </header>
+        <!-- Corpo modal -->
+        <div
+          class="slds-modal__content slds-p-around_medium"
+          id="modal-content-id-2"
+        >
+          <!-- Barra de progresso -->
+          <lightning-progress-indicator
+            current-step={progressCurrentStep}
+            has-error={progressHasError}
+          >
+            <lightning-progress-step
+              label="Step 1"
+              value="1"
+            ></lightning-progress-step>
+            <lightning-progress-step
+              label="Step 2"
+              value="2"
+            ></lightning-progress-step>
+            <lightning-progress-step
+              label="Step 3"
+              value="3"
+            ></lightning-progress-step>
+          </lightning-progress-indicator>
+          <!-- Mensagem -->
+          <div class="slds-form-element slds-m-top_large">
+            <div class="">
+              <div class="custom-title slds-m-vertical_medium">
+                The candidate for this CPF has already applied to this position.
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Rodapé modal -->
+        <footer class="slds-modal__footer">
+          <lightning-button
+            class="custom-button slds-m-left_x-small slds-float_left"
+            label="Cancel"
+            title="Cancel"
+            onclick={closeModal}
+          >
+          </lightning-button>
+          <lightning-button
+            class="custom-button slds-m-left_x-small"
+            variant="brand"
+            label="OK"
+            title="OK"
+            onclick={closeModal}
+          >
+          </lightning-button>
+        </footer>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+
+  <!-- Modal Candidato já tem cadastro -->
+  <template if:true={bShowModalCandidateNot}>
+    <section
+      class="slds-modal slds-fade-in-open slds-modal_small"
+      aria-describedby="modal-content-id-3"
+      aria-labelledby="modal-heading-01"
+      aria-modal="true"
+      role="dialog"
+      tabindex="-1"
+    >
+      <div class="slds-modal__container">
+        <!-- Cabeçalho modal -->
+        <header class="slds-modal__header">
+          <button
+            class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+            onclick={closeModal}
+            title="Close"
+          >
+            <lightning-icon
+              alternative-text="close"
+              icon-name="utility:close"
+              size="small"
+              variant="inverse"
+            >
+            </lightning-icon>
+            <span class="slds-assistive-text">Close</span>
+          </button>
+          <div class="slds-text-heading_large slds-m-vertical_medium">
+            Position to Apply
+          </div>
+        </header>
+        <!-- Corpo modal -->
+        <div
+          class="slds-modal__content slds-p-around_medium"
+          id="modal-content-id-3"
+        >
+          <!-- Barra de progresso -->
+          <lightning-progress-indicator
+            current-step={progressCurrentStep}
+            has-error={progressHasError}
+          >
+            <lightning-progress-step
+              label="Step 1"
+              value="1"
+            ></lightning-progress-step>
+            <lightning-progress-step
+              label="Step 2"
+              value="2"
+            ></lightning-progress-step>
+            <lightning-progress-step
+              label="Step 3"
+              value="3"
+            ></lightning-progress-step>
+          </lightning-progress-indicator>
+          <!-- Mensagem -->
+          <div class="slds-form-element slds-m-top_large">
+            <div class="">
+              <div class="custom-title slds-m-top_x-large">
+                More information the position
+              </div>
+              <div class="custom-paragraph slds-m-top_medium">
+                {namePosition}
+              </div>
+              <div class="custom-paragraph slds-m-top_xxx-small">
+                {informationPosition}
+              </div>
+
+              <div class="custom-title-red slds-m-top_x-large">
+                You are already registered. Would you like to apply for the
+                position?
+              </div>
+              <div class="custom-paragraph slds-m-top_medium">
+                CPF: {cpfValueNotMask}
+              </div>
+              <div class="custom-paragraph slds-m-top_xxx-small">
+                Name: {nameCandidate}
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Rodapé modal -->
+        <footer class="slds-modal__footer">
+          <lightning-button
+            class="custom-button slds-m-left_x-small slds-float_left"
+            label="Cancel"
+            title="Cancel"
+            onclick={closeModal}
+          >
+          </lightning-button>
+          <lightning-button
+            class="custom-button slds-m-left_x-small"
+            variant="brand"
+            label="Apply"
+            title="Apply"
+            onclick={applyChanges}
+          >
+          </lightning-button>
+        </footer>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+
+  <!-- Modal Candidato precisa de cadastro -->
+  <template if:true={bShowModalCandidateYes}>
+    <section
+      class="slds-modal slds-fade-in-open slds-modal_small"
+      aria-describedby="modal-content-id-4"
+      aria-labelledby="modal-heading-01"
+      aria-modal="true"
+      role="dialog"
+      tabindex="-1"
+    >
+      <div class="slds-modal__container">
+        <!-- Cabeçalho modal -->
+        <header class="slds-modal__header">
+          <button
+            class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+            onclick={closeModal}
+            title="Close"
+          >
+            <lightning-icon
+              alternative-text="close"
+              icon-name="utility:close"
+              size="small"
+              variant="inverse"
+            >
+            </lightning-icon>
+            <span class="slds-assistive-text">Close</span>
+          </button>
+          <div class="slds-text-heading_large slds-m-vertical_medium">
+            Position to Apply
+          </div>
+        </header>
+
+        <!-- Corpo modal -->
+        <div
+          class="slds-modal__content slds-p-around_medium"
+          id="modal-content-id-4"
+        >
+          <!-- Barra de progresso -->
+          <lightning-progress-indicator
+            current-step={progressCurrentStep}
+            has-error={progressHasError}
+          >
+            <lightning-progress-step
+              label="Step 1"
+              value="1"
+            ></lightning-progress-step>
+            <lightning-progress-step
+              label="Step 2"
+              value="2"
+            ></lightning-progress-step>
+            <lightning-progress-step
+              label="Step 3"
+              value="3"
+            ></lightning-progress-step>
+          </lightning-progress-indicator>
+
+          <!-- Inputs -->
+          <div class="slds-form-element slds-m-top_large">
+            <div class="">
+              <div class="custom-title-red">
+                The provided CPF is not registered in our database. Please
+                register!
+              </div>
+              <div class="custom-paragraph slds-m-top_medium">
+                When you click 'Save,' you will be registered in our database
+                and applied to the chosen position.
+              </div>
+              <div class="custom-paragraph slds-m-top_medium">
+                CPF: {cpfValueNotMask}
+              </div>
+            </div>
+
+            <!-- Campos -->
+            <div class="slds-form-element slds-m-top_small">
+              <div class="slds-grid slds-grid_vertical">
+                <div
+                  class="custom-input slds-col slds-size_1-of-1 slds-m-top_small slds-p-right_x-small"
+                >
+                  <lightning-input
+                    class=""
+                    type="text"
+                    required
+                    value={firstNameValue}
+                    onchange={handleChangeFirstName}
+                    label="First Name"
+                  >
+                  </lightning-input>
+                </div>
+                <div
+                  class="custom-input slds-col slds-size_1-of-1 slds-m-top_small slds-p-right_x-small"
+                >
+                  <lightning-input
+                    class=""
+                    type="text"
+                    required
+                    value={lastNameValue}
+                    onchange={handleChangeLastName}
+                    label="Last Name"
+                  >
+                  </lightning-input>
+                </div>
+                <div
+                  class="custom-input slds-col slds-size_1-of-1 slds-m-top_small slds-p-right_x-small"
+                >
+                  <lightning-input
+                    class=""
+                    type="email"
+                    required
+                    value={emailValue}
+                    onchange={handleChangeEmail}
+                    label="E-mail"
+                  >
+                  </lightning-input>
+                </div>
+                <div
+                  class="custom-input slds-col slds-size_1-of-1 slds-m-top_small slds-p-right_x-small"
+                >
+                  <lightning-input
+                    class=""
+                    type="text"
+                    max-length="255"
+                    value={skillsValue}
+                    onchange={handleChangeSkills}
+                    label="Your Skills"
+                  >
+                  </lightning-input>
+                </div>
+                <div class="custom-input slds-m-top_small">
+                  <div class="slds-grid slds-gutters_x-small">
+                    <div
+                      class="slds-form-element__control slds-col slds-size_1-of-2"
+                    >
+                      <lightning-combobox
+                        id="country"
+                        name="country"
+                        label="Country"
+                        required
+                        value={countryValue}
+                        options={countryListOptions}
+                        onchange={handleChangeCountry}
+                      >
+                      </lightning-combobox>
+                    </div>
+
+                    <div
+                      class="slds-form-element__control slds-col slds-size_1-of-2"
+                    >
+                      <div class="custom-input slds-col">
+                        <lightning-input
+                          class=""
+                          type="text"
+                          min-length={minCEP}
+                          max-length={maxCEP}
+                          value={cepValue}
+                          onchange={handleChangeCEP}
+                          label="Zip Postal Code"
+                        >
+                        </lightning-input>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- <div class="custom-input slds-col slds-size_1-of-1 slds-m-top_small">
+                                    <lightning-combobox
+                                        id="country" 
+                                        name="country"
+                                        label="Country"
+                                        required
+                                        value={countryValue}
+                                        options={countryListOptions}
+                                        onchange={handleChangeCountry}>
+                                    </lightning-combobox>
+                                </div>
+                                <template if:true={disableCEP}>
+                                    <div class="custom-input slds-col slds-size_1-of-1 slds-m-top_small">
+                                        <lightning-input 
+                                            class=""
+                                            type="text"
+                                            min-length={minCEP}
+                                            max-length={maxCEP}
+                                            value={cepValue} 
+                                            onchange={handleChangeCEP}
+                                            label="Zip Postal Code">
+                                        </lightning-input>
+                                    </div>
+                                </template> -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rodapé modal -->
+        <footer class="slds-modal__footer">
+          <lightning-button
+            class="custom-button slds-m-left_x-small slds-float_left"
+            label="Back"
+            title="Back"
+            onclick={backModal}
+          >
+          </lightning-button>
+
+          <lightning-button
+            class="custom-button slds-m-left_x-small"
+            variant="brand"
+            label="Save"
+            title="Save"
+            disabled={disableSave}
+            onclick={saveChanges}
+          >
+          </lightning-button>
+        </footer>
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </template>
+</template>

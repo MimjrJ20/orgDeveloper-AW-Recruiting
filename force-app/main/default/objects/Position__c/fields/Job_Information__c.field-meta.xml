@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Country_List__c</fullName>
+    <fullName>Job_Information__c</fullName>
     <externalId>false</externalId>
-    <label>Country</label>
+    <label>Job Information</label>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
     <trackTrending>false</trackTrending>
-    <type>Picklist</type>
-    <valueSet>
-        <restricted>true</restricted>
-        <valueSetName>Countries</valueSetName>
-    </valueSet>
+    <type>TextArea</type>
 </CustomField>

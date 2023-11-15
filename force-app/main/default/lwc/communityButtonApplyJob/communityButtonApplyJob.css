@@ -1,0 +1,24 @@
+.custom-button {
+  --slds-c-button-radius-border: 1rem;
+}
+
+.custom-input {
+  --slds-c-input-radius-border: 1rem;
+}
+
+.custom-title {
+  color: #163f5e;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.custom-paragraph {
+  color: #163f5e;
+  font-size: 15px;
+}
+
+.custom-title-red {
+  color: #881911;
+  font-size: 16px;
+  font-weight: bold;
+}
