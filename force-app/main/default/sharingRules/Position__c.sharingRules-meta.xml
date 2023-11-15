@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
     <sharingGuestRules>
-        <fullName>Job_Application_Rule_Guest</fullName>
+        <fullName>Position_Rule_Guest</fullName>
         <accessLevel>Read</accessLevel>
-        <label>Job Application Rule Guest</label>
+        <label>Position Rule Guest</label>
         <sharedTo>
             <guestUser>AW_Recruiting</guestUser>
         </sharedTo>
@@ -12,17 +12,11 @@
             <operation>notEqual</operation>
             <value />
         </criteriaItems>
+        <criteriaItems>
+            <field>Status__c</field>
+            <operation>notEqual</operation>
+            <value>Canceled,Closed</value>
+        </criteriaItems>
         <includeHVUOwnedRecords>false</includeHVUOwnedRecords>
     </sharingGuestRules>
-    <sharingOwnerRules>
-        <fullName>Job_Application_Rule</fullName>
-        <accessLevel>Edit</accessLevel>
-        <label>Job Application Rule</label>
-        <sharedTo>
-            <allInternalUsers />
-        </sharedTo>
-        <sharedFrom>
-            <allInternalUsers />
-        </sharedFrom>
-    </sharingOwnerRules>
 </SharingRules>
