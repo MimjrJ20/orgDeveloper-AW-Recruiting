@@ -6,13 +6,12 @@ public with sharing class PositionTriggerHandler {
     }
 
     //----------------------------------------------------------------------
-
     //método para bloquear a criação de position se não tiver no contrato
-    public void createPositionWithoutContract(List<Position__c> posList){
+    public void createPositionWithoutContract(List<Position__c> lstPositions){
 
         Set<Id> accountIds = new Set<Id>();
 
-        for(Position__c posNew : posList){
+        for(Position__c posNew : lstPositions){
             accountIds.add(posNew.Account__c);
         }
 
@@ -47,7 +46,7 @@ public with sharing class PositionTriggerHandler {
         }
 
 
-        for(Position__c posNew : posList){
+        for(Position__c posNew : lstPositions){
         
             Id accountId = posNew.Account__c;
             Contract contract = null;
@@ -87,5 +86,5 @@ public with sharing class PositionTriggerHandler {
     }
 
     //----------------------------------------------------------------------
-
+   
 }
